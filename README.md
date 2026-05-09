@@ -99,20 +99,25 @@ Golutra presents a multi-agent workforce for engineering teams, extending the ID
 <tr>
 <td width="50%" valign="top">
 
-![banner-gif](https://github.com/user-attachments/assets/e6eaf308-a874-483f-8874-6934bf95a78f)
+[![banner-gif](https://github.com/user-attachments/assets/e6eaf308-a874-483f-8874-6934bf95a78f)](https://github.com/elontusk5219-prog/Mobi)
 
 #### Mobi Companion
 
 An iOS app where users create, nurture, and live with a personalized AI companion called Mobi.
 
+[Code](https://github.com/elontusk5219-prog/Mobi)
+
+
 </td>
 <td width="50%" valign="top">
 
-![banner-gif](https://github.com/user-attachments/assets/9aabcaa9-f97a-49d2-9109-0b5bb696ed41)
+[![banner-gif](https://github.com/user-attachments/assets/9aabcaa9-f97a-49d2-9109-0b5bb696ed41)](https://github.com/JaMesLiMers/EvermemCompetition-Spiro)
 
 #### AI Wearable with Memory
 
 A context-native AI wearable that listens to everyday life and converts conversations into memory.
+
+[Code](https://github.com/JaMesLiMers/EvermemCompetition-Spiro)
 
 </td>
 </tr>
