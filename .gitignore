@@ -209,6 +209,9 @@ AGENTS.mk
 docs/api_docs/profile_extraction_fields.md
 .claude/
 .cursor/*
+# Per-developer CLAUDE.md overrides (loaded by Claude Code alongside CLAUDE.md)
+CLAUDE.local.md
+**/CLAUDE.local.md
 
 #tmp_data
 demo/memcell_outputs/
