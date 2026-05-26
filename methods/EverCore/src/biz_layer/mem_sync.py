@@ -114,7 +114,7 @@ class MemorySyncService:
             # Read embedding from MongoDB, skip if not exists
             if not foresight.vector:
                 logger.warning(
-                    f"Foresight {foresight.id} has no embedding, skipping sync"
+                    f"Foresight {foresight.id} has no embedding, skipping sync"  # noqa: G004
                 )
                 return stats
 
@@ -124,7 +124,7 @@ class MemorySyncService:
                 milvus_entity = ForesightMilvusConverter.from_mongo(foresight)
                 await self.foresight_milvus_repo.insert(milvus_entity, flush=False)
                 stats["foresight"] += 1
-                logger.debug(f"Foresight synced to Milvus: {foresight.id}")
+                logger.debug(f"Foresight synced to Milvus: {foresight.id}")  # noqa: G004
 
             # Sync to ES
             if sync_to_es:
@@ -132,10 +132,10 @@ class MemorySyncService:
                 es_doc = ForesightConverter.from_mongo(foresight)
                 await self.foresight_es_repo.create(es_doc)
                 stats["es_records"] += 1
-                logger.debug(f"Foresight synced to ES: {foresight.id}")
+                logger.debug(f"Foresight synced to ES: {foresight.id}")  # noqa: G004
 
         except Exception as e:
-            logger.error(f"Failed to sync foresight: {e}", exc_info=True)
+            logger.error(f"Failed to sync foresight: {e}", exc_info=True)  # noqa: G004, G201
             raise
 
         return stats
@@ -162,7 +162,7 @@ class MemorySyncService:
             # Read existing vector from MongoDB
             if not atomic_fact_record.vector:
                 logger.warning(
-                    f"Atomic fact {atomic_fact_record.id} has no embedding, skipping sync"
+                    f"Atomic fact {atomic_fact_record.id} has no embedding, skipping sync"  # noqa: G004
                 )
                 return stats
 
@@ -172,7 +172,7 @@ class MemorySyncService:
                 milvus_entity = AtomicFactMilvusConverter.from_mongo(atomic_fact_record)
                 await self.atomic_fact_milvus_repo.insert(milvus_entity, flush=False)
                 stats["atomic_fact"] += 1
-                logger.debug(f"Atomic fact synced to Milvus: {atomic_fact_record.id}")
+                logger.debug(f"Atomic fact synced to Milvus: {atomic_fact_record.id}")  # noqa: G004
 
             # Sync to ES
             if sync_to_es:
@@ -180,10 +180,10 @@ class MemorySyncService:
                 es_doc = AtomicFactConverter.from_mongo(atomic_fact_record)
                 await self.atomic_fact_es_repo.create(es_doc)
                 stats["es_records"] += 1
-                logger.debug(f"Atomic fact synced to ES: {atomic_fact_record.id}")
+                logger.debug(f"Atomic fact synced to ES: {atomic_fact_record.id}")  # noqa: G004
 
         except Exception as e:
-            logger.error(f"Failed to sync atomic fact: {e}", exc_info=True)
+            logger.error(f"Failed to sync atomic fact: {e}", exc_info=True)  # noqa: G004, G201
             raise
 
         return stats
@@ -214,14 +214,14 @@ class MemorySyncService:
                 total_stats["foresight"] += stats.get("foresight", 0)
                 total_stats["es_records"] += stats.get("es_records", 0)
             except Exception as e:
-                logger.error(
-                    f"Failed to batch sync foresight: {foresight_mem.id}, error: {e}",
+                logger.error(  # noqa: G201
+                    f"Failed to batch sync foresight: {foresight_mem.id}, error: {e}",  # noqa: G004
                     exc_info=True,
                 )
                 # Do not silently swallow exceptions
 
         logger.info(
-            f"✅ Foresight Milvus flush completed: {total_stats['foresight']} records"
+            f"✅ Foresight Milvus flush completed: {total_stats['foresight']} records"  # noqa: G004
         )
 
         return total_stats
@@ -252,15 +252,15 @@ class MemorySyncService:
                 total_stats["atomic_fact"] += stats.get("atomic_fact", 0)
                 total_stats["es_records"] += stats.get("es_records", 0)
             except Exception as e:
-                logger.error(
-                    f"Failed to batch sync atomic fact: {fact_record.id}, error: {e}",
+                logger.error(  # noqa: G201
+                    f"Failed to batch sync atomic fact: {fact_record.id}, error: {e}",  # noqa: G004
                     exc_info=True,
                 )
                 # Do not silently swallow exceptions, let it surface
                 raise
 
         logger.info(
-            f"Atomic fact Milvus flush completed: {total_stats['atomic_fact']} records"
+            f"Atomic fact Milvus flush completed: {total_stats['atomic_fact']} records"  # noqa: G004
         )
 
         return total_stats

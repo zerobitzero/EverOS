@@ -90,7 +90,7 @@ class RedisDataProcessor:
                     result = pickle.loads(pickle_data)
                     logger.debug("Pickle deserialization succeeded")
                     return result
-                except Exception as e:
+                except Exception as e:  # noqa: BLE001
                     logger.error("Pickle deserialization failed: %s", str(e))
                     return data
             else:
@@ -225,7 +225,7 @@ class RedisDataProcessor:
 
         try:
             parsed_data = RedisDataProcessor.deserialize_data(raw_data)
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001
             logger.warning(
                 "Failed to deserialize data: member=%s, error=%s",
                 (

@@ -965,7 +965,7 @@ class SearchMemoryService:
 
             return pending_messages
 
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001
             logger.error(
                 "Failed to search raw messages: sender_id=%s, group_ids=%s, error=%s",
                 sender_id,
@@ -1076,7 +1076,7 @@ class SearchMemoryService:
         """Hierarchical retrieval for episodic_memory via DI-registered service, fallback to builtin hybrid."""
         try:
             handler = get_bean("search_method_mrag")
-        except Exception:
+        except Exception:  # noqa: BLE001
             logger.warning(
                 "Hierarchical search service not available, fallback to builtin hybrid"
             )
@@ -1147,7 +1147,7 @@ class SearchMemoryService:
         """
         try:
             handler = get_bean(f"search_method_{method}")
-        except Exception:
+        except Exception:  # noqa: BLE001
             raise ValueError(f"Unknown search method: {method}")
 
         query_vector = await self._get_query_vector(query, retrieve_method=method)
@@ -1622,7 +1622,7 @@ class SearchMemoryService:
 
             return scored
 
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001
             logger.warning(
                 "Skill relevance verification failed, returning all results: %s", e
             )

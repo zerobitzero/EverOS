@@ -115,7 +115,7 @@ def is_request_history_enabled() -> bool:
     _enabled_cache = config.is_enabled()
 
     logger.info(
-        f"Request history logging is {'enabled' if _enabled_cache else 'disabled'} "
+        f"Request history logging is {'enabled' if _enabled_cache else 'disabled'} "  # noqa: G004
         f"(config: {config.get_config_name()})"
     )
 

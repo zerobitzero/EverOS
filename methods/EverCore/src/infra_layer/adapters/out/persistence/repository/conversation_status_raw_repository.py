@@ -43,7 +43,7 @@ class ConversationStatusRawRepository(BaseRepository[ConversationStatus]):
             else:
                 logger.debug("⚠️  Conversation status not found: group_id=%s", group_id)
             return result
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001
             logger.error("❌ Failed to retrieve conversation status by group ID: %s", e)
             return None
 
@@ -64,7 +64,7 @@ class ConversationStatusRawRepository(BaseRepository[ConversationStatus]):
                 "✅ Successfully deleted conversation status by group ID: %s", group_id
             )
             return True
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001
             logger.error("❌ Failed to delete conversation status by group ID: %s", e)
             return False
 
@@ -160,7 +160,7 @@ class ConversationStatusRawRepository(BaseRepository[ConversationStatus]):
                     # Other types of creation errors, re-raise
                     raise create_error
 
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001
             logger.error("Failed to update or create conversation status: %s", e)
             return None
 
@@ -180,6 +180,6 @@ class ConversationStatusRawRepository(BaseRepository[ConversationStatus]):
                 count,
             )
             return count
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001
             logger.error("❌ Failed to count conversation statuses: %s", e)
             return 0

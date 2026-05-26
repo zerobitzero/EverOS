@@ -7,7 +7,6 @@ import sys
 import importlib
 from pathlib import Path
 from typing import List, Set, Optional, Dict, Any
-import traceback
 from concurrent.futures import ThreadPoolExecutor, as_completed
 
 from core.observation.logger import get_logger
@@ -126,7 +125,7 @@ class ComponentScanner:
             except ImportError:
                 # Some modules may not exist, which is normal
                 failed_count += 1
-            except Exception:
+            except Exception:  # noqa: BLE001
                 # Other exceptions should be logged but not block execution
                 failed_count += 1
 
@@ -301,7 +300,7 @@ class ComponentScanner:
                 file_path = futures[future]
                 try:
                     future.result()
-                except Exception as e:
+                except Exception as e:  # noqa: BLE001
                     self.logger.error(
                         "Failed to scan file in parallel %s: %s", file_path, e
                     )
@@ -311,7 +310,7 @@ class ComponentScanner:
         for file_path in python_files:
             try:
                 self._scan_file(file_path)
-            except Exception as e:
+            except Exception as e:  # noqa: BLE001
                 self.logger.error(
                     "Failed to scan file sequentially %s: %s", file_path, e
                 )
@@ -327,15 +326,13 @@ class ComponentScanner:
 
         try:
             importlib.import_module(module_name)
-        except ImportError as e:
-            self.logger.error("Failed to import module %s: %s", module_name, e)
-            traceback.print_exc()
+        except ImportError:
+            self.logger.exception("Failed to import module %s", module_name)
             sys.exit(1)
-        except Exception as e:
-            self.logger.error(
-                "Unknown error occurred while scanning file %s: %s", file_path, e
+        except Exception:
+            self.logger.exception(
+                "Unknown error occurred while scanning file %s", file_path
             )
-            traceback.print_exc()
             sys.exit(1)
 
     def _file_to_module_name(self, file_path: Path) -> Optional[str]:
@@ -358,7 +355,7 @@ class ComponentScanner:
                     return ".".join(module_parts)
                 except ValueError:
                     continue
-        except Exception:
+        except Exception:  # noqa: BLE001
             pass
 
         return None

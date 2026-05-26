@@ -47,7 +47,7 @@ class MessageSenderRole(str, Enum):
                 if role.value == role_lower:
                     return role
             return None
-        except Exception:
+        except Exception:  # noqa: BLE001
             return None
 
     @classmethod

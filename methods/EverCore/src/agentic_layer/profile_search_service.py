@@ -148,7 +148,7 @@ class ProfileSearchService:
             recall_limit = top_k * 2 if top_k > 0 else PROFILE_DEFAULT_TOPK * 2
 
             logger.info(
-                f"🔍 Profile search params: user_id={user_id}, group_id={group_id}, "
+                f"🔍 Profile search params: user_id={user_id}, group_id={group_id}, "  # noqa: G004
                 f"top_k={top_k}, recall_limit={recall_limit}, score_threshold={score_threshold}"
             )
 
@@ -161,7 +161,7 @@ class ProfileSearchService:
             )
 
             logger.info(
-                f"✅ Milvus returned {len(milvus_results)} results, will take top {top_k}"
+                f"✅ Milvus returned {len(milvus_results)} results, will take top {top_k}"  # noqa: G004
             )
 
             # Step 3: Process results - parse embed_text and format output
@@ -198,7 +198,7 @@ class ProfileSearchService:
             # Log profile scores for debugging
             if profiles:
                 scores_str = ", ".join([f"{p['score']:.4f}" for p in profiles])
-                logger.info(f"📊 Profile scores: [{scores_str}]")
+                logger.info(f"📊 Profile scores: [{scores_str}]")  # noqa: G004
 
             logger.info(
                 "Profile search completed: user_id=%s, group_id=%s, "
@@ -213,7 +213,7 @@ class ProfileSearchService:
             return result
 
         except Exception as e:
-            logger.error(
+            logger.error(  # noqa: G201
                 "Profile search failed: user_id=%s, group_id=%s, error=%s",
                 user_id,
                 group_id,

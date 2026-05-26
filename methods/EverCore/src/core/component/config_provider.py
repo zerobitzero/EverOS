@@ -47,7 +47,7 @@ class ConfigProvider:
             self._cache[config_name] = config_data
             return config_data
 
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001
             raise RuntimeError(f"Failed to load configuration file {config_name}: {e}")
 
     def get_raw_config(self, config_name: str) -> str:
@@ -80,7 +80,7 @@ class ConfigProvider:
             self._cache[cache_key] = raw_content
             return raw_content
 
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001
             raise RuntimeError(f"Failed to read configuration file {config_name}: {e}")
 
     def get_available_configs(self) -> list:

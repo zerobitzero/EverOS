@@ -34,7 +34,7 @@ class SessionRawRepository(BaseRepository[Session]):
             else:
                 logger.debug("Session not found: session_id=%s", session_id)
             return result
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001
             logger.error("Failed to get session by session_id: %s", e)
             return None
 
@@ -98,6 +98,6 @@ class SessionRawRepository(BaseRepository[Session]):
                 else:
                     raise create_error
 
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001
             logger.error("Failed to upsert session: %s", e)
             return None

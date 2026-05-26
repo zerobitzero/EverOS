@@ -479,7 +479,7 @@ async def analyze_file_with_ai(
             file_path, "r", encoding="utf-8", errors="ignore"
         ) as f:
             content = await f.read()
-    except Exception as e:
+    except Exception as e:  # noqa: BLE001
         return FileCheckResult(file_path=file_path, error=str(e))
 
     # Skip empty files
@@ -538,7 +538,7 @@ async def analyze_file_with_ai(
                 ai_analysis=response[:500] if len(response) > 500 else response,
             )
 
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001
             print(f"{progress_prefix} [ERROR] {rel_path}: {e}")
             return FileCheckResult(file_path=file_path, error=str(e))
 
@@ -884,7 +884,7 @@ def cmd_hook(files: list[str], commit_msg: bool = False) -> int:
                 for keyword in SKIP_COMMIT_MSG_KEYWORDS:
                     if keyword.lower() in content:
                         return 0
-            except Exception:
+            except Exception:  # noqa: BLE001
                 pass
         return 0
 

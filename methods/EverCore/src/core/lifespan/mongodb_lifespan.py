@@ -94,5 +94,5 @@ class MongoDBLifespanProvider(LifespanProvider):
             try:
                 await self._mongodb_factory.close_all_clients()
                 logger.info("✅ MongoDB connection closed successfully")
-            except Exception as e:
+            except Exception as e:  # noqa: BLE001
                 logger.error("❌ Error closing MongoDB connection: %s", str(e))

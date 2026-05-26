@@ -191,7 +191,7 @@ def _resolve_fallback(
     if callable(fallback):
         try:
             return fallback()
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001
             logger.error("Failed to compute fallback %s: %s", description, e)
             return None
 

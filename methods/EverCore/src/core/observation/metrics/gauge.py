@@ -223,7 +223,7 @@ class LabeledGauge:
         # Stop existing task if any (prevent task leak)
         existing_task = self._base_gauge._refresh_tasks.get(self._label_key)
         if existing_task and existing_task._running:
-            logger.warning(f"Replacing existing refresh task for {self._label_key}")
+            logger.warning(f"Replacing existing refresh task for {self._label_key}")  # noqa: G004
             # Schedule stop in background to avoid blocking
             asyncio.create_task(existing_task.stop())
 
@@ -284,13 +284,13 @@ class RefreshTask:
     def start(self) -> None:
         """Start refresh task"""
         if self._running:
-            logger.warning(f"Refresh task already running for {self.label_key}")
+            logger.warning(f"Refresh task already running for {self.label_key}")  # noqa: G004
             return
 
         self._running = True
         self._task = asyncio.create_task(self._refresh_loop())
         logger.info(
-            f"Started refresh task: label_key={self.label_key}, "
+            f"Started refresh task: label_key={self.label_key}, "  # noqa: G004
             f"interval={self.interval_seconds}s"
         )
 
@@ -309,7 +309,7 @@ class RefreshTask:
                 pass
             self._task = None
 
-        logger.info(f"Stopped refresh task: label_key={self.label_key}")
+        logger.info(f"Stopped refresh task: label_key={self.label_key}")  # noqa: G004
 
     async def _refresh_loop(self) -> None:
         """Refresh loop"""
@@ -334,8 +334,8 @@ class RefreshTask:
                 break
             except Exception as e:
                 self._error_count += 1
-                logger.error(
-                    f"Refresh failed for {self.label_key}: {e} "
+                logger.error(  # noqa: G201
+                    f"Refresh failed for {self.label_key}: {e} "  # noqa: G004
                     f"(error_count={self._error_count})",
                     exc_info=True,
                 )

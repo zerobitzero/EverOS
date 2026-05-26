@@ -96,7 +96,7 @@ class BaseRepository(ABC, Generic[T]):
         try:
             client = await self.get_client()
             return await self.model.get(id=doc_id, using=client)
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001
             logger.error("❌ Failed to get document by ID [%s]: %s", self.model_name, e)
             return None
 
@@ -144,7 +144,7 @@ class BaseRepository(ABC, Generic[T]):
                 )
                 return True
             return False
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001
             logger.error("❌ Failed to delete document [%s]: %s", self.model_name, e)
             return False
 
@@ -168,7 +168,7 @@ class BaseRepository(ABC, Generic[T]):
                 getattr(document, 'meta', {}).get('id', 'unknown'),
             )
             return True
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001
             logger.error("❌ Failed to delete document [%s]: %s", self.model_name, e)
             return False
 
@@ -269,7 +269,7 @@ class BaseRepository(ABC, Generic[T]):
                 documents.append(doc)
 
             return documents
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001
             logger.error("❌ Failed to get all documents [%s]: %s", self.model_name, e)
             return []
 
@@ -291,7 +291,7 @@ class BaseRepository(ABC, Generic[T]):
 
             response = await client.exists(index=index_name, id=doc_id)
             return response
-        except Exception:
+        except Exception:  # noqa: BLE001
             return False
 
     # ==================== Index Management ====================
@@ -321,7 +321,7 @@ class BaseRepository(ABC, Generic[T]):
         except (ConnectionError, TimeoutError) as e:
             logger.error("❌ Manual index refresh failed [%s]: %s", self.model_name, e)
             return False
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001
             logger.error(
                 "❌ Manual index refresh failed (unknown error) [%s]: %s",
                 self.model_name,
@@ -367,7 +367,7 @@ class BaseRepository(ABC, Generic[T]):
                 alias,
             )
             return True
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001
             logger.error("❌ Index creation failed [%s]: %s", self.model_name, e)
             return False
 
@@ -387,7 +387,7 @@ class BaseRepository(ABC, Generic[T]):
                 "✅ Index deletion succeeded [%s]: %s", self.model_name, index_name
             )
             return True
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001
             logger.error("❌ Index deletion failed [%s]: %s", self.model_name, e)
             return False
 
@@ -403,7 +403,7 @@ class BaseRepository(ABC, Generic[T]):
             index_name = self.get_index_name()
 
             return await client.indices.exists(index=index_name)
-        except Exception:
+        except Exception:  # noqa: BLE001
             return False
 
     # ==================== Helper Methods ====================

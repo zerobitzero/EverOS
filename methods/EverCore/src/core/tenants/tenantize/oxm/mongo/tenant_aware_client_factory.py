@@ -225,7 +225,7 @@ class TenantAwareClientWrapper(MongoDBClientWrapper):
             await real_client.admin.command('ping')
             logger.info("✅ MongoDB connection test succeeded (tenant-aware)")
             return True
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001
             logger.error("❌ MongoDB connection test failed (tenant-aware): %s", e)
             return False
 

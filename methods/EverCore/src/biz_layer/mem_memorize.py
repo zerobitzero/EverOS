@@ -1,6 +1,5 @@
 from dataclasses import dataclass
 import time
-import traceback
 
 from core.observation.stage_timer import timed, timed_parallel
 from api_specs.memory_types import ScenarioType
@@ -85,7 +84,7 @@ def _is_agent_case_quality_sufficient(
     score = agent_case.quality_score
     if score is None or score < config.skill_min_quality_score:
         logger.info(
-            f"[AgentSkill] Skipping skill extraction: quality_score={score} "
+            f"[AgentSkill] Skipping skill extraction: quality_score={score} "  # noqa: G004
             f"< threshold={config.skill_min_quality_score}"
         )
         return False
@@ -112,7 +111,7 @@ async def _trigger_clustering(
         agent_case: Extracted AgentCase (if agent conversation), used for skill extraction
     """
     logger.info(
-        f"[Clustering] Start triggering clustering: group_id={group_id}, event_id={memcell.event_id}, scene={scene}"
+        f"[Clustering] Start triggering clustering: group_id={group_id}, event_id={memcell.event_id}, scene={scene}"  # noqa: G004
     )
 
     try:
@@ -130,7 +129,7 @@ async def _trigger_clustering(
         # Get MongoDB storage
         cluster_storage = get_bean_by_type(MemSceneRawRepository)
         logger.info(
-            f"[Clustering] MemSceneRawRepository retrieved successfully: {type(cluster_storage)}"
+            f"[Clustering] MemSceneRawRepository retrieved successfully: {type(cluster_storage)}"  # noqa: G004
         )
 
         # Create ClusterManager (pure computation component)
@@ -165,7 +164,7 @@ async def _trigger_clustering(
             if has_case and agent_case.task_intent
             else episode_text
         )
-        logger.info(f"[Clustering] ClusterManager created (has_case={has_case})")
+        logger.info(f"[Clustering] ClusterManager created (has_case={has_case})")  # noqa: G004
 
         # Convert MemCell to dictionary format required for clustering
         memcell_dict = {
@@ -178,7 +177,7 @@ async def _trigger_clustering(
         }
 
         logger.debug(
-            f"[Clustering] Start clustering execution: {memcell_dict['event_id']}"
+            f"[Clustering] Start clustering execution: {memcell_dict['event_id']}"  # noqa: G004
         )
 
         from core.lock.redis_distributed_lock import distributed_lock
@@ -209,7 +208,7 @@ async def _trigger_clustering(
         ) as acquired:
             if not acquired:
                 logger.error(
-                    f"[Clustering] Failed to acquire lock for group {group_id}, "
+                    f"[Clustering] Failed to acquire lock for group {group_id}, "  # noqa: G004
                     f"skipping memcell {memcell.event_id}"
                 )
                 return
@@ -220,7 +219,7 @@ async def _trigger_clustering(
                 MemSceneState.from_dict(state_dict) if state_dict else MemSceneState()
             )
             logger.info(
-                f"[Clustering] Loaded clustering state: {len(mem_scene_state.event_ids)} clustered events"
+                f"[Clustering] Loaded clustering state: {len(mem_scene_state.event_ids)} clustered events"  # noqa: G004
             )
 
             cluster_id, mem_scene_state = await cluster_manager.cluster_memcell(
@@ -232,11 +231,11 @@ async def _trigger_clustering(
 
             if cluster_id:
                 logger.debug(
-                    f"[Clustering] ✅ MemCell {memcell.event_id} -> Cluster {cluster_id} (group: {group_id})"
+                    f"[Clustering] ✅ MemCell {memcell.event_id} -> Cluster {cluster_id} (group: {group_id})"  # noqa: G004
                 )
             else:
                 logger.warning(
-                    f"[Clustering] ⚠️ MemCell {memcell.event_id} clustering returned None (group: {group_id})"
+                    f"[Clustering] ⚠️ MemCell {memcell.event_id} clustering returned None (group: {group_id})"  # noqa: G004
                 )
 
             # ===== Phase 2: Profile extraction (with interval-based throttling) =====
@@ -296,7 +295,7 @@ async def _trigger_clustering(
                         target_cluster_ids.append(cluster_id)
 
                     logger.info(
-                        f"[Profile] Timestamp-based selection: last_profile_ts={last_profile_ts}, "
+                        f"[Profile] Timestamp-based selection: last_profile_ts={last_profile_ts}, "  # noqa: G004
                         f"target_clusters={target_cluster_ids}"
                     )
 
@@ -310,7 +309,7 @@ async def _trigger_clustering(
                     )
                 else:
                     logger.debug(
-                        f"[Profile] Skipping extraction: total_memcells={total_memcell_count}, "
+                        f"[Profile] Skipping extraction: total_memcells={total_memcell_count}, "  # noqa: G004
                         f"interval={config.profile_extraction_interval}"
                     )
 
@@ -345,7 +344,7 @@ async def _trigger_clustering(
             ) as skill_acquired:
                 if not skill_acquired:
                     logger.error(
-                        f"[AgentSkill] Failed to acquire lock for group {group_id}, "
+                        f"[AgentSkill] Failed to acquire lock for group {group_id}, "  # noqa: G004
                         f"cluster {cluster_id}, skipping memcell {memcell.event_id}"
                     )
                     return
@@ -358,8 +357,8 @@ async def _trigger_clustering(
                 )
 
     except Exception as e:
-        logger.error(
-            f"[Clustering] ❌ Triggering clustering failed: {e}", exc_info=True
+        logger.error(  # noqa: G201
+            f"[Clustering] ❌ Triggering clustering failed: {e}", exc_info=True  # noqa: G004
         )
         raise
 
@@ -402,13 +401,13 @@ async def _trigger_profile_extraction(
         )
         if total_memcell_count < config.profile_min_memcells:
             logger.debug(
-                f"[Profile] Clusters {cluster_ids} have only {total_memcell_count} memcells "
+                f"[Profile] Clusters {cluster_ids} have only {total_memcell_count} memcells "  # noqa: G004
                 f"(requires {config.profile_min_memcells}), skipping extraction"
             )
             return
 
         logger.info(
-            f"[Profile] Start extracting Profile: clusters={cluster_ids}, memcells={total_memcell_count}"
+            f"[Profile] Start extracting Profile: clusters={cluster_ids}, memcells={total_memcell_count}"  # noqa: G004
         )
 
         # Get Profile storage
@@ -445,8 +444,8 @@ async def _trigger_profile_extraction(
             try:
                 fetched = await memcell_repo.get_by_event_ids(list(target_event_ids))
                 all_memcells = list(fetched.values())
-            except Exception as e:
-                logger.warning(f"[Profile] Failed to fetch cluster memcells: {e}")
+            except Exception as e:  # noqa: BLE001
+                logger.warning(f"[Profile] Failed to fetch cluster memcells: {e}")  # noqa: G004
 
         # Append current memcell as the last one (new_memcell)
         all_memcells.append(memcell)
@@ -463,7 +462,7 @@ async def _trigger_profile_extraction(
         user_id_list = list(all_participants)
 
         logger.info(
-            f"[Profile] Context: clusters={len(cluster_ids)}, "
+            f"[Profile] Context: clusters={len(cluster_ids)}, "  # noqa: G004
             f"memcells={len(all_memcells) - 1}, new=1, users={len(user_id_list)}"
         )
 
@@ -475,12 +474,12 @@ async def _trigger_profile_extraction(
         old_profiles_dict = await profile_repo.get_all_profiles(group_id=group_id)
         old_profiles = list(old_profiles_dict.values()) if old_profiles_dict else []
         logger.info(
-            f"[Profile] Loaded {len(old_profiles)} existing profiles for group={group_id}"
+            f"[Profile] Loaded {len(old_profiles)} existing profiles for group={group_id}"  # noqa: G004
         )
         if old_profiles:
             for uid, p in old_profiles_dict.items():
                 keys = list(p.keys()) if isinstance(p, dict) else dir(p)
-                logger.info(f"[Profile] Profile for {uid}: keys={keys[:8]}")
+                logger.info(f"[Profile] Profile for {uid}: keys={keys[:8]}")  # noqa: G004
 
         # Extract profiles
         profile_scene = (
@@ -513,14 +512,14 @@ async def _trigger_profile_extraction(
                     await profile_repo.save_profile(
                         user_id, profile_data, metadata=metadata
                     )
-                    logger.info(f"[Profile] ✅ Saved: user={user_id}")
-            except Exception as e:
-                logger.warning(f"[Profile] Failed to save profile: {e}")
+                    logger.info(f"[Profile] ✅ Saved: user={user_id}")  # noqa: G004
+            except Exception as e:  # noqa: BLE001
+                logger.warning(f"[Profile] Failed to save profile: {e}")  # noqa: G004
 
-        logger.info(f"[Profile] ✅ Completed: {len(new_profiles)} profiles")
+        logger.info(f"[Profile] ✅ Completed: {len(new_profiles)} profiles")  # noqa: G004
 
     except Exception as e:
-        logger.error(f"[Profile] ❌ Profile extraction failed: {e}", exc_info=True)
+        logger.error(f"[Profile] ❌ Profile extraction failed: {e}", exc_info=True)  # noqa: G004, G201
 
         # Advance last_updated_ts even on failure to prevent repeated re-selection
         # of the same clusters. The data is "skipped" — acceptable tradeoff vs.
@@ -545,11 +544,11 @@ async def _trigger_profile_extraction(
                     trigger_index=False,
                 )
             logger.info(
-                f"[Profile] Advanced last_updated_ts to {memcell_ts} for {len(user_id_list)} users despite failure"
+                f"[Profile] Advanced last_updated_ts to {memcell_ts} for {len(user_id_list)} users despite failure"  # noqa: G004
             )
-        except Exception as ts_err:
+        except Exception as ts_err:  # noqa: BLE001
             logger.warning(
-                f"[Profile] Failed to advance last_updated_ts on failure: {ts_err}"
+                f"[Profile] Failed to advance last_updated_ts on failure: {ts_err}"  # noqa: G004
             )
 
 
@@ -611,7 +610,7 @@ async def _trigger_agent_skill_extraction(
         )
 
         logger.info(
-            f"[AgentSkill] Incremental extraction: cluster={cluster_id}, "
+            f"[AgentSkill] Incremental extraction: cluster={cluster_id}, "  # noqa: G004
             f"new_experience=1, existing_skills={len(existing_skills)}"
         )
 
@@ -637,11 +636,11 @@ async def _trigger_agent_skill_extraction(
 
         if extraction_result.deleted_ids:
             logger.info(
-                f"[AgentSkill] Retired skills for cluster={cluster_id}: "
+                f"[AgentSkill] Retired skills for cluster={cluster_id}: "  # noqa: G004
                 f"ids={extraction_result.deleted_ids}"
             )
         logger.info(
-            f"[AgentSkill] Extraction result for cluster={cluster_id}: "
+            f"[AgentSkill] Extraction result for cluster={cluster_id}: "  # noqa: G004
             f"added={len(extraction_result.added_records)}, "
             f"updated={len(extraction_result.updated_records)}, "
             f"retired={len(extraction_result.deleted_ids)}"
@@ -670,15 +669,15 @@ async def _trigger_agent_skill_extraction(
                         inserted_count += 1
                     else:
                         logger.warning(
-                            f"[AgentSkill] Milvus skip (no vector): record={record.id}"
+                            f"[AgentSkill] Milvus skip (no vector): record={record.id}"  # noqa: G004
                         )
                 logger.info(
-                    f"[AgentSkill] Milvus synced for cluster={cluster_id}: "
+                    f"[AgentSkill] Milvus synced for cluster={cluster_id}: "  # noqa: G004
                     f"inserted={inserted_count}, removed={len(remove_ids)}"
                 )
-            except Exception as milvus_exc:
+            except Exception as milvus_exc:  # noqa: BLE001
                 logger.warning(
-                    f"[AgentSkill] Milvus sync failed for cluster={cluster_id}: {milvus_exc}"
+                    f"[AgentSkill] Milvus sync failed for cluster={cluster_id}: {milvus_exc}"  # noqa: G004
                 )
 
             # ES sync: delete stale entries -> insert new/updated
@@ -690,17 +689,17 @@ async def _trigger_agent_skill_extraction(
                     es_doc = AgentSkillConverter.from_mongo(record)
                     await agent_skill_es_repo.create(es_doc)
                 logger.info(
-                    f"[AgentSkill] ES synced for cluster={cluster_id}: "
+                    f"[AgentSkill] ES synced for cluster={cluster_id}: "  # noqa: G004
                     f"inserted={len(upsert_records)}, removed={len(remove_ids)}"
                 )
-            except Exception as es_exc:
+            except Exception as es_exc:  # noqa: BLE001
                 logger.warning(
-                    f"[AgentSkill] ES sync failed for cluster={cluster_id}: {es_exc}"
+                    f"[AgentSkill] ES sync failed for cluster={cluster_id}: {es_exc}"  # noqa: G004
                 )
 
     except Exception as e:
-        logger.error(
-            f"[AgentSkill] Skill extraction failed for cluster={cluster_id}: {e}",
+        logger.error(  # noqa: G201
+            f"[AgentSkill] Skill extraction failed for cluster={cluster_id}: {e}",  # noqa: G004
             exc_info=True,
         )
 
@@ -875,8 +874,8 @@ async def process_memory_extraction(
         cluster_start = time.perf_counter()
         try:
             await _update_memcell_and_cluster(state)
-        except Exception as e:
-            logger.error(f"[MemCell Processing] ❌ Background clustering failed: {e}")
+        except Exception as e:  # noqa: BLE001
+            logger.error(f"[MemCell Processing] ❌ Background clustering failed: {e}")  # noqa: G004
         finally:
             record_extraction_stage(
                 space_id=space_id,
@@ -937,7 +936,7 @@ async def _extract_episodes(state: ExtractionState, memory_manager: MemoryManage
         tasks = [_create_episode_task(state, memory_manager, None)]
     else:
         logger.info(
-            f"[MemCell Processing] team scene, extract group + {len(state.participants)} personal Episodes"
+            f"[MemCell Processing] team scene, extract group + {len(state.participants)} personal Episodes"  # noqa: G004
         )
         tasks = [_create_episode_task(state, memory_manager, None)]
         tasks.extend(
@@ -972,7 +971,7 @@ def _process_episode_results(state: ExtractionState, results: List[Any]):
     group_episode = results[0] if results else None
     if isinstance(group_episode, Exception):
         logger.error(
-            f"[MemCell Processing] ❌ Group Episode exception: {group_episode}"
+            f"[MemCell Processing] ❌ Group Episode exception: {group_episode}"  # noqa: G004
         )
         group_episode = None
     elif group_episode:
@@ -987,7 +986,7 @@ def _process_episode_results(state: ExtractionState, results: List[Any]):
         for user_id, result in zip(state.participants, results[1:], strict=False):
             if isinstance(result, Exception):
                 logger.error(
-                    f"[MemCell Processing] ❌ Personal Episode exception: user_id={user_id}"
+                    f"[MemCell Processing] ❌ Personal Episode exception: user_id={user_id}"  # noqa: G004
                 )
                 continue
             if result:
@@ -995,7 +994,7 @@ def _process_episode_results(state: ExtractionState, results: List[Any]):
                 result.parent_id = state.parent_id
                 state.episode_memories.append(result)
                 logger.info(
-                    f"[MemCell Processing] ✅ Personal Episode successful: user_id={user_id}"
+                    f"[MemCell Processing] ✅ Personal Episode successful: user_id={user_id}"  # noqa: G004
                 )
 
 
@@ -1016,10 +1015,10 @@ async def _update_memcell_and_cluster(state: ExtractionState):
             agent_case=state.agent_case,
         )
         logger.info(
-            f"[MemCell Processing] ✅ Clustering completed (scene={state.scene})"
+            f"[MemCell Processing] ✅ Clustering completed (scene={state.scene})"  # noqa: G004
         )
-    except Exception as e:
-        logger.error(f"[MemCell Processing] ❌ Failed to trigger clustering: {e}")
+    except Exception as e:  # noqa: BLE001
+        logger.error(f"[MemCell Processing] ❌ Failed to trigger clustering: {e}")  # noqa: G004
 
 
 async def _process_memories(state: ExtractionState) -> int:
@@ -1156,11 +1155,11 @@ async def _save_agent_case(state: ExtractionState) -> int:
         payloads = [MemoryDocPayload(MemoryType.AGENT_CASE, doc)]
         await save_memory_docs(payloads)
         logger.info(
-            f"[MemCell Processing] AgentCase saved: intent='{agent_case.task_intent[:80]}'"
+            f"[MemCell Processing] AgentCase saved: intent='{agent_case.task_intent[:80]}'"  # noqa: G004
         )
         return 1
-    except Exception as e:
-        logger.error(f"[MemCell Processing] Failed to save AgentCase: {e}")
+    except Exception as e:  # noqa: BLE001
+        logger.error(f"[MemCell Processing] Failed to save AgentCase: {e}")  # noqa: G004
         return 0
 
 
@@ -1172,7 +1171,7 @@ def _clone_episodes_for_users(state: ExtractionState) -> List[EpisodeMemory]:
     group_ep = state.group_episode_memories[0]
     for user_id in state.participants:
         cloned.append(replace(group_ep, user_id=user_id, user_name=user_id))
-    logger.info(f"[MemCell Processing] Copied group Episode to {len(cloned)} users")
+    logger.info(f"[MemCell Processing] Copied group Episode to {len(cloned)} users")  # noqa: G004
     return cloned
 
 
@@ -1254,7 +1253,7 @@ async def _save_foresight_and_atomic_fact(
             ]
         )
         logger.info(
-            f"[MemCell Processing] Copied Foresight/AtomicFact to {len(user_ids)} users"
+            f"[MemCell Processing] Copied Foresight/AtomicFact to {len(user_ids)} users"  # noqa: G004
         )
 
     payloads = []
@@ -1312,8 +1311,8 @@ async def _foresight_and_atomic_facts_with_metrics(
                 state, foresight_memories, atomic_facts
             )
     except Exception as e:
-        logger.error(
-            f"[ForesightAF] ❌ Background extraction/save failed: {e}", exc_info=True
+        logger.error(  # noqa: G201
+            f"[ForesightAF] ❌ Background extraction/save failed: {e}", exc_info=True  # noqa: G004
         )
     finally:
         record_extraction_stage(
@@ -1340,7 +1339,7 @@ async def preprocess_conv_request(
     5. Boundary detection handled by subsequent logic (will clear or retain after detection)
     """
 
-    logger.info(f"[preprocess] Start processing: group_id={request.group_id}")
+    logger.info(f"[preprocess] Start processing: group_id={request.group_id}")  # noqa: G004
 
     # Check if there is new data
     if not request.new_raw_data_list:
@@ -1377,12 +1376,11 @@ async def preprocess_conv_request(
             request.history_raw_data_list = accumulated
             # new_raw_data_list stays empty; extractor handles flush+empty-new case
             logger.info(
-                f"[preprocess] Flush: loaded {len(accumulated)} accumulated messages as history"
+                f"[preprocess] Flush: loaded {len(accumulated)} accumulated messages as history"  # noqa: G004
             )
             return request
-        except Exception as e:
-            logger.error(f"[preprocess] Flush data read failed: {e}")
-            traceback.print_exc()
+        except Exception:
+            logger.exception("[preprocess] Flush data read failed")
             return None
 
     # Use conversation_data_repo for read-then-store operation
@@ -1401,7 +1399,7 @@ async def preprocess_conv_request(
         if status and status.last_memcell_time:
             start_time = status.last_memcell_time
             logger.info(
-                f"[preprocess] Using last_memcell_time as start_time: {start_time}"
+                f"[preprocess] Using last_memcell_time as start_time: {start_time}"  # noqa: G004
             )
 
         # Step 1: Get historical messages, excluding current request's messages
@@ -1416,7 +1414,7 @@ async def preprocess_conv_request(
         )
 
         logger.info(
-            f"[preprocess] Read {len(history_raw_data_list)} historical messages (excluded {len(new_message_ids)} new, start_time={start_time})"
+            f"[preprocess] Read {len(history_raw_data_list)} historical messages (excluded {len(new_message_ids)} new, start_time={start_time})"  # noqa: G004
         )
 
         # Update request
@@ -1424,14 +1422,13 @@ async def preprocess_conv_request(
         # new_raw_data_list remains unchanged (the newly passed messages)
 
         logger.info(
-            f"[preprocess] Completed: {len(history_raw_data_list)} historical, {len(request.new_raw_data_list)} new messages"
+            f"[preprocess] Completed: {len(history_raw_data_list)} historical, {len(request.new_raw_data_list)} new messages"  # noqa: G004
         )
 
         return request
 
-    except Exception as e:
-        logger.error(f"[preprocess] Data read failed: {e}")
-        traceback.print_exc()
+    except Exception:
+        logger.exception("[preprocess] Data read failed")
         # Use original request if read fails
         return request
 
@@ -1475,8 +1472,8 @@ async def update_status_when_no_memcell(
                     status_repo, request, latest_time, current_time
                 )
 
-        except Exception as e:
-            logger.error(f"Failed to update status table: {e}")
+        except Exception as e:  # noqa: BLE001
+            logger.error(f"Failed to update status table: {e}")  # noqa: G004
     else:
         pass
 
@@ -1508,8 +1505,8 @@ async def update_status_after_memcell(
                 "[mem_memorize] Memory extraction completed, status table updated"
             )
 
-        except Exception as e:
-            logger.error(f"Final status table update failed: {e}")
+        except Exception as e:  # noqa: BLE001
+            logger.error(f"Final status table update failed: {e}")  # noqa: G004
     else:
         pass
 
@@ -1612,8 +1609,8 @@ async def save_memory_docs(
                 agent_case_es_repo = get_bean_by_type(AgentCaseEsRepository)
                 es_doc = AgentCaseConverter.from_mongo(saved_doc)
                 await agent_case_es_repo.create(es_doc)
-            except Exception as es_exc:
-                logger.warning(f"[mem_memorize] AgentCase ES sync failed: {es_exc}")
+            except Exception as es_exc:  # noqa: BLE001
+                logger.warning(f"[mem_memorize] AgentCase ES sync failed: {es_exc}")  # noqa: G004
 
             # Milvus sync
             try:
@@ -1630,9 +1627,9 @@ async def save_memory_docs(
                     logger.warning(
                         "[mem_memorize] Skipping AgentCase Milvus write: vector empty or missing"
                     )
-            except Exception as milvus_exc:
+            except Exception as milvus_exc:  # noqa: BLE001
                 logger.warning(
-                    f"[mem_memorize] AgentCase Milvus sync failed: {milvus_exc}"
+                    f"[mem_memorize] AgentCase Milvus sync failed: {milvus_exc}"  # noqa: G004
                 )
 
         saved_result[MemoryType.AGENT_CASE] = saved_agent_cases
@@ -1687,14 +1684,14 @@ async def memorize(request: MemorizeRequest) -> int:
     Returns:
         int: Number of memories extracted (0 if no boundary detected or extraction failed)
     """
-    logger.info(f"[mem_memorize] request.current_time: {request.current_time}")
+    logger.info(f"[mem_memorize] request.current_time: {request.current_time}")  # noqa: G004
 
     # Get current time
     if request.current_time:
         current_time = request.current_time
     else:
         current_time = get_now_with_timezone() + timedelta(seconds=1)
-    logger.info(f"[mem_memorize] Current time: {current_time}")
+    logger.info(f"[mem_memorize] Current time: {current_time}")  # noqa: G004
 
     conversation_data_repo = get_bean_by_type(ConversationDataRepository)
 
@@ -1718,7 +1715,7 @@ async def memorize(request: MemorizeRequest) -> int:
         llm_custom_setting = await _load_llm_custom_setting()
         if llm_custom_setting:
             logger.info(
-                f"[mem_memorize] Using llm_custom_setting from global config for group {request.group_id}"
+                f"[mem_memorize] Using llm_custom_setting from global config for group {request.group_id}"  # noqa: G004
             )
 
     # Boundary detection
@@ -1727,12 +1724,12 @@ async def memorize(request: MemorizeRequest) -> int:
     raw_data_type = request.raw_data_type.value if request.raw_data_type else 'unknown'
 
     logger.info("=" * 80)
-    logger.info(f"[Boundary Detection] Start detection: group_id={request.group_id}")
+    logger.info(f"[Boundary Detection] Start detection: group_id={request.group_id}")  # noqa: G004
     logger.info(
-        f"[Boundary Detection] Temporary stored historical messages: {len(request.history_raw_data_list)} messages"
+        f"[Boundary Detection] Temporary stored historical messages: {len(request.history_raw_data_list)} messages"  # noqa: G004
     )
     logger.info(
-        f"[Boundary Detection] New messages: {len(request.new_raw_data_list)} messages"
+        f"[Boundary Detection] New messages: {len(request.new_raw_data_list)} messages"  # noqa: G004
     )
     logger.info("=" * 80)
 
@@ -1756,7 +1753,7 @@ async def memorize(request: MemorizeRequest) -> int:
         duration_seconds=time.perf_counter() - memcell_start,
     )
     logger.debug(
-        f"[mem_memorize] Extracting MemCell took: {time.perf_counter() - memcell_start} seconds"
+        f"[mem_memorize] Extracting MemCell took: {time.perf_counter() - memcell_start} seconds"  # noqa: G004
     )
 
     memcells, status_result = memcell_result
@@ -1764,7 +1761,7 @@ async def memorize(request: MemorizeRequest) -> int:
     # Check boundary detection result
     logger.info("=" * 80)
     logger.info(
-        f"[Boundary Detection Result] memcells={len(memcells)}, "
+        f"[Boundary Detection Result] memcells={len(memcells)}, "  # noqa: G004
         f"should_wait={status_result.should_wait}"
     )
     logger.info("=" * 80)
@@ -1778,7 +1775,7 @@ async def memorize(request: MemorizeRequest) -> int:
                 session_id=request.session_id,
             )
             logger.info(
-                f"[mem_memorize] No boundary, confirmed {len(request.new_raw_data_list)} messages to accumulation"
+                f"[mem_memorize] No boundary, confirmed {len(request.new_raw_data_list)} messages to accumulation"  # noqa: G004
             )
             await update_status_when_no_memcell(
                 request, status_result, current_time, request.raw_data_type
@@ -1800,12 +1797,12 @@ async def memorize(request: MemorizeRequest) -> int:
             )
             if delete_success:
                 logger.debug(
-                    f"[mem_memorize] Flush mode: all messages marked as used, "
+                    f"[mem_memorize] Flush mode: all messages marked as used, "  # noqa: G004
                     f"group_id={request.group_id}"
                 )
             else:
                 logger.warning(
-                    f"[mem_memorize] Failed to clear conversation history: group_id={request.group_id}"
+                    f"[mem_memorize] Failed to clear conversation history: group_id={request.group_id}"  # noqa: G004
                 )
         else:
             # Non-flush: consumed messages marked as used, remaining start next window
@@ -1816,22 +1813,21 @@ async def memorize(request: MemorizeRequest) -> int:
             )
             if delete_success:
                 logger.debug(
-                    f"[mem_memorize] Consumed messages marked as used "
+                    f"[mem_memorize] Consumed messages marked as used "  # noqa: G004
                     f"(remaining={len(remaining_raw_data)}): group_id={request.group_id}"
                 )
             else:
                 logger.warning(
-                    f"[mem_memorize] Failed to mark consumed messages: group_id={request.group_id}"
+                    f"[mem_memorize] Failed to mark consumed messages: group_id={request.group_id}"  # noqa: G004
                 )
             if remaining_raw_data:
                 await conversation_data_repo.save_conversation_data(
                     remaining_raw_data, request.group_id, session_id=request.session_id
                 )
-    except Exception as e:
-        logger.error(
-            f"[mem_memorize] Exception while marking conversation history: {e}"
+    except Exception:
+        logger.exception(
+            "[mem_memorize] Exception while marking conversation history"
         )
-        traceback.print_exc()
 
     # Save and process all extracted MemCells
     memories_count = 0
@@ -1842,7 +1838,7 @@ async def memorize(request: MemorizeRequest) -> int:
                 memcell = await _save_memcell_to_database(
                     memcell, current_time, session_id=request.session_id
                 )
-            logger.info(f"[mem_memorize] Saved MemCell: {memcell.event_id}")
+            logger.info(f"[mem_memorize] Saved MemCell: {memcell.event_id}")  # noqa: G004
             with timed("process_memory_extraction"):
                 count = await process_memory_extraction(
                     memcell, request, memory_manager, current_time
@@ -1850,11 +1846,10 @@ async def memorize(request: MemorizeRequest) -> int:
             memories_count += count
 
         logger.info(
-            f"[mem_memorize] ✅ Memory extraction completed, "
+            f"[mem_memorize] ✅ Memory extraction completed, "  # noqa: G004
             f"memcells={len(memcells)}, total_memories={memories_count}"
         )
         return memories_count
-    except Exception as e:
-        logger.error(f"[mem_memorize] ❌ Memory extraction failed: {e}")
-        traceback.print_exc()
+    except Exception:
+        logger.exception("[mem_memorize] ❌ Memory extraction failed")
         return 0

@@ -106,9 +106,9 @@ class DatabaseSessionManager:
                     logger.debug(
                         "Database session manager: automatically rolled back transaction"
                     )
-                except Exception as rollback_error:
+                except Exception as rollback_error:  # noqa: BLE001
                     logger.error(
-                        f"Error occurred during transaction rollback: {str(rollback_error)}"
+                        f"Error occurred during transaction rollback: {str(rollback_error)}"  # noqa: G004
                     )
 
             # Re-raise the exception
@@ -123,9 +123,9 @@ class DatabaseSessionManager:
                 try:
                     await session.close()
                     logger.debug("Database session manager: database session closed")
-                except Exception as close_error:
+                except Exception as close_error:  # noqa: BLE001
                     logger.error(
-                        f"Error occurred when closing database session: {str(close_error)}"
+                        f"Error occurred when closing database session: {str(close_error)}"  # noqa: G004
                     )
 
 
@@ -171,7 +171,7 @@ class UserContextManager:
         if actual_user_data is not None:
             user_token = set_current_user_info(actual_user_data)
             logger.debug(
-                f"User context manager: setting user context user_id={actual_user_data.get('user_id')}"
+                f"User context manager: setting user context user_id={actual_user_data.get('user_id')}"  # noqa: G004
             )
 
         try:

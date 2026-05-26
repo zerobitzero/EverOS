@@ -87,7 +87,7 @@ class OpenAIAdapter(LLMBackendAdapter):
                                     usage_data.completion_tokens or 0,
                                     call_type="llm",
                                 )
-                            except Exception:
+                            except Exception:  # noqa: BLE001
                                 pass
 
                 return stream_gen()
@@ -104,10 +104,10 @@ class OpenAIAdapter(LLMBackendAdapter):
                             response.usage.completion_tokens or 0,
                             call_type="llm",
                         )
-                    except Exception:
+                    except Exception:  # noqa: BLE001
                         pass
                 return ChatCompletionResponse.from_dict(response.model_dump())
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001
             raise RuntimeError(f"OpenAI chat completion request failed: {e}")
 
     def get_available_models(self) -> List[str]:

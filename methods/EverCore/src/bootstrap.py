@@ -121,8 +121,8 @@ async def setup_project_context(env_file=".env", mock_mode=False):
                 logger.info("✅ Application lifespan started successfully")
             else:
                 logger.warning("⚠️ app instance has no start_lifespan method")
-        except Exception as e:
-            logger.warning(f"⚠️ Error starting application lifespan: {e}")
+        except Exception as e:  # noqa: BLE001
+            logger.warning(f"⚠️ Error starting application lifespan: {e}")  # noqa: G004
             # Do not raise exception, continue execution
 
 
@@ -222,9 +222,7 @@ Environment variables:
                     file=sys.stderr,
                 )
                 print(f"Original error: {e}", file=sys.stderr)
-                import traceback
-
-                traceback.print_exc()
+                logger.exception("Module mode execution failed")
                 sys.exit(1)
         else:
             # For other import errors, raise directly
@@ -238,11 +236,8 @@ Environment variables:
             raise  # Re-raise to propagate the exit code
         else:
             print("\n📋 Script execution completed successfully")
-    except Exception as e:
-        print(f"\n❌ Script execution error: {e}", file=sys.stderr)
-        import traceback
-
-        traceback.print_exc()
+    except Exception:
+        logger.exception("Script execution error")
     finally:
         # Restore original sys.argv
         sys.argv = original_argv
@@ -256,11 +251,9 @@ def main():
     except KeyboardInterrupt:
         print("\n⚠️ User interrupted execution")
         sys.exit(1)
-    except Exception as e:
-        print(f"\n❌ Execution failed: {e}", file=sys.stderr)
-        import traceback
-
-        traceback.print_exc()
+    except Exception:
+        logger.exception("Execution failed")
+        sys.exit(1)
 
 
 if __name__ == "__main__":

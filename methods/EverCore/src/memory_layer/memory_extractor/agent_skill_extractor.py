@@ -290,8 +290,8 @@ class AgentSkillExtractor:
                 "embedding": vec.tolist() if hasattr(vec, "tolist") else list(vec),
                 "vector_model": vs.get_model_name(),
             }
-        except Exception as e:
-            logger.error(f"[AgentSkillExtractor] Embedding failed: {e}")
+        except Exception as e:  # noqa: BLE001
+            logger.error(f"[AgentSkillExtractor] Embedding failed: {e}")  # noqa: G004
             return None
 
     def _select_prompt(self, case_records: List[AgentCase]) -> str:
@@ -329,10 +329,10 @@ class AgentSkillExtractor:
                 if data and isinstance(data.get("operations"), list):
                     return data
                 logger.warning(
-                    f"[AgentSkillExtractor] LLM retry {attempt + 1}/3: invalid format"
+                    f"[AgentSkillExtractor] LLM retry {attempt + 1}/3: invalid format"  # noqa: G004
                 )
-            except Exception as e:
-                logger.warning(f"[AgentSkillExtractor] LLM retry {attempt + 1}/3: {e}")
+            except Exception as e:  # noqa: BLE001
+                logger.warning(f"[AgentSkillExtractor] LLM retry {attempt + 1}/3: {e}")  # noqa: G004
         return None
 
     async def _evaluate_maturity(
@@ -377,7 +377,7 @@ class AgentSkillExtractor:
                 data.get("reason", ""),
             )
             return score
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001
             logger.warning("[AgentSkillExtractor] Maturity evaluation failed: %s", e)
             return None
 
@@ -497,7 +497,7 @@ class AgentSkillExtractor:
         saved = await skill_repo.save_skill(record)
         if saved:
             logger.info(
-                f"[AgentSkillExtractor] ADD skill: name='{name}', cluster={cluster_id}"
+                f"[AgentSkillExtractor] ADD skill: name='{name}', cluster={cluster_id}"  # noqa: G004
             )
         return saved
 
@@ -537,14 +537,14 @@ class AgentSkillExtractor:
             index = int(op.get("index", -1))
         except (ValueError, TypeError):
             logger.warning(
-                f"[AgentSkillExtractor] update index is not a valid integer: {op.get('index')!r}, skipping"
+                f"[AgentSkillExtractor] update index is not a valid integer: {op.get('index')!r}, skipping"  # noqa: G004
             )
             return False
         data = op.get("data", {})
 
         if index < 0 or index >= len(existing_skill_records):
             logger.warning(
-                f"[AgentSkillExtractor] update index {index} out of range "
+                f"[AgentSkillExtractor] update index {index} out of range "  # noqa: G004
                 f"(valid: 0..{len(existing_skill_records) - 1} for {len(existing_skill_records)} skills), skipping"
             )
             return False
@@ -594,7 +594,7 @@ class AgentSkillExtractor:
 
         if not updates:
             logger.warning(
-                f"[AgentSkillExtractor] update operation for index {index} has no fields to update, skipping"
+                f"[AgentSkillExtractor] update operation for index {index} has no fields to update, skipping"  # noqa: G004
             )
             return False
 
@@ -739,7 +739,7 @@ class AgentSkillExtractor:
             record.updated_at = get_now_with_timezone()
             result.updated_records.append(record)
             logger.info(
-                f"[AgentSkillExtractor] UPDATE skill[{index}]: id={record_id}, "
+                f"[AgentSkillExtractor] UPDATE skill[{index}]: id={record_id}, "  # noqa: G004
                 f"fields={list(updates.keys())}"
             )
         return success
@@ -783,7 +783,7 @@ class AgentSkillExtractor:
                 max_cases,
             )
             return records[:max_cases]
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001
             logger.warning("[AgentSkillExtractor] Failed to load case_history: %s", e)
             return []
 
@@ -818,14 +818,14 @@ class AgentSkillExtractor:
 
         if not new_case_records:
             logger.debug(
-                f"[AgentSkillExtractor] No new cases for cluster={cluster_id}, skipping"
+                f"[AgentSkillExtractor] No new cases for cluster={cluster_id}, skipping"  # noqa: G004
             )
             return empty_result
 
         # When too many existing skills, select top-k most relevant ones
         if len(existing_skill_records) > max_skills_in_prompt:
             logger.info(
-                f"[AgentSkillExtractor] {len(existing_skill_records)} existing skills exceed "
+                f"[AgentSkillExtractor] {len(existing_skill_records)} existing skills exceed "  # noqa: G004
                 f"max_skills_in_prompt={max_skills_in_prompt}, selecting top-k"
             )
             with timed("select_top_k_skills"):
@@ -846,7 +846,7 @@ class AgentSkillExtractor:
         prompt_template = self._select_prompt(new_case_records)
 
         logger.debug(
-            f"[AgentSkillExtractor] Incremental extraction: cluster={cluster_id}, "
+            f"[AgentSkillExtractor] Incremental extraction: cluster={cluster_id}, "  # noqa: G004
             f"new_cases={len(new_case_records)}, existing_skills={len(existing_skill_records)}"
         )
 
@@ -856,7 +856,7 @@ class AgentSkillExtractor:
             )
         if not llm_result:
             logger.warning(
-                f"[AgentSkillExtractor] LLM extraction failed for cluster={cluster_id}"
+                f"[AgentSkillExtractor] LLM extraction failed for cluster={cluster_id}"  # noqa: G004
             )
             return empty_result
 
@@ -894,12 +894,12 @@ class AgentSkillExtractor:
                         index = int(op.get("index", -1))
                     except (ValueError, TypeError):
                         logger.warning(
-                            f"[AgentSkillExtractor] update index is not a valid integer: {op.get('index')!r}, skipping"
+                            f"[AgentSkillExtractor] update index is not a valid integer: {op.get('index')!r}, skipping"  # noqa: G004
                         )
                         continue
                     if index in processed_indices:
                         logger.warning(
-                            f"[AgentSkillExtractor] Duplicate operation on index {index}, skipping update"
+                            f"[AgentSkillExtractor] Duplicate operation on index {index}, skipping update"  # noqa: G004
                         )
                         continue
                     processed_indices.add(index)
@@ -925,16 +925,16 @@ class AgentSkillExtractor:
 
                 elif action == "none":
                     logger.debug(
-                        f"[AgentSkillExtractor] No-op for cluster={cluster_id}"
+                        f"[AgentSkillExtractor] No-op for cluster={cluster_id}"  # noqa: G004
                     )
 
                 else:
                     logger.warning(
-                        f"[AgentSkillExtractor] Unknown action '{action}', skipping"
+                        f"[AgentSkillExtractor] Unknown action '{action}', skipping"  # noqa: G004
                     )
 
         logger.info(
-            f"[AgentSkillExtractor] cluster={cluster_id} operations applied: "
+            f"[AgentSkillExtractor] cluster={cluster_id} operations applied: "  # noqa: G004
             f"added={len(result.added_records)}, updated={update_count}, "
             f"deleted={len(result.deleted_ids)}. note: {update_note}"
         )

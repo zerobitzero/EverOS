@@ -231,6 +231,6 @@ def generate_tenant_database_name(base_name: str = "memsys") -> str:
         )
         return _base_prefixed_database_name(base_name)
 
-    except Exception as e:
+    except Exception as e:  # noqa: BLE001
         logger.warning("Failed to get tenant database name, using base prefix: %s", e)
         return _base_prefixed_database_name(base_name)

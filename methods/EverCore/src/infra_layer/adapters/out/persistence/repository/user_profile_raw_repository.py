@@ -100,18 +100,18 @@ class UserProfileRawRepository(BaseRepository[UserProfile]):
             return await self.model.find_one(
                 UserProfile.user_id == user_id, UserProfile.group_id == group_id
             )
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001
             logger.error(
-                f"Failed to retrieve user profile: user_id={user_id}, group_id={group_id}, error={e}"
+                f"Failed to retrieve user profile: user_id={user_id}, group_id={group_id}, error={e}"  # noqa: G004
             )
             return None
 
     async def get_all_by_group(self, group_id: str) -> List[UserProfile]:
         try:
             return await self.model.find(UserProfile.group_id == group_id).to_list()
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001
             logger.error(
-                f"Failed to retrieve group user profiles: group_id={group_id}, error={e}"
+                f"Failed to retrieve group user profiles: group_id={group_id}, error={e}"  # noqa: G004
             )
             return []
 
@@ -123,8 +123,8 @@ class UserProfileRawRepository(BaseRepository[UserProfile]):
                 .limit(limit)
                 .to_list()
             )
-        except Exception as e:
-            logger.error(f"Failed to get user profile: user_id={user_id}, error={e}")
+        except Exception as e:  # noqa: BLE001
+            logger.error(f"Failed to get user profile: user_id={user_id}, error={e}")  # noqa: G004
             return []
 
     async def find_by_filters(
@@ -211,7 +211,7 @@ class UserProfileRawRepository(BaseRepository[UserProfile]):
                 len(results),
             )
             return results
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001
             logger.error("❌ Failed to retrieve user profiles: %s", e)
             return []
 
@@ -262,7 +262,7 @@ class UserProfileRawRepository(BaseRepository[UserProfile]):
                 count,
             )
             return count
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001
             logger.error("❌ Failed to count user profiles: %s", e)
             return 0
 
@@ -304,7 +304,7 @@ class UserProfileRawRepository(BaseRepository[UserProfile]):
 
                 await existing.save()
                 logger.debug(
-                    f"Updated user profile: user_id={user_id}, group_id={group_id}, update_count={existing.update_count}"
+                    f"Updated user profile: user_id={user_id}, group_id={group_id}, update_count={existing.update_count}"  # noqa: G004
                 )
                 saved_profile = existing
             else:
@@ -320,7 +320,7 @@ class UserProfileRawRepository(BaseRepository[UserProfile]):
                 )
                 await user_profile.insert()
                 logger.info(
-                    f"Created user profile: user_id={user_id}, group_id={group_id}"
+                    f"Created user profile: user_id={user_id}, group_id={group_id}"  # noqa: G004
                 )
                 saved_profile = user_profile
 
@@ -332,9 +332,9 @@ class UserProfileRawRepository(BaseRepository[UserProfile]):
 
             return saved_profile
 
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001
             logger.error(
-                f"Failed to save user profile: user_id={user_id}, group_id={group_id}, error={e}"
+                f"Failed to save user profile: user_id={user_id}, group_id={group_id}, error={e}"  # noqa: G004
             )
             return None
 
@@ -366,14 +366,14 @@ class UserProfileRawRepository(BaseRepository[UserProfile]):
             stats = await index_user_profile(user_id, group_id, profile, doc_id=doc_id)
 
             logger.info(
-                f"✅ Profile Milvus indexing completed: user_id={user_id}, group_id={group_id}, "
+                f"✅ Profile Milvus indexing completed: user_id={user_id}, group_id={group_id}, "  # noqa: G004
                 f"deleted={stats.get('deleted_count', 0)}, indexed={stats.get('total_count', 0)}"
             )
 
         except Exception as e:
             # Log error but don't fail the main operation
-            logger.error(
-                f"❌ Failed to trigger Milvus indexing: user_id={user_id}, group_id={group_id}, error={e}",
+            logger.error(  # noqa: G201
+                f"❌ Failed to trigger Milvus indexing: user_id={user_id}, group_id={group_id}, error={e}",  # noqa: G004
                 exc_info=True,
             )
 
@@ -382,12 +382,12 @@ class UserProfileRawRepository(BaseRepository[UserProfile]):
             result = await self.model.find(UserProfile.group_id == group_id).delete()
             count = result.deleted_count if result else 0
             logger.info(
-                f"Deleted group user profiles: group_id={group_id}, count={count}"
+                f"Deleted group user profiles: group_id={group_id}, count={count}"  # noqa: G004
             )
             return count
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001
             logger.error(
-                f"Failed to delete group user profiles: group_id={group_id}, error={e}"
+                f"Failed to delete group user profiles: group_id={group_id}, error={e}"  # noqa: G004
             )
             return 0
 
@@ -395,8 +395,8 @@ class UserProfileRawRepository(BaseRepository[UserProfile]):
         try:
             result = await self.model.delete_all()
             count = result.deleted_count if result else 0
-            logger.info(f"Deleted all user profiles: {count} items")
+            logger.info(f"Deleted all user profiles: {count} items")  # noqa: G004
             return count
-        except Exception as e:
-            logger.error(f"Failed to delete all user profiles: {e}")
+        except Exception as e:  # noqa: BLE001
+            logger.error(f"Failed to delete all user profiles: {e}")  # noqa: G004
             return 0

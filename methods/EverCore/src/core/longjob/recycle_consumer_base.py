@@ -37,7 +37,7 @@ class DefaultErrorHandler(ErrorHandler):
             bool: Whether to continue execution
         """
         self.logger.error(
-            f"Error in consumer {context.get('job_id', 'unknown')}: {str(error)}",
+            f"Error in consumer {context.get('job_id', 'unknown')}: {str(error)}",  # noqa: G004
             exc_info=True,
             extra=context,
         )
@@ -105,7 +105,7 @@ class RecycleConsumerBase(LongJobInterface, ABC):
 
         except Exception as e:
             self.status = LongJobStatus.ERROR
-            self.logger.error(
+            self.logger.error(  # noqa: G201
                 "Failed to start consumer %s: %s", self.job_id, str(e), exc_info=True
             )
             raise
@@ -171,7 +171,7 @@ class RecycleConsumerBase(LongJobInterface, ABC):
         try:
             await self._cleanup()
         except Exception as cleanup_error:
-            self.logger.error(
+            self.logger.error(  # noqa: G201
                 "Error during cleanup: %s", str(cleanup_error), exc_info=True
             )
 
@@ -192,7 +192,7 @@ class RecycleConsumerBase(LongJobInterface, ABC):
                 # Consume messages
                 await self._consume_messages()
 
-            except Exception as e:
+            except Exception as e:  # noqa: BLE001
                 # Error handling
                 context = {
                     'job_id': self.job_id,
@@ -210,7 +210,7 @@ class RecycleConsumerBase(LongJobInterface, ABC):
                         )
                         break
                 except Exception as handler_error:
-                    self.logger.error(
+                    self.logger.error(  # noqa: G201
                         "Error in error handler for consumer %s: %s",
                         self.job_id,
                         str(handler_error),
@@ -259,7 +259,7 @@ class RecycleConsumerBase(LongJobInterface, ABC):
                 if not should_continue:
                     raise timeout_error
             except Exception as handler_error:
-                self.logger.error(
+                self.logger.error(  # noqa: G201
                     "Error in timeout error handler: %s",
                     str(handler_error),
                     exc_info=True,

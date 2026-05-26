@@ -34,7 +34,7 @@ class SenderRawRepository(BaseRepository[Sender]):
             else:
                 logger.debug("Sender not found: sender_id=%s", sender_id)
             return result
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001
             logger.error("Failed to get sender by sender_id: %s", e)
             return None
 
@@ -57,7 +57,7 @@ class SenderRawRepository(BaseRepository[Sender]):
                 "Batch retrieved %d senders for %d ids", len(results), len(sender_ids)
             )
             return results
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001
             logger.error("Failed to batch get senders: %s", e)
             return []
 
@@ -120,6 +120,6 @@ class SenderRawRepository(BaseRepository[Sender]):
                 else:
                     raise create_error
 
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001
             logger.error("Failed to upsert sender: %s", e)
             return None

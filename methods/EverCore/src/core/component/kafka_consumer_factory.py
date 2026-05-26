@@ -156,10 +156,10 @@ def bson_json_decode(value: bytes | None) -> Any:
         return value
     try:
         return bson.decode(value)
-    except Exception:
+    except Exception:  # noqa: BLE001
         try:
             return json.loads(value.decode("utf-8"))
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001
             logger.error("JSON parsing error: %s", e)
             return value
 
@@ -278,7 +278,7 @@ class KafkaConsumerFactory:
                     old_consumer = self._consumers[cache_key]
                     try:
                         await old_consumer.stop()
-                    except Exception as e:
+                    except Exception as e:  # noqa: BLE001
                         logger.error("Error stopping old consumer: %s", e)
 
                 # Create a new consumer instance
@@ -354,7 +354,7 @@ class KafkaConsumerFactory:
                 consumer = self._consumers[cache_key]
                 try:
                     await consumer.stop()
-                except Exception as e:
+                except Exception as e:  # noqa: BLE001
                     logger.error("Error stopping consumer during removal: %s", e)
 
                 del self._consumers[cache_key]
@@ -370,7 +370,7 @@ class KafkaConsumerFactory:
             for cache_key, consumer in self._consumers.items():
                 try:
                     await consumer.stop()
-                except Exception as e:
+                except Exception as e:  # noqa: BLE001
                     logger.error("Error stopping consumer %s: %s", cache_key, e)
 
             self._consumers.clear()

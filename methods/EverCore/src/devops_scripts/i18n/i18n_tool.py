@@ -440,7 +440,7 @@ def load_translation_progress() -> dict:
         try:
             with open(TRANSLATION_PROGRESS_FILE, 'r', encoding='utf-8') as f:
                 return json.load(f)
-        except Exception:
+        except Exception:  # noqa: BLE001
             return {"processed": [], "errors": []}
     return {"processed": [], "errors": []}
 
@@ -468,7 +468,7 @@ def load_review_progress() -> dict:
         try:
             with open(REVIEW_PROGRESS_FILE, 'r', encoding='utf-8') as f:
                 return json.load(f)
-        except Exception:
+        except Exception:  # noqa: BLE001
             return {"commit_range": "", "safe": [], "needs_review": [], "errors": []}
     return {"commit_range": "", "safe": [], "needs_review": [], "errors": []}
 
@@ -506,7 +506,7 @@ def run_git_command(args: list[str], cwd: Path | None = None) -> tuple[bool, str
             return False, result.stderr.strip()
     except subprocess.TimeoutExpired:
         return False, "Git command timed out"
-    except Exception as e:
+    except Exception as e:  # noqa: BLE001
         return False, str(e)
 
 
@@ -618,7 +618,7 @@ def filter_files_with_chinese(
                     progress["processed"].append(file_str)
                 else:
                     skipped_already_done += 1
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001
             print(f"  Warning: Could not pre-scan {file_path}: {e}")
             files_to_process.append(file_path)
 
@@ -710,7 +710,7 @@ async def translate_file(
                 save_translation_progress(progress)
             return (file_path, True, None)
 
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001
             error_msg = str(e)
             print(f"{progress_prefix} [ERROR] {file_path}: {error_msg}")
             async with progress_lock:
@@ -820,7 +820,7 @@ async def review_file_diff(
 
             return result
 
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001
             result = FileReviewResult(
                 file_path=file_path,
                 result=ReviewResult.ERROR,
@@ -995,7 +995,7 @@ def cmd_check(directories: list[Path], specific_files: list[str] | None = None) 
                     }
                 )
 
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001
             print(f"  [ERROR] Could not read {file_path}: {e}")
 
     print("=" * 70)
@@ -1410,7 +1410,7 @@ def _hook_check_files(
             if cjk_lines:
                 files_with_cjk[file_path] = cjk_lines
 
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001
             print(f"Warning: Could not read {file_path}: {e}", file=sys.stderr)
 
     return bool(files_with_cjk), files_with_cjk
@@ -1435,7 +1435,7 @@ def _hook_check_commit_message(msg_file: str) -> tuple[bool, list[tuple[int, str
         cjk_lines = _hook_find_cjk_lines(content)
         return bool(cjk_lines), cjk_lines
 
-    except Exception as e:
+    except Exception as e:  # noqa: BLE001
         print(f"Warning: Could not read commit message file: {e}", file=sys.stderr)
         return False, []
 

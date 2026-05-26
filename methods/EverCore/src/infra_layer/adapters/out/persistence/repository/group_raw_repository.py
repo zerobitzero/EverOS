@@ -34,7 +34,7 @@ class GroupRawRepository(BaseRepository[Group]):
             else:
                 logger.debug("Group not found: group_id=%s", group_id)
             return result
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001
             logger.error("Failed to get group by group_id: %s", e)
             return None
 
@@ -95,6 +95,6 @@ class GroupRawRepository(BaseRepository[Group]):
                 else:
                     raise create_error
 
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001
             logger.error("Failed to upsert group: %s", e)
             return None

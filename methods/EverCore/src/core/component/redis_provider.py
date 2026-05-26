@@ -152,7 +152,7 @@ class RedisProvider:
         try:
             result = await client.set(key, value, ex=ex, nx=nx)
             return result is not None and result is not False
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001
             logger.error("Redis SET operation failed: key=%s, error=%s", key, str(e))
             return False
 
@@ -169,7 +169,7 @@ class RedisProvider:
         client = await self.get_client()
         try:
             return await client.get(key)
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001
             logger.error("Redis GET operation failed: key=%s, error=%s", key, str(e))
             return None
 
@@ -187,7 +187,7 @@ class RedisProvider:
         try:
             result = await client.exists(key)
             return result > 0
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001
             logger.error("Redis EXISTS operation failed: key=%s, error=%s", key, str(e))
             return False
 
@@ -207,7 +207,7 @@ class RedisProvider:
         client = await self.get_client()
         try:
             return await client.delete(*keys)
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001
             logger.error(
                 "Redis DELETE operation failed: keys=%s, error=%s", keys, str(e)
             )
@@ -227,7 +227,7 @@ class RedisProvider:
         client = await self.get_client()
         try:
             return await client.expire(key, seconds)
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001
             logger.error(
                 "Redis EXPIRE operation failed: key=%s, seconds=%s, error=%s",
                 key,
@@ -249,7 +249,7 @@ class RedisProvider:
         client = await self.get_client()
         try:
             return await client.ttl(key)
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001
             logger.error("Redis TTL operation failed: key=%s, error=%s", key, str(e))
             return -2
 
@@ -266,7 +266,7 @@ class RedisProvider:
         client = await self.get_client()
         try:
             return await client.keys(pattern)
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001
             logger.error(
                 "Redis KEYS operation failed: pattern=%s, error=%s", pattern, str(e)
             )
@@ -283,7 +283,7 @@ class RedisProvider:
             client = await self.get_client()
             result = await client.ping()
             return result is True
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001
             logger.error("Redis PING failed: %s", str(e))
             return False
 
@@ -304,7 +304,7 @@ class RedisProvider:
         client = await self.get_client()
         try:
             return await client.lpush(key, *values)
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001
             logger.error("Redis LPUSH operation failed: key=%s, error=%s", key, str(e))
             return 0
 
@@ -323,7 +323,7 @@ class RedisProvider:
         client = await self.get_client()
         try:
             return await client.lrange(key, start, end)
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001
             logger.error("Redis LRANGE operation failed: key=%s, error=%s", key, str(e))
             return []
 
@@ -334,7 +334,7 @@ class RedisProvider:
             try:
                 await client.aclose()
                 logger.info("Named Redis client closed: %s", name)
-            except Exception as e:
+            except Exception as e:  # noqa: BLE001
                 logger.error(
                     "Failed to close named Redis client: %s, error=%s", name, str(e)
                 )
@@ -343,7 +343,7 @@ class RedisProvider:
             try:
                 await pool.aclose()
                 logger.info("Named Redis connection pool closed: %s", name)
-            except Exception as e:
+            except Exception as e:  # noqa: BLE001
                 logger.error(
                     "Failed to close named Redis connection pool: %s, error=%s",
                     name,

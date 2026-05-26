@@ -111,7 +111,7 @@ class HMACSignatureMiddleware(BaseHTTPMiddleware):
                     "HMAC signature headers not found, skipping signature verification"
                 )
 
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001
             logger.error(
                 "Exception during HMAC signature verification: %s, "
                 "timestamp_header='%s', nonce_header='%s', signature_header='%s', "
@@ -132,7 +132,7 @@ class HMACSignatureMiddleware(BaseHTTPMiddleware):
             return response
 
         except Exception as e:
-            logger.error(f"Exception in business logic processing: {str(e)}")
+            logger.error(f"Exception in business logic processing: {str(e)}")  # noqa: G004
             # Re-raise business logic exceptions for upstream handling
             raise
 
@@ -142,9 +142,9 @@ class HMACSignatureMiddleware(BaseHTTPMiddleware):
                 try:
                     clear_current_user_context(token)
                     logger.debug("HMAC signature user context cleaned up")
-                except Exception as reset_error:
+                except Exception as reset_error:  # noqa: BLE001
                     logger.warning(
-                        f"Error occurred while cleaning up HMAC signature user context: {str(reset_error)}"
+                        f"Error occurred while cleaning up HMAC signature user context: {str(reset_error)}"  # noqa: G004
                     )
 
     async def _verify_hmac_signature(
@@ -230,7 +230,7 @@ class HMACSignatureMiddleware(BaseHTTPMiddleware):
                     nonce_header,
                     expire_seconds,
                 )
-            except Exception as e:
+            except Exception as e:  # noqa: BLE001
                 logger.error(
                     "Error occurred while checking and storing nonce: %s", str(e)
                 )

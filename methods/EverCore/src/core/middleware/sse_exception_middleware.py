@@ -68,7 +68,7 @@ def sse_exception_handler(
                 "data": {"code": e.status_code, "message": e.detail},
             }
             logger.error(
-                f"HTTP exception occurred in SSE stream: {e.status_code} - {e.detail}"
+                f"HTTP exception occurred in SSE stream: {e.status_code} - {e.detail}"  # noqa: G004
             )
             yield yield_sse_data(error_data)
         except Exception as e:
@@ -77,8 +77,8 @@ def sse_exception_handler(
                 "type": "error",
                 "data": {"code": 500, "message": f"Internal server error: {str(e)}"},
             }
-            logger.error(
-                f"Unknown exception occurred in SSE stream: {e}", exc_info=True
+            logger.error(  # noqa: G201
+                f"Unknown exception occurred in SSE stream: {e}", exc_info=True  # noqa: G004
             )
             yield yield_sse_data(error_data)
 

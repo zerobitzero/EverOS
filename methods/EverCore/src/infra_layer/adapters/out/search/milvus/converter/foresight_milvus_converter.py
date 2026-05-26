@@ -44,9 +44,9 @@ class ForesightMilvusConverter(BaseMilvusConverter[ForesightCollection]):
                 return int(dt.timestamp() * 1000)
             elif isinstance(time_value, (int, float)):
                 return int(time_value * 1000)
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001
             logger.warning(
-                f"Failed to parse {field_name} (doc_id={doc_id}): {time_value}, error: {e}"
+                f"Failed to parse {field_name} (doc_id={doc_id}): {time_value}, error: {e}"  # noqa: G004
             )
 
         return 0

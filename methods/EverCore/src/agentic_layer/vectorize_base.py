@@ -39,7 +39,7 @@ class BaseVectorizeService(VectorizeServiceInterface):
 
         api_key, base_url, model = self._get_config_params()
         logger.info(
-            f"Initialized {self.__class__.__name__} | model={model} | base_url={base_url}"
+            f"Initialized {self.__class__.__name__} | model={model} | base_url={base_url}"  # noqa: G004
         )
 
     @abstractmethod
@@ -130,21 +130,21 @@ class BaseVectorizeService(VectorizeServiceInterface):
                         collector.add(
                             self.config.model, prompt_tokens, 0, call_type="embedding"
                         )
-                    except Exception:
+                    except Exception:  # noqa: BLE001
                         pass
 
                     return response
 
-                except Exception as e:
+                except Exception as e:  # noqa: BLE001
                     error_msg = str(e)
                     logger.error(
-                        f"{self.__class__.__name__} API error (attempt {attempt + 1}/{self.config.max_retries}): {error_msg}"
+                        f"{self.__class__.__name__} API error (attempt {attempt + 1}/{self.config.max_retries}): {error_msg}"  # noqa: G004
                     )
 
                     # Log detailed error for debugging
                     if "Connection" in error_msg or "timeout" in error_msg.lower():
                         logger.warning(
-                            f"Network issue connecting to {self.config.base_url}: {error_msg}"
+                            f"Network issue connecting to {self.config.base_url}: {error_msg}"  # noqa: G004
                         )
 
                     if attempt < self.config.max_retries - 1:
@@ -172,7 +172,7 @@ class BaseVectorizeService(VectorizeServiceInterface):
                     and len(emb) > self.config.dimensions
                 ):
                     logger.debug(
-                        f"Client-side truncation: {len(emb)}D → {self.config.dimensions}D"
+                        f"Client-side truncation: {len(emb)}D → {self.config.dimensions}D"  # noqa: G004
                     )
                     emb = emb[: self.config.dimensions]
 
@@ -241,7 +241,7 @@ class BaseVectorizeService(VectorizeServiceInterface):
         embeddings_batches = []
         for i, result in enumerate(results):
             if isinstance(result, Exception):
-                logger.error(f"Error processing batch {i}: {result}")
+                logger.error(f"Error processing batch {i}: {result}")  # noqa: G004
                 embeddings_batches.append([])
             else:
                 embeddings_batches.append(result)

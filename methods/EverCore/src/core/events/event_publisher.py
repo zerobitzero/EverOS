@@ -79,8 +79,8 @@ class ApplicationEventPublisher:
         # Get all EventListener implementations from DI container
         try:
             listeners = get_beans_by_type(EventListener)
-        except Exception as e:
-            logger.warning(f"Failed to get EventListener instances: {e}")
+        except Exception as e:  # noqa: BLE001
+            logger.warning(f"Failed to get EventListener instances: {e}")  # noqa: G004
             listeners = []
 
         self._listeners = listeners
@@ -91,7 +91,7 @@ class ApplicationEventPublisher:
             event_types = listener.get_event_types()
 
             logger.debug(
-                f"Registering listener [{listener_name}], listening to event types: {[et.__name__ for et in event_types]}"
+                f"Registering listener [{listener_name}], listening to event types: {[et.__name__ for et in event_types]}"  # noqa: G004
             )
 
             for event_type in event_types:
@@ -103,7 +103,7 @@ class ApplicationEventPublisher:
         total_listeners = len(listeners)
         total_event_types = len(self._event_listeners_map)
         logger.info(
-            f"Event publisher initialization completed: {total_listeners} listeners, {total_event_types} event types"
+            f"Event publisher initialization completed: {total_listeners} listeners, {total_event_types} event types"  # noqa: G004
         )
 
     def refresh(self) -> None:
@@ -172,12 +172,12 @@ class ApplicationEventPublisher:
 
         if not listeners:
             logger.debug(
-                f"No listeners for event [{event_type_name}], skipping publish"
+                f"No listeners for event [{event_type_name}], skipping publish"  # noqa: G004
             )
             return
 
         logger.debug(
-            f"Publishing event [{event_type_name}] (id={event.event_id}), {len(listeners)} listeners"
+            f"Publishing event [{event_type_name}] (id={event.event_id}), {len(listeners)} listeners"  # noqa: G004
         )
 
         # Create coroutine tasks for all listeners
@@ -193,8 +193,8 @@ class ApplicationEventPublisher:
                 return None
             except Exception as e:
                 listener_name = listener.get_listener_name()
-                logger.error(
-                    f"Listener [{listener_name}] encountered exception when processing event [{event_type_name}]: {e}",
+                logger.error(  # noqa: G201
+                    f"Listener [{listener_name}] encountered exception when processing event [{event_type_name}]: {e}",  # noqa: G004
                     exc_info=True,
                 )
                 return e
@@ -207,12 +207,12 @@ class ApplicationEventPublisher:
         errors = [r for r in results if r is not None]
         if errors:
             logger.warning(
-                f"Event [{event_type_name}] publishing completed, "
+                f"Event [{event_type_name}] publishing completed, "  # noqa: G004
                 f"success: {len(listeners) - len(errors)}, failure: {len(errors)}"
             )
         else:
             logger.debug(
-                f"Event [{event_type_name}] publishing completed, all {len(listeners)} listeners executed successfully"
+                f"Event [{event_type_name}] publishing completed, all {len(listeners)} listeners executed successfully"  # noqa: G004
             )
 
     def publish_sync(self, event: BaseEvent) -> None:
@@ -248,13 +248,13 @@ class ApplicationEventPublisher:
         if not events:
             return
 
-        logger.debug(f"Batch publishing {len(events)} events")
+        logger.debug(f"Batch publishing {len(events)} events")  # noqa: G004
 
         # Concurrently publish all events
         tasks = [self.publish(event) for event in events]
         await asyncio.gather(*tasks)
 
-        logger.debug(f"Batch publishing completed, total {len(events)} events")
+        logger.debug(f"Batch publishing completed, total {len(events)} events")  # noqa: G004
 
     def __repr__(self) -> str:
         """Return string representation of the object"""

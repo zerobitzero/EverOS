@@ -238,7 +238,7 @@ def bson_json_serializer(value: Any) -> bytes:
     if isinstance(value, dict):
         try:
             return bson.encode(value)
-        except Exception:
+        except Exception:  # noqa: BLE001
             pass
     # Fall back to JSON
     try:
@@ -360,7 +360,7 @@ class KafkaProducerFactory:
                     kafka_servers,
                     start_timeout,
                 )
-            except Exception as e:
+            except Exception as e:  # noqa: BLE001
                 logger.error("Failed to start Kafka producer %s: %s", producer_name, e)
         else:
             logger.info("Created AIOKafkaProducer for %s (not started)", producer_name)
@@ -403,7 +403,7 @@ class KafkaProducerFactory:
                     old_producer = self._producers[cache_key]
                     try:
                         await old_producer.stop()
-                    except Exception as e:
+                    except Exception as e:  # noqa: BLE001
                         logger.error("Error stopping old producer: %s", e)
 
                 # Create new producer instance
@@ -487,7 +487,7 @@ class KafkaProducerFactory:
                 producer = self._producers[cache_key]
                 try:
                     await producer.stop()
-                except Exception as e:
+                except Exception as e:  # noqa: BLE001
                     logger.error("Error stopping producer during removal: %s", e)
 
                 del self._producers[cache_key]
@@ -503,7 +503,7 @@ class KafkaProducerFactory:
             for cache_key, producer in self._producers.items():
                 try:
                     await producer.stop()
-                except Exception as e:
+                except Exception as e:  # noqa: BLE001
                     logger.error("Error stopping producer %s: %s", cache_key, e)
 
             self._producers.clear()

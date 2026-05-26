@@ -153,7 +153,7 @@ class SenderService:
 
             await repo.upsert_by_sender_id(sender_id, update_data)
             logger.debug("Sender auto-registered: sender_id=%s", sender_id)
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001
             # Fire-and-forget: log error but don't raise
             logger.warning(
                 "Failed to auto-register sender: sender_id=%s, error=%s", sender_id, e

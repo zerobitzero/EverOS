@@ -143,7 +143,7 @@ def to_timestamp_ms_universal(time_value) -> int:
 
         return to_timestamp_ms_universal(str(time_value))
 
-    except Exception as e:
+    except Exception as e:  # noqa: BLE001
         logger.error(
             "[DateTimeUtils] to_timestamp_ms_universal - Error converting %s: %s",
             time_value,
@@ -245,7 +245,7 @@ def from_iso_format(
         # Lenient mode: return current time on failure
         try:
             return _parse_datetime_core(create_time, target_timezone)
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001
             logger.error(
                 "[DateTimeUtils] from_iso_format - Error converting time: %s", str(e)
             )

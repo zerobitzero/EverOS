@@ -87,7 +87,7 @@ class BaseMilvusRepository(ABC, Generic[T]):
                 limit=1,
             )
             return results[0] if results else None
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001
             logger.error("❌ Failed to get entity by ID [%s]: %s", self.model_name, e)
             return None
 
@@ -136,7 +136,7 @@ class BaseMilvusRepository(ABC, Generic[T]):
                     "✅ Delete entity successful [%s]: %s", self.model_name, entity_id
                 )
             return success
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001
             logger.error("❌ Delete entity failed [%s]: %s", self.model_name, e)
             return False
 
@@ -182,7 +182,7 @@ class BaseMilvusRepository(ABC, Generic[T]):
             await self.collection.flush()
             logger.debug("✅ Flush collection successful [%s]", self.model_name)
             return True
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001
             logger.error("❌ Flush collection failed [%s]: %s", self.model_name, e)
             return False
 
@@ -197,7 +197,7 @@ class BaseMilvusRepository(ABC, Generic[T]):
             await self.collection.load()
             logger.debug("✅ Load collection successful [%s]", self.model_name)
             return True
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001
             logger.error("❌ Load collection failed [%s]: %s", self.model_name, e)
             return False
 

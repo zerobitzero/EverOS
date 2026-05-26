@@ -161,7 +161,7 @@ class TenantAwareCollection(Collection):
             connections._fetch_handler(using)
             # Connection exists, return directly
             return
-        except Exception:
+        except Exception:  # noqa: BLE001
             # Connection does not exist, needs registration
             pass
 

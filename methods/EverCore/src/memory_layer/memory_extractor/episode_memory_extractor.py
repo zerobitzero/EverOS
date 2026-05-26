@@ -106,11 +106,11 @@ class EpisodeMemoryExtractor(MemoryExtractor):
                     return datetime.fromisoformat(timestamp.replace('Z', '+00:00'))
             except (ValueError, AttributeError):
                 # Fallback to current time if parsing fails
-                logger.error(f"Failed to parse timestamp: {timestamp}")
+                logger.error(f"Failed to parse timestamp: {timestamp}")  # noqa: G004
                 return get_now_with_timezone()
         else:
             # Unknown format, fallback to current time
-            logger.error(f"Failed to parse timestamp: {timestamp}")
+            logger.error(f"Failed to parse timestamp: {timestamp}")  # noqa: G004
             return get_now_with_timezone()
 
     def _format_timestamp(self, dt: datetime) -> str:
@@ -203,7 +203,7 @@ class EpisodeMemoryExtractor(MemoryExtractor):
             EpisodeMemory (contains episode field)
         """
         logger.debug(
-            f"📚 Starting Episode extraction, use_group_prompt={use_group_prompt}"
+            f"📚 Starting Episode extraction, use_group_prompt={use_group_prompt}"  # noqa: G004
         )
 
         memcell = request.memcell
@@ -296,8 +296,8 @@ class EpisodeMemoryExtractor(MemoryExtractor):
 
                     # Validation passed, exit retry loop
                     break
-                except Exception as e:
-                    logger.warning(f"Episode extraction retry {i + 1}/5: {e}")
+                except Exception as e:  # noqa: BLE001
+                    logger.warning(f"Episode extraction retry {i + 1}/5: {e}")  # noqa: G004
                     if i == 4:
                         raise Exception(
                             "Episode memory extraction failed after 5 retries"
@@ -337,7 +337,7 @@ class EpisodeMemoryExtractor(MemoryExtractor):
             extend=embedding_data,  # Add embedding to extend field
         )
 
-        logger.debug(f"✅ Episode extraction completed: subject='{title}'")
+        logger.debug(f"✅ Episode extraction completed: subject='{title}'")  # noqa: G004
         return episode_memory
 
     async def extract_memory(
@@ -366,7 +366,7 @@ class EpisodeMemoryExtractor(MemoryExtractor):
         is_group_episode = request.user_id is None
 
         logger.debug(
-            f"[extract_memory] Extracting {'group' if is_group_episode else 'personal'} Episode, "
+            f"[extract_memory] Extracting {'group' if is_group_episode else 'personal'} Episode, "  # noqa: G004
             f"user_id={request.user_id}, group_id={request.group_id}"
         )
 
@@ -398,6 +398,6 @@ class EpisodeMemoryExtractor(MemoryExtractor):
                 "embedding": vec.tolist() if hasattr(vec, "tolist") else list(vec),
                 "vector_model": vs.get_model_name(),  # Use unified get_model_name() method
             }
-        except Exception as e:
-            logger.error(f"Episode Embedding computation failed: {e}")
+        except Exception as e:  # noqa: BLE001
+            logger.error(f"Episode Embedding computation failed: {e}")  # noqa: G004
             return None

@@ -50,12 +50,12 @@ def convert_dict_to_retrieve_mem_request(
         # Handle retrieve_method, use default keyword if not provided
 
         retrieve_method_str = data.get("retrieve_method", RetrieveMethod.KEYWORD.value)
-        logger.debug(f"[DEBUG] retrieve_method_str from data: {retrieve_method_str!r}")
+        logger.debug(f"[DEBUG] retrieve_method_str from data: {retrieve_method_str!r}")  # noqa: G004
 
         # Convert string to RetrieveMethod enum
         try:
             retrieve_method = RetrieveMethod(retrieve_method_str)
-            logger.debug(f"[DEBUG] converted to: {retrieve_method}")
+            logger.debug(f"[DEBUG] converted to: {retrieve_method}")  # noqa: G004
         except ValueError:
             raise ValueError(
                 f"Invalid retrieve_method: {retrieve_method_str}. "
@@ -91,7 +91,7 @@ def convert_dict_to_retrieve_mem_request(
                 try:
                     memory_types.append(MemoryType(mt))
                 except ValueError:
-                    logger.error(f"Invalid memory_type: {mt}, skipping")
+                    logger.error(f"Invalid memory_type: {mt}, skipping")  # noqa: G004
             elif isinstance(mt, MemoryType):
                 memory_types.append(mt)
 
@@ -136,7 +136,7 @@ def convert_dict_to_retrieve_mem_request(
             end_time=data.get("end_time", None),
             radius=radius,  # COSINE similarity threshold
         )
-    except Exception as e:
+    except Exception as e:  # noqa: BLE001
         raise ValueError(f"RetrieveMemRequest conversion failed: {e}")
 
 

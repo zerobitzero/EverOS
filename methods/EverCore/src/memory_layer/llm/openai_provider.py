@@ -148,7 +148,7 @@ class OpenAIProvider(LLMProvider):
         try:
             collector = get_bean_by_type(TokenUsageCollector)
             collector.add(self.model, prompt_tokens, completion_tokens, call_type="llm")
-        except Exception:
+        except Exception:  # noqa: BLE001
             pass
 
     def _log_completion_metrics(self, response_data: dict, duration: float) -> None:
@@ -318,7 +318,7 @@ class OpenAIProvider(LLMProvider):
                     self.model,
                 )
             return success
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001
             logger.error(
                 "\u274c [OpenAI-%s] API connection test failed: %s", self.model, e
             )

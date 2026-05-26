@@ -63,8 +63,8 @@ class AgentSkillRawRepository(BaseRepository[AgentSkillRecord]):
                 # id_filter is {"_id": {"$in": [...]}}; merge directly
                 query = {**id_filter, "confidence": {"$gte": min_confidence}}
             return await self.model.find(query, session=session).to_list()
-        except Exception as e:
-            logger.error(f"[AgentSkillRepo] Failed to find by ids: {e}")
+        except Exception as e:  # noqa: BLE001
+            logger.error(f"[AgentSkillRepo] Failed to find by ids: {e}")  # noqa: G004
             return []
 
     async def save_skill(
@@ -74,12 +74,12 @@ class AgentSkillRawRepository(BaseRepository[AgentSkillRecord]):
         try:
             result = await record.insert(session=session)
             logger.debug(
-                f"[AgentSkillRepo] Inserted skill: id={result.id}, "
+                f"[AgentSkillRepo] Inserted skill: id={result.id}, "  # noqa: G004
                 f"cluster={result.cluster_id}, name='{result.name}'"
             )
             return result
-        except Exception as e:
-            logger.error(f"[AgentSkillRepo] Failed to insert skill: {e}")
+        except Exception as e:  # noqa: BLE001
+            logger.error(f"[AgentSkillRepo] Failed to insert skill: {e}")  # noqa: G004
             return None
 
     async def get_by_cluster_id(
@@ -106,8 +106,8 @@ class AgentSkillRawRepository(BaseRepository[AgentSkillRecord]):
                 query["confidence"] = {"$gte": min_confidence}
             results = await self.model.find(query, session=session).to_list()
             return results
-        except Exception as e:
-            logger.error(f"[AgentSkillRepo] Failed to get by cluster_id: {e}")
+        except Exception as e:  # noqa: BLE001
+            logger.error(f"[AgentSkillRepo] Failed to get by cluster_id: {e}")  # noqa: G004
             return []
 
     async def update_skill_by_id(
@@ -137,16 +137,16 @@ class AgentSkillRawRepository(BaseRepository[AgentSkillRecord]):
             )
             if result.modified_count > 0:
                 logger.debug(
-                    f"[AgentSkillRepo] Updated skill id={record_id}, "
+                    f"[AgentSkillRepo] Updated skill id={record_id}, "  # noqa: G004
                     f"fields={list(updates.keys())}"
                 )
                 return True
             logger.warning(
-                f"[AgentSkillRepo] No document matched for update id={record_id}"
+                f"[AgentSkillRepo] No document matched for update id={record_id}"  # noqa: G004
             )
             return False
-        except Exception as e:
-            logger.error(f"[AgentSkillRepo] Failed to update skill id={record_id}: {e}")
+        except Exception as e:  # noqa: BLE001
+            logger.error(f"[AgentSkillRepo] Failed to update skill id={record_id}: {e}")  # noqa: G004
             return False
 
     async def soft_delete_by_id(
@@ -171,15 +171,15 @@ class AgentSkillRawRepository(BaseRepository[AgentSkillRecord]):
                 session=session,
             )
             if result.modified_count > 0:
-                logger.debug(f"[AgentSkillRepo] Soft-deleted skill id={record_id}")
+                logger.debug(f"[AgentSkillRepo] Soft-deleted skill id={record_id}")  # noqa: G004
                 return True
             logger.warning(
-                f"[AgentSkillRepo] No document matched for soft-delete id={record_id}"
+                f"[AgentSkillRepo] No document matched for soft-delete id={record_id}"  # noqa: G004
             )
             return False
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001
             logger.error(
-                f"[AgentSkillRepo] Failed to soft-delete skill id={record_id}: {e}"
+                f"[AgentSkillRepo] Failed to soft-delete skill id={record_id}: {e}"  # noqa: G004
             )
             return False
 
@@ -230,8 +230,8 @@ class AgentSkillRawRepository(BaseRepository[AgentSkillRecord]):
                 .to_list()
             )
             return results
-        except Exception as e:
-            logger.error(f"[AgentSkillRepo] Failed to find by filters: {e}")
+        except Exception as e:  # noqa: BLE001
+            logger.error(f"[AgentSkillRepo] Failed to find by filters: {e}")  # noqa: G004
             return []
 
     async def count_by_filters(
@@ -267,6 +267,6 @@ class AgentSkillRawRepository(BaseRepository[AgentSkillRecord]):
                 count,
             )
             return count
-        except Exception as e:
-            logger.error(f"[AgentSkillRepo] Failed to count by filters: {e}")
+        except Exception as e:  # noqa: BLE001
+            logger.error(f"[AgentSkillRepo] Failed to count by filters: {e}")  # noqa: G004
             return 0

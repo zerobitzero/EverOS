@@ -75,10 +75,10 @@ class AtomicFactExtractor:
                     # Try parsing ISO format
                     return datetime.fromisoformat(timestamp.replace('Z', '+00:00'))
             except (ValueError, AttributeError):
-                logger.error(f"Failed to parse timestamp: {timestamp}")
+                logger.error(f"Failed to parse timestamp: {timestamp}")  # noqa: G004
                 return get_now_with_timezone()
         else:
-            logger.error(f"Unknown timestamp format: {timestamp}")
+            logger.error(f"Unknown timestamp format: {timestamp}")  # noqa: G004
             return get_now_with_timezone()
 
     def _format_timestamp(self, dt: datetime) -> str:
@@ -155,7 +155,7 @@ class AtomicFactExtractor:
             pass
 
         # 5. If all fail, raise exception
-        logger.error(f"Unable to parse LLM response: {response[:200]}...")
+        logger.error(f"Unable to parse LLM response: {response[:200]}...")  # noqa: G004
         raise ValueError("Unable to parse LLM response into valid JSON format")
 
     async def _extract_atomic_fact(
@@ -238,7 +238,7 @@ class AtomicFactExtractor:
         )
 
         logger.debug(
-            f"Successfully extracted atomic fact, containing {len(atomic_fact_obj.atomic_fact)} atomic facts (embeddings generated)"
+            f"Successfully extracted atomic fact, containing {len(atomic_fact_obj.atomic_fact)} atomic facts (embeddings generated)"  # noqa: G004
         )
         return atomic_fact_obj
 
@@ -267,9 +267,9 @@ class AtomicFactExtractor:
                     return await self._extract_atomic_fact(
                         input_text, timestamp, user_id=user_id, group_id=group_id
                     )
-                except Exception as e:
+                except Exception as e:  # noqa: BLE001
                     logger.warning(
-                        f"Retrying to extract atomic fact {retry + 1}/5: {e}"
+                        f"Retrying to extract atomic fact {retry + 1}/5: {e}"  # noqa: G004
                     )
                     if retry == 4:
                         logger.error("Failed to extract atomic fact after 5 retries")

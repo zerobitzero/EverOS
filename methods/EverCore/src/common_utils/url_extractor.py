@@ -72,7 +72,7 @@ class URLExtractor:
 
             return metadata
 
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001
             logger.error("Failed to extract URL metadata: %s, error: %s", url, str(e))
             return self._create_error_metadata(url, str(e))
 
@@ -105,7 +105,7 @@ class URLExtractor:
                 async with session.head(url, allow_redirects=True) as response:
                     return str(response.url)
 
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001
             logger.warning("Failed to get final URL: %s, error: %s", url, str(e))
             return url
 
@@ -169,7 +169,7 @@ class URLExtractor:
 
                     return content
 
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001
             logger.error("Failed to get HTML content: %s, error: %s", url, str(e))
             return None
 
@@ -237,7 +237,7 @@ class URLExtractor:
             # Clean and validate data
             metadata = self._clean_metadata(metadata)
 
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001
             logger.error("Failed to parse metadata: %s, error: %s", url, str(e))
 
         return metadata
@@ -469,7 +469,7 @@ class URLExtractor:
         try:
             result = urlparse(url)
             return all([result.scheme, result.netloc])
-        except Exception:
+        except Exception:  # noqa: BLE001
             return False
 
     def _create_empty_metadata(

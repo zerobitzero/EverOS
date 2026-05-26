@@ -53,13 +53,13 @@ class RawDataType(Enum):
             from core.observation.logger import get_logger
 
             logger = get_logger(__name__)
-            logger.error(f"No matching RawDataType found: {type_str}, returning None")
+            logger.error(f"No matching RawDataType found: {type_str}, returning None")  # noqa: G004
             return None
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001
             from core.observation.logger import get_logger
 
             logger = get_logger(__name__)
-            logger.warning(f"Failed to convert type field: {type_str}, error: {e}")
+            logger.warning(f"Failed to convert type field: {type_str}, error: {e}")  # noqa: G004
             return None
 
 
@@ -246,7 +246,7 @@ class BaseMemory:
             return self.timestamp if self.timestamp else None
         try:
             return to_iso_format(self.timestamp)
-        except Exception:
+        except Exception:  # noqa: BLE001
             return str(self.timestamp) if self.timestamp else None
 
     def to_dict(self) -> Dict[str, Any]:

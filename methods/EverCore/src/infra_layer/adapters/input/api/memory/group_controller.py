@@ -101,7 +101,7 @@ class GroupController(BaseController):
         except HTTPException:
             raise
         except Exception as e:
-            logger.error("Group create failed: %s", e, exc_info=True)
+            logger.error("Group create failed: %s", e, exc_info=True)  # noqa: G201
             raise HTTPException(status_code=500, detail="Failed to create group") from e
 
     @get(
@@ -146,7 +146,7 @@ class GroupController(BaseController):
         except HTTPException:
             raise
         except Exception as e:
-            logger.error("Group get failed: %s", e, exc_info=True)
+            logger.error("Group get failed: %s", e, exc_info=True)  # noqa: G201
             raise HTTPException(
                 status_code=500, detail="Failed to retrieve group"
             ) from e
@@ -224,5 +224,5 @@ class GroupController(BaseController):
         except HTTPException:
             raise
         except Exception as e:
-            logger.error("Group patch failed: %s", e, exc_info=True)
+            logger.error("Group patch failed: %s", e, exc_info=True)  # noqa: G201
             raise HTTPException(status_code=500, detail="Failed to update group") from e

@@ -55,8 +55,8 @@ class AgentCaseRawRepository(BaseRepository[AgentCaseRecord]):
                 vec = await vs.get_embedding(record.task_intent)
                 record.vector = vec.tolist() if hasattr(vec, "tolist") else list(vec)
                 record.vector_model = vs.get_model_name()
-            except Exception as e:
-                logger.error(f"[AgentCaseRepo] Auto-vectorize failed: {e}")
+            except Exception as e:  # noqa: BLE001
+                logger.error(f"[AgentCaseRepo] Auto-vectorize failed: {e}")  # noqa: G004
 
         if not record.vector:
             logger.warning(
@@ -67,12 +67,12 @@ class AgentCaseRawRepository(BaseRepository[AgentCaseRecord]):
         try:
             result = await record.insert(session=session)
             logger.debug(
-                f"[AgentCaseRepo] Inserted experience: id={result.id}, "
+                f"[AgentCaseRepo] Inserted experience: id={result.id}, "  # noqa: G004
                 f"intent='{(result.task_intent or '')[:80]}'"
             )
             return result
-        except Exception as e:
-            logger.error(f"[AgentCaseRepo] Failed to insert experience: {e}")
+        except Exception as e:  # noqa: BLE001
+            logger.error(f"[AgentCaseRepo] Failed to insert experience: {e}")  # noqa: G004
             return None
 
     async def get_by_event_id(
@@ -82,8 +82,8 @@ class AgentCaseRawRepository(BaseRepository[AgentCaseRecord]):
         try:
             object_id = ObjectId(event_id)
             return await self.model.find_one({"_id": object_id}, session=session)
-        except Exception as e:
-            logger.error(f"[AgentCaseRepo] Failed to get by event_id: {e}")
+        except Exception as e:  # noqa: BLE001
+            logger.error(f"[AgentCaseRepo] Failed to get by event_id: {e}")  # noqa: G004
             return None
 
     async def get_by_ids(
@@ -98,8 +98,8 @@ class AgentCaseRawRepository(BaseRepository[AgentCaseRecord]):
             return []
         try:
             return await self.model.find(query_filter, session=session).to_list()
-        except Exception as e:
-            logger.error(f"[AgentCaseRepo] Failed to get by ids: {e}")
+        except Exception as e:  # noqa: BLE001
+            logger.error(f"[AgentCaseRepo] Failed to get by ids: {e}")  # noqa: G004
             return []
 
     async def get_by_parent_id(
@@ -108,8 +108,8 @@ class AgentCaseRawRepository(BaseRepository[AgentCaseRecord]):
         """Retrieve agent case linked to a specific MemCell."""
         try:
             return await self.model.find_one({"parent_id": parent_id}, session=session)
-        except Exception as e:
-            logger.error(f"[AgentCaseRepo] Failed to get by parent_id: {e}")
+        except Exception as e:  # noqa: BLE001
+            logger.error(f"[AgentCaseRepo] Failed to get by parent_id: {e}")  # noqa: G004
             return None
 
     async def get_by_parent_ids(
@@ -124,8 +124,8 @@ class AgentCaseRawRepository(BaseRepository[AgentCaseRecord]):
                 {"parent_id": {"$in": parent_ids}}, session=session
             ).to_list()
             return results
-        except Exception as e:
-            logger.error(f"[AgentCaseRepo] Failed to get by parent_ids: {e}")
+        except Exception as e:  # noqa: BLE001
+            logger.error(f"[AgentCaseRepo] Failed to get by parent_ids: {e}")  # noqa: G004
             return []
 
     async def find_by_filters(
@@ -207,8 +207,8 @@ class AgentCaseRawRepository(BaseRepository[AgentCaseRecord]):
                 len(results),
             )
             return results
-        except Exception as e:
-            logger.error(f"[AgentCaseRepo] Failed to find by filters: {e}")
+        except Exception as e:  # noqa: BLE001
+            logger.error(f"[AgentCaseRepo] Failed to find by filters: {e}")  # noqa: G004
             return []
 
     async def count_by_filters(
@@ -263,8 +263,8 @@ class AgentCaseRawRepository(BaseRepository[AgentCaseRecord]):
                 count,
             )
             return count
-        except Exception as e:
-            logger.error(f"[AgentCaseRepo] Failed to count by filters: {e}")
+        except Exception as e:  # noqa: BLE001
+            logger.error(f"[AgentCaseRepo] Failed to count by filters: {e}")  # noqa: G004
             return 0
 
     async def delete_by_user_id(
@@ -289,8 +289,8 @@ class AgentCaseRawRepository(BaseRepository[AgentCaseRecord]):
                 count,
             )
             return count
-        except Exception as e:
-            logger.error(f"[AgentCaseRepo] Failed to delete by user_id: {e}")
+        except Exception as e:  # noqa: BLE001
+            logger.error(f"[AgentCaseRepo] Failed to delete by user_id: {e}")  # noqa: G004
             return 0
 
     async def delete_by_filters(
@@ -344,8 +344,8 @@ class AgentCaseRawRepository(BaseRepository[AgentCaseRecord]):
                 count,
             )
             return count
-        except Exception as e:
-            logger.error(f"[AgentCaseRepo] Failed to delete by filters: {e}")
+        except Exception as e:  # noqa: BLE001
+            logger.error(f"[AgentCaseRepo] Failed to delete by filters: {e}")  # noqa: G004
             return 0
 
     async def fetch_task_intents_by_event_ids(
@@ -376,8 +376,8 @@ class AgentCaseRawRepository(BaseRepository[AgentCaseRecord]):
                 if case.parent_id and case.task_intent:
                     result[case.parent_id] = case.task_intent
             return result
-        except Exception as e:
-            logger.error(f"[AgentCaseRepo] Failed to fetch task intents: {e}")
+        except Exception as e:  # noqa: BLE001
+            logger.error(f"[AgentCaseRepo] Failed to fetch task intents: {e}")  # noqa: G004
             return {}
 
     async def find_by_filter_paginated(
@@ -420,6 +420,6 @@ class AgentCaseRawRepository(BaseRepository[AgentCaseRecord]):
                 len(results),
             )
             return results
-        except Exception as e:
-            logger.error(f"[AgentCaseRepo] Failed paginated query: {e}")
+        except Exception as e:  # noqa: BLE001
+            logger.error(f"[AgentCaseRepo] Failed paginated query: {e}")  # noqa: G004
             return []

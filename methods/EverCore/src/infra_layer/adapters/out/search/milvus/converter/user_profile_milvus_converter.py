@@ -144,7 +144,7 @@ class UserProfileMilvusConverter(BaseMilvusConverter[UserProfileCollection]):
             return entities
 
         except Exception as e:
-            logger.error(
+            logger.error(  # noqa: G201
                 "Failed to convert MongoDB UserProfile to Milvus entities: %s",
                 e,
                 exc_info=True,

@@ -21,7 +21,6 @@ To disable data migration, use the --no-migrate-data option.
 
 import argparse
 import sys
-import traceback
 from typing import Optional, List
 
 from pymilvus import Collection
@@ -269,8 +268,7 @@ def run(
                 "error": str(exc)[:500],
             }
         )
-        logger.error("Milvus rebuild failed: %s", exc)
-        traceback.print_exc()
+        logger.exception("Milvus rebuild failed")
         raise
 
 
@@ -398,7 +396,7 @@ Example usage:
                 progress=progress,
             )
             logger.info("[OK] %s", alias)
-        except Exception:
+        except Exception:  # noqa: BLE001
             logger.error("[FAIL] %s", alias)
             failed += 1
 

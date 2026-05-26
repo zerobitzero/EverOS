@@ -79,7 +79,7 @@ class SettingsController(BaseController):
         except HTTPException:
             raise
         except Exception as e:
-            logger.error("Settings get failed: %s", e, exc_info=True)
+            logger.error("Settings get failed: %s", e, exc_info=True)  # noqa: G201
             raise HTTPException(
                 status_code=500, detail="Failed to retrieve settings"
             ) from e
@@ -137,7 +137,7 @@ class SettingsController(BaseController):
         except HTTPException:
             raise
         except Exception as e:
-            logger.error("Settings update failed: %s", e, exc_info=True)
+            logger.error("Settings update failed: %s", e, exc_info=True)  # noqa: G201
             raise HTTPException(
                 status_code=500, detail="Failed to update settings"
             ) from e

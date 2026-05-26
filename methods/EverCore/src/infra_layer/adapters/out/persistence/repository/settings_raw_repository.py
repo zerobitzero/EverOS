@@ -52,7 +52,7 @@ class GlobalSettingsRawRepository(BaseRepository[GlobalSettings]):
             if doc:
                 logger.debug("Retrieved global settings")
             return doc
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001
             logger.error("Failed to retrieve global settings: %s", e)
             return None
 
@@ -90,7 +90,7 @@ class GlobalSettingsRawRepository(BaseRepository[GlobalSettings]):
                 logger.info("Created new global settings")
                 return new_doc
             except Exception as create_error:
-                logger.error(
+                logger.error(  # noqa: G201
                     "Failed to create global settings: %s", create_error, exc_info=True
                 )
                 return None
@@ -98,7 +98,7 @@ class GlobalSettingsRawRepository(BaseRepository[GlobalSettings]):
         except ValidationException:
             raise
         except Exception as e:
-            logger.error("Failed to upsert global settings: %s", e, exc_info=True)
+            logger.error("Failed to upsert global settings: %s", e, exc_info=True)  # noqa: G201
             return None
 
     async def update_global_settings(
@@ -129,5 +129,5 @@ class GlobalSettingsRawRepository(BaseRepository[GlobalSettings]):
         except ValidationException:
             raise
         except Exception as e:
-            logger.error("Failed to update global settings: %s", e, exc_info=True)
+            logger.error("Failed to update global settings: %s", e, exc_info=True)  # noqa: G201
             return None

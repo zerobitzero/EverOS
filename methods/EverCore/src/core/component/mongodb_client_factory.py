@@ -8,7 +8,6 @@ Supports reading configuration from environment variables and provides default c
 import os
 import asyncio
 from abc import ABC, abstractmethod
-import traceback
 from typing import Dict, Optional, List
 from urllib.parse import quote_plus
 from pymongo import AsyncMongoClient
@@ -166,7 +165,7 @@ class MongoDBClientWrapper:
                                 if hasattr(model, 'get_collection_name')
                                 else "unknown"
                             )
-                        except Exception:
+                        except Exception:  # noqa: BLE001
                             collection_name = "unknown"
                         model_info_list.append(f"{model.__name__} -> {collection_name}")
                     logger.info(
@@ -193,7 +192,7 @@ class MongoDBClientWrapper:
                                 if hasattr(model, 'get_collection_name')
                                 else "unknown"
                             )
-                        except Exception:
+                        except Exception:  # noqa: BLE001
                             collection_name = "unknown"
                         model_info_list.append(f"{model.__name__} -> {collection_name}")
                     logger.info(
@@ -221,9 +220,8 @@ class MongoDBClientWrapper:
                         model.get_collection_name(),
                     )
 
-            except Exception as e:
-                logger.error("❌ Beanie initialization failed: %s", e)
-                traceback.print_exc()
+            except Exception:
+                logger.exception("❌ Beanie initialization failed")
                 raise
 
     async def test_connection(self) -> bool:
@@ -232,7 +230,7 @@ class MongoDBClientWrapper:
             await self.client.admin.command('ping')
             logger.info("✅ MongoDB connection test successful: %s", self.config)
             return True
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001
             logger.error(
                 "❌ MongoDB connection test failed: %s, error: %s", self.config, e
             )
@@ -256,13 +254,13 @@ class MongoDBClientWrapper:
                         "storageSize": collection_stats.get("storageSize", 0),
                         "indexes": collection_stats.get("nindexes", 0),
                     }
-                except Exception as e:
+                except Exception as e:  # noqa: BLE001
                     logger.warning(
                         "Failed to get collection %s stats: %s", collection_name, e
                     )
 
             return stats
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001
             logger.error("Failed to get stats: %s", e)
             return {}
 

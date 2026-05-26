@@ -212,7 +212,7 @@ class AgentCaseExtractor(MemoryExtractor):
                         trimmed_count += 1
         if trimmed_count > 0:
             logger.info(
-                f"[AgentCaseExtractor] Heuristic trim: "
+                f"[AgentCaseExtractor] Heuristic trim: "  # noqa: G004
                 f"truncated {trimmed_count} content fields"
             )
         return result
@@ -267,7 +267,7 @@ class AgentCaseExtractor(MemoryExtractor):
         total_size = sum(s for _, _, s in groups_with_size)
         if total_size <= self.pre_compress_chunk_size:
             logger.debug(
-                f"[AgentCaseExtractor] Tool content {total_size} tokens "
+                f"[AgentCaseExtractor] Tool content {total_size} tokens "  # noqa: G004
                 f"<= {self.pre_compress_chunk_size}, no compression needed"
             )
             return items
@@ -289,7 +289,7 @@ class AgentCaseExtractor(MemoryExtractor):
         ]
 
         logger.debug(
-            f"[AgentCaseExtractor] Selective compression: "
+            f"[AgentCaseExtractor] Selective compression: "  # noqa: G004
             f"{len(groups_to_compress)}/{len(tool_call_groups)} groups, "
             f"{total_size} total tokens"
         )
@@ -330,7 +330,7 @@ class AgentCaseExtractor(MemoryExtractor):
         for round_idx, result in enumerate(results):
             if isinstance(result, Exception):
                 logger.warning(
-                    f"[AgentCaseExtractor] Chunk {round_idx + 1} compression error: "
+                    f"[AgentCaseExtractor] Chunk {round_idx + 1} compression error: "  # noqa: G004
                     f"{result}, keeping original messages"
                 )
                 all_compressed.extend(chunk_msg_lists[round_idx])
@@ -338,7 +338,7 @@ class AgentCaseExtractor(MemoryExtractor):
                 all_compressed.extend(result)
             else:
                 logger.warning(
-                    f"[AgentCaseExtractor] Chunk {round_idx + 1} compression failed, "
+                    f"[AgentCaseExtractor] Chunk {round_idx + 1} compression failed, "  # noqa: G004
                     "keeping original messages"
                 )
                 all_compressed.extend(chunk_msg_lists[round_idx])
@@ -351,7 +351,7 @@ class AgentCaseExtractor(MemoryExtractor):
                 items[idx] = all_compressed[i]
         else:
             logger.warning(
-                f"[AgentCaseExtractor] Compressed count {len(all_compressed)} "
+                f"[AgentCaseExtractor] Compressed count {len(all_compressed)} "  # noqa: G004
                 f"!= selected message count {len(selected_indices)}, keeping originals"
             )
 
@@ -380,12 +380,12 @@ class AgentCaseExtractor(MemoryExtractor):
                 ):
                     return data["compressed_messages"]
                 logger.warning(
-                    f"[AgentCaseExtractor] Tool pre-compress attempt {attempt + 1}/2: "
+                    f"[AgentCaseExtractor] Tool pre-compress attempt {attempt + 1}/2: "  # noqa: G004
                     f"invalid response format"
                 )
-            except Exception as e:
+            except Exception as e:  # noqa: BLE001
                 logger.warning(
-                    f"[AgentCaseExtractor] Tool pre-compress attempt {attempt + 1}/2: {e}"
+                    f"[AgentCaseExtractor] Tool pre-compress attempt {attempt + 1}/2: {e}"  # noqa: G004
                 )
 
         return None
@@ -400,10 +400,10 @@ class AgentCaseExtractor(MemoryExtractor):
                 worth = data["worth_extracting"]
                 if not worth:
                     reason = data.get("reason", "")
-                    logger.info(f"[AgentCaseExtractor] Filtered out by LLM: {reason}")
+                    logger.info(f"[AgentCaseExtractor] Filtered out by LLM: {reason}")  # noqa: G004
                 return bool(worth)
-        except Exception as e:
-            logger.warning(f"[AgentCaseExtractor] Filter failed: {e}")
+        except Exception as e:  # noqa: BLE001
+            logger.warning(f"[AgentCaseExtractor] Filter failed: {e}")  # noqa: G004
         # Default to extracting if filter fails
         return True
 
@@ -430,12 +430,12 @@ class AgentCaseExtractor(MemoryExtractor):
                         return None
                     return data
                 logger.warning(
-                    f"[AgentCaseExtractor] Compress attempt {attempt + 1}/2: "
+                    f"[AgentCaseExtractor] Compress attempt {attempt + 1}/2: "  # noqa: G004
                     f"missing or invalid 'task_intent' field"
                 )
-            except Exception as e:
+            except Exception as e:  # noqa: BLE001
                 logger.warning(
-                    f"[AgentCaseExtractor] Compress attempt {attempt + 1}/2: {e}"
+                    f"[AgentCaseExtractor] Compress attempt {attempt + 1}/2: {e}"  # noqa: G004
                 )
 
         logger.error(
@@ -566,8 +566,8 @@ class AgentCaseExtractor(MemoryExtractor):
                 "embedding": vec.tolist() if hasattr(vec, "tolist") else list(vec),
                 "vector_model": vs.get_model_name(),
             }
-        except Exception as e:
-            logger.error(f"[AgentCaseExtractor] Embedding failed: {e}")
+        except Exception as e:  # noqa: BLE001
+            logger.error(f"[AgentCaseExtractor] Embedding failed: {e}")  # noqa: G004
             return None
 
     async def extract_memory(
@@ -587,7 +587,7 @@ class AgentCaseExtractor(MemoryExtractor):
 
         if memcell.type != RawDataType.AGENTCONVERSATION:
             logger.warning(
-                f"[AgentCaseExtractor] Expected AGENT_CONVERSATION, got {memcell.type}"
+                f"[AgentCaseExtractor] Expected AGENT_CONVERSATION, got {memcell.type}"  # noqa: G004
             )
             return None
 
@@ -600,7 +600,7 @@ class AgentCaseExtractor(MemoryExtractor):
             # Pre-filter: skip conversations not worth extracting
             skip_reason = self._should_skip(original_data)
             if skip_reason:
-                logger.info(f"[AgentCaseExtractor] {skip_reason}, skipping")
+                logger.info(f"[AgentCaseExtractor] {skip_reason}, skipping")  # noqa: G004
                 return None
 
             # Heuristic trim: truncate oversized tool outputs and assistant responses.
@@ -613,7 +613,7 @@ class AgentCaseExtractor(MemoryExtractor):
                 )
             )
             logger.info(
-                f"[AgentCaseExtractor] event_id={memcell.event_id}, "
+                f"[AgentCaseExtractor] event_id={memcell.event_id}, "  # noqa: G004
                 f"total_tokens={total_tokens}, message_count={len(original_data)}"
             )
 
@@ -635,7 +635,7 @@ class AgentCaseExtractor(MemoryExtractor):
                     500, int(self.max_assistant_response_tokens * scale)
                 )
                 logger.info(
-                    f"[AgentCaseExtractor] Total tokens {total_tokens} > "
+                    f"[AgentCaseExtractor] Total tokens {total_tokens} > "  # noqa: G004
                     f"scale_trigger ({scale_trigger}), "
                     f"scale={scale:.2f} -> trim limits: "
                     f"tool_output={trim_tool_output}, tool_args={trim_tool_args}, "
@@ -659,7 +659,7 @@ class AgentCaseExtractor(MemoryExtractor):
                 )
                 if trimmed_tokens > self.pre_compress_chunk_size * 2:
                     logger.info(
-                        f"[AgentCaseExtractor] Still {trimmed_tokens} tokens after trim "
+                        f"[AgentCaseExtractor] Still {trimmed_tokens} tokens after trim "  # noqa: G004
                         f"(> 2x PRE_COMPRESS_CHUNK_SIZE {self.pre_compress_chunk_size * 2}), skipping extraction"
                     )
                     return None
@@ -675,7 +675,7 @@ class AgentCaseExtractor(MemoryExtractor):
             )
 
             logger.debug(
-                f"[AgentCaseExtractor] Pre-compressed: "
+                f"[AgentCaseExtractor] Pre-compressed: "  # noqa: G004
                 f"{len(pre_compressed_list)} items, {len(messages_json)} chars"
             )
 
@@ -705,7 +705,7 @@ class AgentCaseExtractor(MemoryExtractor):
             )
             if raw_intent != original_intent:
                 logger.info(
-                    f"[AgentCaseExtractor] Truncated task_intent to "
+                    f"[AgentCaseExtractor] Truncated task_intent to "  # noqa: G004
                     f"{MAX_TASK_INTENT_TOKENS} tokens, "
                     f"original: {original_intent}"
                 )
@@ -734,12 +734,12 @@ class AgentCaseExtractor(MemoryExtractor):
                 experience.vector_model = embedding_data["vector_model"]
 
             logger.debug(
-                f"[AgentCaseExtractor] Extracted: "
+                f"[AgentCaseExtractor] Extracted: "  # noqa: G004
                 f"intent='{experience.task_intent[:80]}'"
             )
 
             return experience
 
-        except Exception as e:
-            logger.error(f"[AgentCaseExtractor] Extraction failed: {e}")
+        except Exception as e:  # noqa: BLE001
+            logger.error(f"[AgentCaseExtractor] Extraction failed: {e}")  # noqa: G004
             return None

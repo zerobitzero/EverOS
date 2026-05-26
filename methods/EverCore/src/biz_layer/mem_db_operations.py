@@ -81,8 +81,8 @@ def _convert_episode_memory_to_doc(
     if hasattr(episode_memory, 'timestamp') and episode_memory.timestamp:
         try:
             timestamp_dt = from_iso_format(episode_memory.timestamp)
-        except Exception as e:
-            logger.debug(f"Timestamp conversion failed, using current time: {e}")
+        except Exception as e:  # noqa: BLE001
+            logger.debug(f"Timestamp conversion failed, using current time: {e}")  # noqa: G004
             timestamp_dt = current_time
 
     participants = episode_memory.participants
@@ -234,7 +234,7 @@ def _convert_agent_case_to_doc(
                 timestamp_dt = memcell.timestamp
             elif isinstance(memcell.timestamp, str):
                 timestamp_dt = from_iso_format(memcell.timestamp)
-        except Exception:
+        except Exception:  # noqa: BLE001
             timestamp_dt = current_time
 
     # Extract user_id from first role='user' message's sender_id
@@ -284,7 +284,7 @@ async def _save_memcell_to_database(
             try:
                 timestamp_dt = from_iso_format(memcell.timestamp)
             except (ValueError, TypeError) as e:
-                logger.debug(f"Timestamp conversion failed, using current time: {e}")
+                logger.debug(f"Timestamp conversion failed, using current time: {e}")  # noqa: G004
 
         # Convert data type enum
         doc_type = None
@@ -309,7 +309,7 @@ async def _save_memcell_to_database(
         if result:
             memcell.event_id = str(result.event_id)
             logger.info(
-                f"[mem_db_operations] MemCell saved successfully: {memcell.event_id}"
+                f"[mem_db_operations] MemCell saved successfully: {memcell.event_id}"  # noqa: G004
             )
             # Publish MemCellCreatedEvent
             try:
@@ -320,20 +320,17 @@ async def _save_memcell_to_database(
                 )
                 await publisher.publish(event)
                 logger.debug(
-                    f"[mem_db_operations] MemCellCreatedEvent published: {memcell.event_id}"
+                    f"[mem_db_operations] MemCellCreatedEvent published: {memcell.event_id}"  # noqa: G004
                 )
-            except Exception as e:
+            except Exception as e:  # noqa: BLE001
                 logger.warning(
-                    f"[mem_db_operations] Failed to publish MemCellCreatedEvent: {e}"
+                    f"[mem_db_operations] Failed to publish MemCellCreatedEvent: {e}"  # noqa: G004
                 )
         else:
-            logger.info(f"[mem_db_operations] MemCell save failed: {memcell.event_id}")
+            logger.info(f"[mem_db_operations] MemCell save failed: {memcell.event_id}")  # noqa: G004
 
-    except Exception as e:
-        logger.error(f"MemCell save failed: {e}")
-        import traceback
-
-        traceback.print_exc()
+    except Exception:
+        logger.exception("MemCell save failed")
     return memcell
 
 
@@ -370,7 +367,7 @@ async def _update_status_for_continuing_conversation(
         )
         if not existing_status:
             logger.info(
-                f"Existing status not found, creating new status record: group_id={request.group_id}"
+                f"Existing status not found, creating new status record: group_id={request.group_id}"  # noqa: G004
             )
             # Create new status record
             latest_dt = from_iso_format(latest_time)
@@ -386,12 +383,12 @@ async def _update_status_for_continuing_conversation(
             )
             if result:
                 logger.info(
-                    f"New status created successfully: group_id={request.group_id}"
+                    f"New status created successfully: group_id={request.group_id}"  # noqa: G004
                 )
                 return True
             else:
                 logger.warning(
-                    f"Failed to create new status: group_id={request.group_id}"
+                    f"Failed to create new status: group_id={request.group_id}"  # noqa: G004
                 )
                 return False
 
@@ -427,8 +424,8 @@ async def _update_status_for_continuing_conversation(
             logger.warning("Conversation continuation status update failed")
             return False
 
-    except Exception as e:
-        logger.error(f"Conversation continuation status update failed: {e}")
+    except Exception as e:  # noqa: BLE001
+        logger.error(f"Conversation continuation status update failed: {e}")  # noqa: G004
         return False
 
 
@@ -530,6 +527,6 @@ async def _update_status_after_memcell_extraction(
             logger.warning("Status update after MemCell extraction failed")
             return False
 
-    except Exception as e:
-        logger.error(f"Status update after MemCell extraction failed: {e}")
+    except Exception as e:  # noqa: BLE001
+        logger.error(f"Status update after MemCell extraction failed: {e}")  # noqa: G004
         return False

@@ -277,7 +277,7 @@ class RedisWindowsCacheManager:
                 )
                 return False
 
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001
             logger.error("Redis data append failed: key=%s, error=%s", key, str(e))
             return False
 
@@ -295,7 +295,7 @@ class RedisWindowsCacheManager:
             client = await self.redis_provider.get_client()
             size = await client.zcard(key)
             return size or 0
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001
             logger.error("Failed to get queue size: key=%s, error=%s", key, str(e))
             return 0
 
@@ -314,7 +314,7 @@ class RedisWindowsCacheManager:
             result = await client.delete(key)
             logger.info("Cleared queue: key=%s, result=%d", key, result)
             return result > 0
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001
             logger.error("Failed to clear queue: key=%s, error=%s", key, str(e))
             return False
 
@@ -352,7 +352,7 @@ class RedisWindowsCacheManager:
 
             return cleaned_count
 
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001
             logger.error("Failed to clean expired data: key=%s, error=%s", key, str(e))
             return 0
 
@@ -465,7 +465,7 @@ class RedisWindowsCacheManager:
                         }
                     )
 
-                except Exception as e:
+                except Exception as e:  # noqa: BLE001
                     logger.warning(
                         "Failed to parse message: i=%d, message=%s, error=%s",
                         i,
@@ -487,7 +487,7 @@ class RedisWindowsCacheManager:
 
             return result
 
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001
             logger.error(
                 "Failed to retrieve data by timestamp range: key=%s, error=%s",
                 key,
@@ -552,7 +552,7 @@ class RedisWindowsCacheManager:
                 "ttl_seconds": ttl,
             }
 
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001
             logger.error(
                 "Failed to get queue statistics: key=%s, error=%s", key, str(e)
             )

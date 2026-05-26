@@ -44,8 +44,8 @@ async def _extract_request_body(request: Request) -> Optional[str]:
         body_bytes = await request.body()
         if body_bytes:
             return body_bytes.decode("utf-8", errors="replace")
-    except Exception as e:
-        logger.debug(f"Failed to extract request body: {e}")
+    except Exception as e:  # noqa: BLE001
+        logger.debug(f"Failed to extract request body: {e}")  # noqa: G004
     return None
 
 
@@ -102,11 +102,11 @@ async def _publish_request_history_event(event: RequestHistoryEvent) -> None:
         publisher = get_bean_by_type(ApplicationEventPublisher)
         await publisher.publish(event)
         logger.debug(
-            f"Published request history event: {event.method} "
+            f"Published request history event: {event.method} "  # noqa: G004
             f"endpoint={event.endpoint_name} version={event.version}"
         )
-    except Exception as e:
-        logger.warning(f"Failed to publish request history event: {e}")
+    except Exception as e:  # noqa: BLE001
+        logger.warning(f"Failed to publish request history event: {e}")  # noqa: G004
 
 
 def log_request(
@@ -198,8 +198,8 @@ def log_request(
                     else:
                         await _publish_request_history_event(event)
 
-                except Exception as e:
-                    logger.warning(f"Failed to log request: {e}")
+                except Exception as e:  # noqa: BLE001
+                    logger.warning(f"Failed to log request: {e}")  # noqa: G004
 
             # Call the original function
             return await func(*args, **kwargs)
@@ -240,11 +240,11 @@ def log_request(
                     try:
                         publisher = get_bean_by_type(ApplicationEventPublisher)
                         publisher.publish_sync(event)
-                    except Exception as e:
-                        logger.warning(f"Failed to publish request history event: {e}")
+                    except Exception as e:  # noqa: BLE001
+                        logger.warning(f"Failed to publish request history event: {e}")  # noqa: G004
 
-                except Exception as e:
-                    logger.warning(f"Failed to log request: {e}")
+                except Exception as e:  # noqa: BLE001
+                    logger.warning(f"Failed to log request: {e}")  # noqa: G004
 
             return func(*args, **kwargs)
 

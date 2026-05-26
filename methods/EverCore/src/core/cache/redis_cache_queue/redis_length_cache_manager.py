@@ -480,7 +480,7 @@ class RedisLengthCacheManager:
                         }
                     )
 
-                except Exception as e:
+                except Exception as e:  # noqa: BLE001
                     logger.warning(
                         "Failed to parse message: i=%d, message=%s, error=%s",
                         i,
@@ -502,7 +502,7 @@ class RedisLengthCacheManager:
 
             return result
 
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001
             logger.error(
                 "Failed to retrieve data by timestamp range: key=%s, error=%s",
                 key,

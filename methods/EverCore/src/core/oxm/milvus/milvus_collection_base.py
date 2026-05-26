@@ -190,7 +190,7 @@ class MilvusCollectionBase:
         try:
             connections._fetch_handler(using)
             return
-        except Exception:
+        except Exception:  # noqa: BLE001
             pass
 
         factory = get_bean("milvus_client_factory")
@@ -273,7 +273,7 @@ class MilvusCollectionBase:
 
             return result
 
-        except Exception as e:  # pylint: disable=broad-except
+        except Exception as e:  # pylint: disable=broad-except  # noqa: BLE001
             logger.warning("Error occurred while retrieving index information: %s", e)
             return {}
 
@@ -508,7 +508,7 @@ class MilvusCollectionWithSuffix(MilvusCollectionBase):
                 self.name,
                 real_collection_name,
             )
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001
             logger.warning("Failed to retrieve real collection name: %s", e)
             logger.info("Collection '%s' initialization completed", self.name)
 
@@ -550,7 +550,7 @@ class MilvusCollectionWithSuffix(MilvusCollectionBase):
         try:
             self._create_indexes_for_collection(new_coll)
             new_coll.load()
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001
             logger.warning(
                 "Error occurred while creating indexes for new collection, can be ignored: %s",
                 e,
@@ -575,7 +575,7 @@ class MilvusCollectionWithSuffix(MilvusCollectionBase):
             old_real_name = (
                 desc.get("collection_name") if isinstance(desc, dict) else None
             )
-        except Exception:
+        except Exception:  # noqa: BLE001
             old_real_name = None
 
         # Alias switching
@@ -583,11 +583,11 @@ class MilvusCollectionWithSuffix(MilvusCollectionBase):
             conn = connections._fetch_handler(self._using)
             conn.alter_alias(new_real_name, alias_name)
             logger.info("Alias '%s' switched to '%s'", alias_name, new_real_name)
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001
             logger.warning("alter_alias failed, attempting drop/create: %s", e)
             try:
                 utility.drop_alias(alias_name, using=self._using)
-            except Exception:
+            except Exception:  # noqa: BLE001
                 pass
             utility.create_alias(
                 collection_name=new_real_name, alias=alias_name, using=self._using
@@ -599,7 +599,7 @@ class MilvusCollectionWithSuffix(MilvusCollectionBase):
             try:
                 utility.drop_collection(old_real_name, using=self._using)
                 logger.info("Deleted old collection: %s", old_real_name)
-            except Exception as e:
+            except Exception as e:  # noqa: BLE001
                 logger.warning(
                     "Failed to delete old collection (can be handled manually): %s", e
                 )
@@ -609,7 +609,7 @@ class MilvusCollectionWithSuffix(MilvusCollectionBase):
             self.__class__._collection_instance = Collection(
                 name=alias_name, using=self._using
             )
-        except Exception:
+        except Exception:  # noqa: BLE001
             pass
 
     def exists(self) -> bool:
@@ -634,7 +634,7 @@ class MilvusCollectionWithSuffix(MilvusCollectionBase):
             utility.drop_collection(real_name, using=self._using)
             logger.info("Deleted Collection '%s'", real_name)
 
-        except Exception as e:  # pylint: disable=broad-except
+        except Exception as e:  # pylint: disable=broad-except  # noqa: BLE001
             logger.warning(
                 "Collection '%s' does not exist or deletion failed: %s", self.name, e
             )

@@ -217,7 +217,7 @@ class MemoryManager:
             retrieve_method = retrieve_mem_request.retrieve_method
 
             logger.info(
-                f"retrieve_mem dispatching request: user_id={retrieve_mem_request.user_id}, "
+                f"retrieve_mem dispatching request: user_id={retrieve_mem_request.user_id}, "  # noqa: G004
                 f"retrieve_method={retrieve_method}, query={retrieve_mem_request.query}, "
                 f"search_profile={search_profile}, non_profile_types={[t.value for t in non_profile_types]}"
             )
@@ -296,7 +296,7 @@ class MemoryManager:
             return response
 
         except Exception as e:
-            logger.error(f"Error in retrieve_mem: {e}", exc_info=True)
+            logger.error(f"Error in retrieve_mem: {e}", exc_info=True)  # noqa: G004, G201
             return RetrieveMemResponse(
                 profiles=[],
                 memories=[],
@@ -358,11 +358,11 @@ class MemoryManager:
                 )
                 profiles.append(profile_item)
 
-            logger.debug(f"Profile search returned {len(profiles)} items")
+            logger.debug(f"Profile search returned {len(profiles)} items")  # noqa: G004
             return profiles
 
         except Exception as e:
-            logger.error(f"Error in _search_profiles: {e}", exc_info=True)
+            logger.error(f"Error in _search_profiles: {e}", exc_info=True)  # noqa: G004, G201
             return []
 
     def _build_combined_response(
@@ -429,12 +429,12 @@ class MemoryManager:
             )
 
             logger.debug(
-                f"Retrieved {len(result)} pending messages: "
+                f"Retrieved {len(result)} pending messages: "  # noqa: G004
                 f"user_id={user_id}, group_ids={group_ids}"
             )
             return result
         except Exception as e:
-            logger.error(f"Error fetching pending messages: {e}", exc_info=True)
+            logger.error(f"Error fetching pending messages: {e}", exc_info=True)  # noqa: G004, G201
             return []
 
     # Keyword retrieval method (original retrieve_mem logic)
@@ -463,7 +463,7 @@ class MemoryManager:
 
             return await self._to_response(hits, retrieve_mem_request)
         except Exception as e:
-            logger.error(f"Error in retrieve_mem_keyword: {e}", exc_info=True)
+            logger.error(f"Error in retrieve_mem_keyword: {e}", exc_info=True)  # noqa: G004, G201
             return await self._to_response([], retrieve_mem_request)
 
     async def get_keyword_search_results(
@@ -507,7 +507,7 @@ class MemoryManager:
             else:
                 query_words = []
 
-            logger.debug(f"query_words: {query_words}")
+            logger.debug(f"query_words: {query_words}")  # noqa: G004
 
             # Build time range filter conditions, handle None values
             date_range = {}
@@ -520,11 +520,11 @@ class MemoryManager:
 
             repo_class = ES_REPO_MAP.get(mem_type)
             if not repo_class:
-                logger.warning(f"Unsupported memory_type: {mem_type}")
+                logger.warning(f"Unsupported memory_type: {mem_type}")  # noqa: G004
                 return []
 
             es_repo = get_bean_by_type(repo_class)
-            logger.debug(f"Using {repo_class.__name__} for {mem_type}")
+            logger.debug(f"Using {repo_class.__name__} for {mem_type}")  # noqa: G004
 
             results = await es_repo.multi_search(
                 query=query_words,
@@ -564,7 +564,7 @@ class MemoryManager:
                 stage=RetrieveMethod.KEYWORD.value,
                 error_type=self._classify_retrieve_error(e),
             )
-            logger.error(f"Error in get_keyword_search_results: {e}")
+            logger.error(f"Error in get_keyword_search_results: {e}")  # noqa: G004
             raise
 
     # Vector-based memory retrieval
@@ -592,8 +592,8 @@ class MemoryManager:
                 hits = hits[:top_k]
 
             return await self._to_response(hits, retrieve_mem_request)
-        except Exception as e:
-            logger.error(f"Error in retrieve_mem_vector: {e}")
+        except Exception as e:  # noqa: BLE001
+            logger.error(f"Error in retrieve_mem_vector: {e}")  # noqa: G004
             return await self._to_response([], retrieve_mem_request)
 
     async def get_vector_search_results(
@@ -617,7 +617,7 @@ class MemoryManager:
         try:
             # Get parameters from Request
             logger.debug(
-                f"get_vector_search_results called with retrieve_mem_request: {retrieve_mem_request}"
+                f"get_vector_search_results called with retrieve_mem_request: {retrieve_mem_request}"  # noqa: G004
             )
             if not retrieve_mem_request:
                 raise ValueError(
@@ -644,14 +644,14 @@ class MemoryManager:
             mem_type = retrieve_mem_request.memory_types[0]
 
             logger.debug(
-                f"retrieve_mem_vector called with query: {query}, user_id: {user_id}, group_ids: {group_ids}, top_k: {top_k}"
+                f"retrieve_mem_vector called with query: {query}, user_id: {user_id}, group_ids: {group_ids}, top_k: {top_k}"  # noqa: G004
             )
 
             # Get vectorization service
             vectorize_service = get_vectorize_service()
 
             # Convert query text to vector (embedding stage)
-            logger.debug(f"Starting to vectorize query text: {query}")
+            logger.debug(f"Starting to vectorize query text: {query}")  # noqa: G004
             embedding_start = time.perf_counter()
             query_vector = await vectorize_service.get_embedding(query)
             query_vector_list = query_vector.tolist()  # Convert to list format
@@ -662,7 +662,7 @@ class MemoryManager:
                 duration_seconds=time.perf_counter() - embedding_start,
             )
             logger.debug(
-                f"Query text vectorization completed, vector dimension: {len(query_vector_list)}"
+                f"Query text vectorization completed, vector dimension: {len(query_vector_list)}"  # noqa: G004
             )
 
             # Select Milvus repository based on memory type
@@ -780,7 +780,7 @@ class MemoryManager:
                 stage=RetrieveMethod.VECTOR.value,
                 error_type=self._classify_retrieve_error(e),
             )
-            logger.error(f"Error in get_vector_search_results: {e}")
+            logger.error(f"Error in get_vector_search_results: {e}")  # noqa: G004
             raise
 
     # Hybrid memory retrieval
@@ -800,8 +800,8 @@ class MemoryManager:
                 retrieve_mem_request, retrieve_method=RetrieveMethod.HYBRID.value
             )
             return await self._to_response(hits, retrieve_mem_request)
-        except Exception as e:
-            logger.error(f"Error in retrieve_mem_hybrid: {e}")
+        except Exception as e:  # noqa: BLE001
+            logger.error(f"Error in retrieve_mem_hybrid: {e}")  # noqa: G004
             return await self._to_response([], retrieve_mem_request)
 
     # ================== Core Internal Methods ==================
@@ -851,7 +851,7 @@ class MemoryManager:
                 filtered_count = original_count - len(result)
                 if filtered_count > 0:
                     logger.debug(
-                        f"Rerank threshold filtering: {filtered_count} docs filtered "
+                        f"Rerank threshold filtering: {filtered_count} docs filtered "  # noqa: G004
                         f"(threshold={DEFAULT_RERANK_SCORE_THRESHOLD})"
                     )
 
@@ -987,7 +987,7 @@ class MemoryManager:
         try:
             llm_provider = build_default_provider()
 
-            logger.info(f"Agentic Retrieval: {req.query[:60]}...")
+            logger.info(f"Agentic Retrieval: {req.query[:60]}...")  # noqa: G004
 
             # ========== Round 1: Hybrid search ==========
             req1 = RetrieveMemRequest(
@@ -998,7 +998,7 @@ class MemoryManager:
                 memory_types=req.memory_types,
             )
             round1 = await self._search_hybrid(req1, retrieve_method='agentic')
-            logger.info(f"Round 1: {len(round1)} memories")
+            logger.info(f"Round 1: {len(round1)} memories")  # noqa: G004
 
             if not round1:
                 return await self._to_response([], req)
@@ -1031,7 +1031,7 @@ class MemoryManager:
                     max_docs=config.round1_rerank_top_n,
                 )
             logger.info(
-                f"LLM: {'Sufficient' if is_sufficient else 'Insufficient'} - {reasoning}"
+                f"LLM: {'Sufficient' if is_sufficient else 'Insufficient'} - {reasoning}"  # noqa: G004
             )
 
             if is_sufficient:
@@ -1049,7 +1049,7 @@ class MemoryManager:
                     max_docs=config.round1_rerank_top_n,
                     num_queries=config.num_queries,
                 )
-            logger.info(f"Generated {len(refined_queries)} queries")
+            logger.info(f"Generated {len(refined_queries)} queries")  # noqa: G004
 
             # Parallel hybrid search
             async def do_search(q: str) -> List[Dict]:
@@ -1079,7 +1079,7 @@ class MemoryManager:
             seen_ids = {m.get("id") for m in round1}
             round2_unique = [m for m in all_round2 if m.get("id") not in seen_ids]
             combined = round1 + round2_unique[: config.combined_total - len(round1)]
-            logger.info(f"Combined: {len(combined)} memories")
+            logger.info(f"Combined: {len(combined)} memories")  # noqa: G004
 
             # ========== Final Rerank ==========
             # Calculate final rerank quantity: satisfy both config (40) and user request (top_k)
@@ -1102,7 +1102,7 @@ class MemoryManager:
             return await self._to_response(final_results, req)
 
         except Exception as e:
-            logger.error(f"Error in retrieve_mem_agentic: {e}", exc_info=True)
+            logger.error(f"Error in retrieve_mem_agentic: {e}", exc_info=True)  # noqa: G004, G201
             return await self._to_response([], req)
 
     async def _batch_get_memcells(
@@ -1123,7 +1123,7 @@ class MemoryManager:
         # Deduplicate event_ids
         unique_event_ids = list(set(event_ids))
         logger.debug(
-            f"Batch get MemCells: Total {len(unique_event_ids)} (before deduplication: {len(event_ids)})"
+            f"Batch get MemCells: Total {len(unique_event_ids)} (before deduplication: {len(event_ids)})"  # noqa: G004
         )
 
         memcell_repo = get_bean_by_type(MemCellRawRepository)
@@ -1133,14 +1133,14 @@ class MemoryManager:
         for i in range(0, len(unique_event_ids), batch_size):
             batch_event_ids = unique_event_ids[i : i + batch_size]
             logger.debug(
-                f"Getting batch {i // batch_size + 1} MemCells: {len(batch_event_ids)} items"
+                f"Getting batch {i // batch_size + 1} MemCells: {len(batch_event_ids)} items"  # noqa: G004
             )
 
             batch_memcells = await memcell_repo.get_by_event_ids(batch_event_ids)
             all_memcells.update(batch_memcells)
 
         logger.debug(
-            f"Batch get MemCells completed: Successfully retrieved {len(all_memcells)} items"
+            f"Batch get MemCells completed: Successfully retrieved {len(all_memcells)} items"  # noqa: G004
         )
         return all_memcells
 
@@ -1313,7 +1313,7 @@ class MemoryManager:
                 if memcell and memcell.original_data:
                     original_data = memcell.original_data
                 else:
-                    logger.debug(f"Memcell not found: event_id={parent_id}")
+                    logger.debug(f"Memcell not found: event_id={parent_id}")  # noqa: G004
 
             # Create object based on memory type
             base_kwargs = {

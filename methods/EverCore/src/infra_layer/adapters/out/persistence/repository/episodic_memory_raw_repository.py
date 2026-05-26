@@ -64,7 +64,7 @@ class EpisodicMemoryRawRepository(BaseRepository[EpisodicMemory]):
                     user_id,
                 )
             return result
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001
             logger.error(
                 "❌ Failed to retrieve episodic memory by event ID and user ID: %s", e
             )
@@ -96,8 +96,8 @@ class EpisodicMemoryRawRepository(BaseRepository[EpisodicMemory]):
             for event_id in event_ids:
                 try:
                     object_ids.append(ObjectId(event_id))
-                except Exception as e:
-                    logger.warning(f"⚠️  Invalid event_id: {event_id}, error: {e}")
+                except Exception as e:  # noqa: BLE001
+                    logger.warning(f"⚠️  Invalid event_id: {event_id}, error: {e}")  # noqa: G004
                     continue
 
             if not object_ids:
@@ -120,7 +120,7 @@ class EpisodicMemoryRawRepository(BaseRepository[EpisodicMemory]):
                 len(result_dict),
             )
             return result_dict
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001
             logger.error("❌ Failed to batch retrieve episodic memories: %s", e)
             return {}
 
@@ -154,7 +154,7 @@ class EpisodicMemoryRawRepository(BaseRepository[EpisodicMemory]):
                     query_filter, projection_model=projection_model, session=session
                 ).to_list()
             return await self.model.find(query_filter, session=session).to_list()
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001
             logger.error("❌ Failed to find episodic memories by ids: %s", e)
             return []
 
@@ -262,7 +262,7 @@ class EpisodicMemoryRawRepository(BaseRepository[EpisodicMemory]):
                 len(results),
             )
             return results
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001
             logger.error("❌ Failed to retrieve episodic memories: %s", e)
             return []
 
@@ -321,7 +321,7 @@ class EpisodicMemoryRawRepository(BaseRepository[EpisodicMemory]):
                 count,
             )
             return count
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001
             logger.error("❌ Failed to count episodic memories: %s", e)
             return 0
 
@@ -350,7 +350,7 @@ class EpisodicMemoryRawRepository(BaseRepository[EpisodicMemory]):
                 episodic_memory.vector = vector.tolist()
                 # Set vectorization model information
                 episodic_memory.vector_model = self.vectorize_service.get_model_name()
-            except Exception as e:
+            except Exception as e:  # noqa: BLE001
                 logger.error("❌ Failed to synchronize vector: %s", e)
         try:
             await episodic_memory.insert(session=session)
@@ -360,7 +360,7 @@ class EpisodicMemoryRawRepository(BaseRepository[EpisodicMemory]):
                 episodic_memory.user_id,
             )
             return episodic_memory
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001
             logger.error("❌ Failed to append episodic memory: %s", e)
             return None
 
@@ -404,7 +404,7 @@ class EpisodicMemoryRawRepository(BaseRepository[EpisodicMemory]):
                     user_id,
                 )
                 return False
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001
             logger.error(
                 "❌ Failed to delete episodic memory by event ID and user ID: %s", e
             )
@@ -432,7 +432,7 @@ class EpisodicMemoryRawRepository(BaseRepository[EpisodicMemory]):
                 count,
             )
             return count
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001
             logger.error("❌ Failed to delete episodic memories by user ID: %s", e)
             return 0
 
@@ -550,7 +550,7 @@ class EpisodicMemoryRawRepository(BaseRepository[EpisodicMemory]):
                 len(results),
             )
             return results
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001
             logger.error("❌ Failed to paginate query of EpisodicMemory: %s", e)
             return []
 

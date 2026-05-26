@@ -97,11 +97,11 @@ class ForesightExtractor(MemoryExtractor):
                 try:
                     if retry == 0:
                         logger.info(
-                            f"🎯 Generating foresight associations for conversation: user_id={user_id}"
+                            f"🎯 Generating foresight associations for conversation: user_id={user_id}"  # noqa: G004
                         )
                     else:
                         logger.info(
-                            f"🎯 Generating foresight associations for conversation: user_id={user_id}, retry {retry}/5"
+                            f"🎯 Generating foresight associations for conversation: user_id={user_id}, retry {retry}/5"  # noqa: G004
                         )
 
                     # Build prompt (static prompt template via PromptManager)
@@ -114,13 +114,13 @@ class ForesightExtractor(MemoryExtractor):
 
                     # Call LLM to generate associations
                     logger.debug(
-                        f"📝 Starting LLM call to generate foresight associations, prompt length: {len(prompt)}"
+                        f"📝 Starting LLM call to generate foresight associations, prompt length: {len(prompt)}"  # noqa: G004
                     )
                     response = await self.llm_provider.generate(
                         prompt=prompt, temperature=0.3
                     )
                     logger.debug(
-                        f"✅ LLM call completed, response length: {len(response) if response else 0}"
+                        f"✅ LLM call completed, response length: {len(response) if response else 0}"  # noqa: G004
                     )
 
                     # Parse JSON response
@@ -142,19 +142,19 @@ class ForesightExtractor(MemoryExtractor):
                         foresights = foresights[:10]
                     elif len(foresights) < 4:
                         logger.warning(
-                            f"Generated foresight associations less than 4, actual count: {len(foresights)}"
+                            f"Generated foresight associations less than 4, actual count: {len(foresights)}"  # noqa: G004
                         )
 
                     logger.info(
-                        f"✅ Successfully generated {len(foresights)} foresight associations"
+                        f"✅ Successfully generated {len(foresights)} foresight associations"  # noqa: G004
                     )
                     for i, memory in enumerate(foresights[:3], 1):
-                        logger.info(f"  Association {i}: {memory.foresight}")
+                        logger.info(f"  Association {i}: {memory.foresight}")  # noqa: G004
 
                     return foresights
 
-                except Exception as e:
-                    logger.warning(f"Foresight generation retry {retry + 1}/5: {e}")
+                except Exception as e:  # noqa: BLE001
+                    logger.warning(f"Foresight generation retry {retry + 1}/5: {e}")  # noqa: G004
                     if retry == 4:
                         logger.error("Foresight generation failed after 5 retries")
                         return []
@@ -183,7 +183,7 @@ class ForesightExtractor(MemoryExtractor):
         # Validate format is YYYY-MM-DD
         if not re.match(r'^\d{4}-\d{2}-\d{2}$', cleaned):
             logger.warning(
-                f"Invalid time format, does not match YYYY-MM-DD: original='{date_str}', cleaned='{cleaned}'"
+                f"Invalid time format, does not match YYYY-MM-DD: original='{date_str}', cleaned='{cleaned}'"  # noqa: G004
             )
             return None
 
@@ -194,7 +194,7 @@ class ForesightExtractor(MemoryExtractor):
             datetime(year, month, day)
             return cleaned
         except ValueError as e:
-            logger.warning(f"Invalid date value: '{cleaned}', error: {e}")
+            logger.warning(f"Invalid date value: '{cleaned}', error: {e}")  # noqa: G004
             return None
 
     async def _parse_foresights_response(
@@ -308,15 +308,15 @@ class ForesightExtractor(MemoryExtractor):
 
                 return foresights
             else:
-                logger.error(f"Response is not in JSON array format: {data}")
+                logger.error(f"Response is not in JSON array format: {data}")  # noqa: G004
                 return []
 
         except json.JSONDecodeError as e:
-            logger.error(f"Error parsing JSON response: {e}")
-            logger.debug(f"Response content: {response[:200]}...")
+            logger.error(f"Error parsing JSON response: {e}")  # noqa: G004
+            logger.debug(f"Response content: {response[:200]}...")  # noqa: G004
             return []
-        except Exception as e:
-            logger.error(f"Error parsing foresight response: {e}")
+        except Exception as e:  # noqa: BLE001
+            logger.error(f"Error parsing foresight response: {e}")  # noqa: G004
             return []
 
     def _extract_start_time_from_timestamp(self, timestamp: datetime) -> str:
@@ -353,8 +353,8 @@ class ForesightExtractor(MemoryExtractor):
 
             return end_date.strftime('%Y-%m-%d')
 
-        except Exception as e:
-            logger.error(f"Error calculating end time from duration: {e}")
+        except Exception as e:  # noqa: BLE001
+            logger.error(f"Error calculating end time from duration: {e}")  # noqa: G004
             return None
 
     def _calculate_duration_days(self, start_time: str, end_time: str) -> Optional[int]:
@@ -378,6 +378,6 @@ class ForesightExtractor(MemoryExtractor):
             duration = end_date - start_date
             return duration.days
 
-        except Exception as e:
-            logger.error(f"Error calculating duration: {e}")
+        except Exception as e:  # noqa: BLE001
+            logger.error(f"Error calculating duration: {e}")  # noqa: G004
             return None

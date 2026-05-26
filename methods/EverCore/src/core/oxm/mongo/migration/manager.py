@@ -178,7 +178,7 @@ class Backward:
 
         # Write file
         filepath.write_text(content, encoding='utf-8')
-        logger.info(f"✅ Created migration file: {filepath}")
+        logger.info(f"✅ Created migration file: {filepath}")  # noqa: G004
 
         return filepath
 
@@ -212,9 +212,9 @@ class Backward:
             str(self.migrations_path),
         ]
 
-        logger.info(f"🚀 Executing command: {' '.join(cmd[3:])}")  # Hide python path
-        logger.info(f"📍 Database: {self.database}")
-        logger.info(f"📁 Migration directory: {self.migrations_path}")
+        logger.info(f"🚀 Executing command: {' '.join(cmd[3:])}")  # Hide python path  # noqa: G004
+        logger.info(f"📍 Database: {self.database}")  # noqa: G004
+        logger.info(f"📁 Migration directory: {self.migrations_path}")  # noqa: G004
 
         # Check if there are migration files in the directory
         migration_files = list(self.migrations_path.glob("*.py"))
@@ -222,14 +222,14 @@ class Backward:
         if not migration_files:
             logger.info("🧭 No migration files found in directory, skipping migration")
             return 0
-        logger.info(f"📄 Found {len(migration_files)} migration files")
+        logger.info(f"📄 Found {len(migration_files)} migration files")  # noqa: G004
 
         # Snapshot migration logs before running
         before_names, before_current = self._snapshot_migration_log()
         if before_names is not None:
-            logger.info(f"🧭 Number of records before migration: {len(before_names)}")
+            logger.info(f"🧭 Number of records before migration: {len(before_names)}")  # noqa: G004
             logger.info(
-                f"⭐ Current pointer before migration: {before_current or '<none>'}"
+                f"⭐ Current pointer before migration: {before_current or '<none>'}"  # noqa: G004
             )
         else:
             logger.info(
@@ -268,11 +268,11 @@ class Backward:
             return result.returncode
 
         except subprocess.CalledProcessError as e:
-            logger.error(f"❌ Command execution failed: {e}")
+            logger.error(f"❌ Command execution failed: {e}")  # noqa: G004
             if e.stdout:
-                logger.info(f"Standard output: {e.stdout}")
+                logger.info(f"Standard output: {e.stdout}")  # noqa: G004
             if e.stderr:
-                logger.error(f"Error output: {e.stderr}")
+                logger.error(f"Error output: {e.stderr}")  # noqa: G004
             # Snapshot and log diff even on failure (migration may have partially executed)
             self._log_migration_diff(before_names, before_current)
             return e.returncode
@@ -313,7 +313,7 @@ class Backward:
                         current = d.get("name")
                         break
                 return names, current
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001
             logger.warning("Failed to read migration logs: %s", str(e))
             return None, None
 
@@ -373,7 +373,7 @@ class Backward:
                     )
                 )
                 return docs
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001
             logger.warning("Failed to get migration history: %s", str(e))
             return []
 
@@ -434,6 +434,6 @@ class Backward:
 
             return exit_code
 
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001
             logger.error("❌ Error during MongoDB migration: %s", str(e))
             return 1

@@ -175,7 +175,7 @@ class MemorySearchController(BaseController):
         # 1. Parse and validate request body
         try:
             body = await fastapi_request.json()
-        except Exception:
+        except Exception:  # noqa: BLE001
             raise HTTPException(status_code=400, detail="Invalid JSON request body")
 
         try:
@@ -206,7 +206,7 @@ class MemorySearchController(BaseController):
             logger.error("search_memories validation error: %s", e)
             raise HTTPException(status_code=422, detail=str(e)) from e
         except Exception as e:
-            logger.error("search_memories failed: %s", e, exc_info=True)
+            logger.error("search_memories failed: %s", e, exc_info=True)  # noqa: G201
             raise HTTPException(
                 status_code=500,
                 detail="Failed to search memories, please try again later",

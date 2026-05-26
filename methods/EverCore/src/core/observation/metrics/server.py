@@ -67,11 +67,11 @@ def start_metrics_server(port: Optional[int] = None, addr: str = "0.0.0.0") -> b
         start_http_server(port=port, addr=addr, registry=get_metrics_registry())
 
         _metrics_server_started = True
-        logger.info(f"✅ Metrics server started on {addr}:{port}/metrics")
+        logger.info(f"✅ Metrics server started on {addr}:{port}/metrics")  # noqa: G004
         return True
 
-    except Exception as e:
-        logger.error(f"Failed to start metrics server: {e}")
+    except Exception as e:  # noqa: BLE001
+        logger.error(f"Failed to start metrics server: {e}")  # noqa: G004
         return False
 
 

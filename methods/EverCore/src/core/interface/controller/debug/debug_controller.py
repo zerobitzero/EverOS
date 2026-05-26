@@ -232,7 +232,7 @@ class DebugController(BaseController):
                 # First need to find the corresponding type
                 bean_class = self._find_bean_type_by_name(bean_type)
                 if not bean_class:
-                    logger.error(f"Bean class with type '{bean_type}' not found")
+                    logger.error(f"Bean class with type '{bean_type}' not found")  # noqa: G004
                     raise HTTPException(
                         status_code=404, detail=ErrorMessage.BEAN_NOT_FOUND.value
                     )
@@ -250,12 +250,12 @@ class DebugController(BaseController):
             if "not found" in str(e).lower():
                 identifier = bean_name or bean_type
                 method = "name" if bean_name else "type"
-                logger.error(f"Bean not found by {method} '{identifier}': {str(e)}")
+                logger.error(f"Bean not found by {method} '{identifier}': {str(e)}")  # noqa: G004
                 raise HTTPException(
                     status_code=404, detail=ErrorMessage.BEAN_NOT_FOUND.value
                 ) from e
             else:
-                logger.error(f"Error occurred while getting Bean: {str(e)}")
+                logger.error(f"Error occurred while getting Bean: {str(e)}")  # noqa: G004
                 raise HTTPException(
                     status_code=500, detail=ErrorMessage.BEAN_OPERATION_FAILED.value
                 ) from e
@@ -285,7 +285,7 @@ class DebugController(BaseController):
 
             return None
 
-        except Exception:
+        except Exception:  # noqa: BLE001
             # If get_beans() fails, use fallback method
             # Try to infer using common type name patterns
             try:
@@ -298,12 +298,12 @@ class DebugController(BaseController):
                         try:
                             bean_instance = get_bean(bean_info['name'])
                             return type(bean_instance)
-                        except Exception:
+                        except Exception:  # noqa: BLE001
                             continue
 
                 return None
 
-            except Exception:
+            except Exception:  # noqa: BLE001
                 # If all methods fail, return None
                 return None
 
@@ -393,7 +393,7 @@ class DebugController(BaseController):
                 safe_globals['uuid'] = uuid
                 safe_globals['typing'] = typing
             except ImportError as e:
-                logger.warning(f"Failed to pre-import module: {e}")
+                logger.warning(f"Failed to pre-import module: {e}")  # noqa: G004
 
             # No longer pre-import internal project modules, support completely free imports
 
@@ -415,21 +415,21 @@ class DebugController(BaseController):
             # Validate types
             if not isinstance(args, (list, tuple)):
                 logger.error(
-                    f"Wrong args parameter type: expected list or tuple, got {type(args).__name__}"
+                    f"Wrong args parameter type: expected list or tuple, got {type(args).__name__}"  # noqa: G004
                 )
                 raise ValueError(ErrorMessage.INVALID_PARAMETER.value)
 
             if not isinstance(kwargs, dict):
                 logger.error(
-                    f"Wrong kwargs parameter type: expected dict, got {type(kwargs).__name__}"
+                    f"Wrong kwargs parameter type: expected dict, got {type(kwargs).__name__}"  # noqa: G004
                 )
                 raise ValueError(ErrorMessage.INVALID_PARAMETER.value)
 
             return {'args': list(args), 'kwargs': kwargs}
 
-        except Exception as e:
-            logger.error(f"Failed to execute parameter generation code: {e}")
-            logger.error(f"Code execution exception details: {str(e)}")
+        except Exception as e:  # noqa: BLE001
+            logger.error(f"Failed to execute parameter generation code: {e}")  # noqa: G004
+            logger.error(f"Code execution exception details: {str(e)}")  # noqa: G004
             raise ValueError(ErrorMessage.INVALID_PARAMETER.value)
 
     @get(
@@ -558,7 +558,7 @@ class DebugController(BaseController):
                             methods=methods,
                         )
                     )
-                except Exception as e:
+                except Exception as e:  # noqa: BLE001
                     logger.warning(
                         "Failed to get method list for Bean '%s': %s",
                         bean_info['name'],
@@ -580,7 +580,7 @@ class DebugController(BaseController):
 
         except Exception as e:
             logger.error("Error occurred while listing all Beans: %s", str(e))
-            logger.error(f"Exception details when retrieving Bean list: {str(e)}")
+            logger.error(f"Exception details when retrieving Bean list: {str(e)}")  # noqa: G004
             raise HTTPException(
                 status_code=500, detail=ErrorMessage.BEAN_OPERATION_FAILED.value
             ) from e
@@ -727,7 +727,7 @@ class DebugController(BaseController):
             # Check if method exists
             if not hasattr(bean_instance, request.method):
                 logger.error(
-                    f"Method '{request.method}' does not exist in Bean '{bean_info['name']}'"
+                    f"Method '{request.method}' does not exist in Bean '{bean_info['name']}'"  # noqa: G004
                 )
                 raise HTTPException(
                     status_code=404, detail=ErrorMessage.BEAN_OPERATION_FAILED.value
@@ -738,7 +738,7 @@ class DebugController(BaseController):
             # Check if it is a callable object
             if not callable(method_to_call):
                 logger.error(
-                    f"Attribute '{request.method}' of Bean '{bean_info['name']}' is not callable"
+                    f"Attribute '{request.method}' of Bean '{bean_info['name']}' is not callable"  # noqa: G004
                 )
                 raise HTTPException(
                     status_code=400, detail=ErrorMessage.INVALID_PARAMETER.value
@@ -780,7 +780,7 @@ class DebugController(BaseController):
         except HTTPException:
             # Re-raise HTTP exceptions
             raise
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001
             # Catch and handle other exceptions
             error_msg = str(e)
             error_traceback = traceback.format_exc()
@@ -1072,7 +1072,7 @@ class DebugController(BaseController):
         except HTTPException:
             # Re-raise HTTP exceptions
             raise
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001
             # Catch and handle other exceptions
             error_msg = str(e)
             error_traceback = traceback.format_exc()

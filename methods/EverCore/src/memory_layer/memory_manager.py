@@ -142,9 +142,9 @@ class MemoryManager:
                 continue
             try:
                 self.providers_mapping[scene] = self._build_scene_provider(scene, cfg)
-            except Exception as e:
+            except Exception as e:  # noqa: BLE001
                 logger.warning(
-                    f"[MemoryManager] Failed to build provider for "
+                    f"[MemoryManager] Failed to build provider for "  # noqa: G004
                     f"scene '{scene}': {e}, falling back to default"
                 )
 
@@ -183,7 +183,7 @@ class MemoryManager:
         """
         now = time.time()
 
-        logger.debug(f"[MemoryManager] Starting boundary detection (flush={flush})")
+        logger.debug(f"[MemoryManager] Starting boundary detection (flush={flush})")  # noqa: G004
 
         request = ConversationMemCellExtractRequest(
             history_raw_data_list,
@@ -212,7 +212,7 @@ class MemoryManager:
             return [], status_result
 
         logger.info(
-            f"[MemoryManager] ✅ {len(memcells)} MemCell(s) created, "
+            f"[MemoryManager] ✅ {len(memcells)} MemCell(s) created, "  # noqa: G004
             f"elapsed time: {time.time() - now:.2f} seconds"
         )
 
@@ -284,7 +284,7 @@ class MemoryManager:
 
                 case _:
                     logger.warning(
-                        f"[MemoryManager] Unknown memory_type: {memory_type}"
+                        f"[MemoryManager] Unknown memory_type: {memory_type}"  # noqa: G004
                     )
                     status = 'error'
                     return None
@@ -333,7 +333,7 @@ class MemoryManager:
         # Call extractor's extract_memory method
         # It will automatically determine whether to extract group or personal Episode based on user_id
         logger.debug(
-            f"[MemoryManager] Extracting {'group' if user_id is None else 'personal'} Episode: user_id={user_id}"
+            f"[MemoryManager] Extracting {'group' if user_id is None else 'personal'} Episode: user_id={user_id}"  # noqa: G004
         )
 
         return await self._episode_extractor.extract_memory(request)
@@ -414,7 +414,7 @@ class MemoryManager:
         uid = user_id
         gid = group_id
 
-        logger.debug(f"[MemoryManager] Extracting AtomicFact: user_id={uid}")
+        logger.debug(f"[MemoryManager] Extracting AtomicFact: user_id={uid}")  # noqa: G004
 
         extractor = AtomicFactExtractor(
             llm_provider=self._get_provider_for_scene("extraction")

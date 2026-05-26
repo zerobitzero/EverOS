@@ -117,7 +117,7 @@ class ProfileMiddleware(BaseHTTPMiddleware):
             try:
                 # Execute request (note: original response will be discarded and replaced with profiler report)
                 await call_next(request)
-            except Exception as e:
+            except Exception as e:  # noqa: BLE001
                 # Even if the request fails, stop profiler and return profiling report
                 logger.error("Request failed during profiling: %s", str(e))
                 # Continue generating profiling report
@@ -133,7 +133,7 @@ class ProfileMiddleware(BaseHTTPMiddleware):
             # Return HTML-formatted profiling report
             return HTMLResponse(content=html_output, status_code=200)
 
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001
             logger.error("Error occurred during profiling: %s", str(e))
             # If profiling fails, re-execute normal request
             return await call_next(request)

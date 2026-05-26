@@ -54,7 +54,7 @@ class RawMessageRepository(BaseRepository[RawMessage]):
                 raw_message.request_id,
             )
             return raw_message
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001
             logger.error("Failed to save raw message: %s", e)
             return None
 
@@ -150,7 +150,7 @@ class RawMessageRepository(BaseRepository[RawMessage]):
             from common_utils.datetime_utils import to_iso_format
 
             return to_iso_format(create_time)
-        except Exception:
+        except Exception:  # noqa: BLE001
             if isinstance(create_time, str):
                 return create_time
             return None
@@ -175,7 +175,7 @@ class RawMessageRepository(BaseRepository[RawMessage]):
                 {"request_id": request_id}, session=session
             )
             return result
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001
             logger.error("Failed to get raw message by request ID: %s", e)
             return None
 
@@ -218,7 +218,7 @@ class RawMessageRepository(BaseRepository[RawMessage]):
                     message_id,
                 )
             return result
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001
             logger.error(
                 "Failed to find raw message by group_id/sender_id/message_id: "
                 "group_id=%s, sender_id=%s, message_id=%s, error=%s",
@@ -285,7 +285,7 @@ class RawMessageRepository(BaseRepository[RawMessage]):
                 len(results),
             )
             return results
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001
             logger.error("Failed to query raw messages by group_id: %s", e)
             return []
 
@@ -356,7 +356,7 @@ class RawMessageRepository(BaseRepository[RawMessage]):
                 len(results),
             )
             return results
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001
             logger.error(
                 "Failed to query raw messages by group_id with statuses: %s", e
             )
@@ -392,7 +392,7 @@ class RawMessageRepository(BaseRepository[RawMessage]):
                 len(results),
             )
             return results
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001
             logger.error("Failed to query raw messages by sender_id: %s", e)
             return []
 
@@ -418,7 +418,7 @@ class RawMessageRepository(BaseRepository[RawMessage]):
                 "Deleted raw messages: group_id=%s, deleted=%d", group_id, deleted_count
             )
             return deleted_count
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001
             logger.error(
                 "Failed to delete raw messages: group_id=%s, error=%s", group_id, e
             )
@@ -468,7 +468,7 @@ class RawMessageRepository(BaseRepository[RawMessage]):
                 "Soft deleted raw messages: filter=%s, deleted=%d", filter_dict, count
             )
             return count
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001
             logger.error(
                 "Failed to soft delete raw messages: filter=%s, error=%s",
                 {"sender_id": sender_id, "group_id": group_id},
@@ -510,7 +510,7 @@ class RawMessageRepository(BaseRepository[RawMessage]):
                 modified_count,
             )
             return modified_count
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001
             logger.error(
                 "Failed to confirm window accumulation: group_id=%s, error=%s",
                 group_id,
@@ -564,7 +564,7 @@ class RawMessageRepository(BaseRepository[RawMessage]):
                 modified_count,
             )
             return modified_count
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001
             logger.error(
                 "Failed to confirm window accumulation (precise): group_id=%s, error=%s",
                 group_id,
@@ -614,7 +614,7 @@ class RawMessageRepository(BaseRepository[RawMessage]):
                 modified_count,
             )
             return modified_count
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001
             logger.error("Failed to mark as used: group_id=%s, error=%s", group_id, e)
             return 0
 
@@ -707,7 +707,7 @@ class RawMessageRepository(BaseRepository[RawMessage]):
                 len(results),
             )
             return results
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001
             logger.error(
                 "Failed to query pending raw messages: sender_id=%s, group_ids=%s, error=%s",
                 sender_id,

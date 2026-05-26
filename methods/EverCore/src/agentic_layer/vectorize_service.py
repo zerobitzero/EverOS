@@ -248,7 +248,7 @@ class HybridVectorizeService(VectorizeServiceInterface):
             )
 
         logger.info(
-            f"Initialized HybridVectorizeService | "
+            f"Initialized HybridVectorizeService | "  # noqa: G004
             f"primary={config.primary_provider} | "
             f"fallback={config.fallback_provider} | "
             f"fallback_enabled={config.enable_fallback} | "
@@ -390,7 +390,7 @@ class HybridVectorizeService(VectorizeServiceInterface):
             self.config._primary_failure_count = 0
             return result
 
-        except Exception as primary_error:
+        except Exception as primary_error:  # noqa: BLE001
             primary_duration = time.perf_counter() - start_time
 
             # Increment failure count
@@ -407,7 +407,7 @@ class HybridVectorizeService(VectorizeServiceInterface):
             )
 
             logger.warning(
-                f"Primary service ({self.config.primary_provider}) {operation_name} failed "
+                f"Primary service ({self.config.primary_provider}) {operation_name} failed "  # noqa: G004
                 f"(count: {self.config._primary_failure_count}): {primary_error}"
             )
 
@@ -431,7 +431,7 @@ class HybridVectorizeService(VectorizeServiceInterface):
             if self.config._primary_failure_count >= self.config.max_primary_failures:
                 fallback_reason = 'max_failures_exceeded'
                 logger.warning(
-                    f"⚠️ Primary service exceeded max failures ({self.config.max_primary_failures}), "
+                    f"⚠️ Primary service exceeded max failures ({self.config.max_primary_failures}), "  # noqa: G004
                     f"using {self.config.fallback_provider} fallback"
                 )
 
@@ -446,7 +446,7 @@ class HybridVectorizeService(VectorizeServiceInterface):
             fallback_start = time.perf_counter()
             try:
                 logger.info(
-                    f"🔄 Falling back to {self.config.fallback_provider} for {operation_name}"
+                    f"🔄 Falling back to {self.config.fallback_provider} for {operation_name}"  # noqa: G004
                 )
                 result = await fallback_func()
                 fallback_duration = time.perf_counter() - fallback_start
@@ -462,7 +462,7 @@ class HybridVectorizeService(VectorizeServiceInterface):
 
                 return result
 
-            except Exception as fallback_error:
+            except Exception as fallback_error:  # noqa: BLE001
                 fallback_duration = time.perf_counter() - fallback_start
 
                 # Record fallback error
@@ -479,7 +479,7 @@ class HybridVectorizeService(VectorizeServiceInterface):
                     batch_size=batch_size,
                 )
 
-                logger.error(f"❌ Fallback also failed: {fallback_error}")
+                logger.error(f"❌ Fallback also failed: {fallback_error}")  # noqa: G004
                 raise VectorizeError(
                     f"Both primary and fallback services failed. "
                     f"Primary ({self.config.primary_provider}): {primary_error}, "

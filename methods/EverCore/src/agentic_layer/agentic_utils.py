@@ -191,8 +191,8 @@ def parse_json_response(response: str) -> Dict[str, Any]:
         return result
 
     except json.JSONDecodeError as e:
-        logger.error(f"Failed to parse JSON response: {e}")
-        logger.debug(f"Raw response: {response[:500]}")
+        logger.error(f"Failed to parse JSON response: {e}")  # noqa: G004
+        logger.debug(f"Raw response: {response[:500]}")  # noqa: G004
         raise ValueError(f"JSON parse error: {e}")
 
 
@@ -223,8 +223,8 @@ def parse_sufficiency_response(response: str) -> Tuple[bool, str, List[str]]:
 
         return is_sufficient, reasoning, missing_info
 
-    except Exception as e:
-        logger.error(f"Failed to parse sufficiency response: {e}")
+    except Exception as e:  # noqa: BLE001
+        logger.error(f"Failed to parse sufficiency response: {e}")  # noqa: G004
         # Conservative fallback: assume sufficient
         return True, f"Parse error: {str(e)}", []
 
@@ -268,11 +268,11 @@ def parse_multi_query_response(
         # Limit to maximum 3 queries
         valid_queries = valid_queries[:3]
 
-        logger.info(f"Generated {len(valid_queries)} valid queries")
+        logger.info(f"Generated {len(valid_queries)} valid queries")  # noqa: G004
         return valid_queries, reasoning
 
-    except Exception as e:
-        logger.error(f"Failed to parse multi-query response: {e}")
+    except Exception as e:  # noqa: BLE001
+        logger.error(f"Failed to parse multi-query response: {e}")  # noqa: G004
         # Fallback: return original query
         return [original_query], f"Parse error: {str(e)}"
 
@@ -320,7 +320,7 @@ async def check_sufficiency(
         )
 
         # 3. Call LLM
-        logger.debug(f"Calling LLM for sufficiency check on query: {query[:50]}...")
+        logger.debug(f"Calling LLM for sufficiency check on query: {query[:50]}...")  # noqa: G004
         result_text = await llm_provider.generate(
             prompt=prompt,
             temperature=0.0,  # Low temperature for more stable judgment
@@ -330,8 +330,8 @@ async def check_sufficiency(
         # 4. Parse response
         is_sufficient, reasoning, missing_info = parse_sufficiency_response(result_text)
 
-        logger.info(f"Sufficiency check result: {is_sufficient}")
-        logger.debug(f"Reasoning: {reasoning}")
+        logger.info(f"Sufficiency check result: {is_sufficient}")  # noqa: G004
+        logger.debug(f"Reasoning: {reasoning}")  # noqa: G004
 
         return is_sufficient, reasoning, missing_info
 
@@ -341,7 +341,7 @@ async def check_sufficiency(
         return True, "Timeout: LLM took too long", []
 
     except Exception as e:
-        logger.error(f"Sufficiency check failed: {e}", exc_info=True)
+        logger.error(f"Sufficiency check failed: {e}", exc_info=True)  # noqa: G004, G201
         # Conservative fallback: assume sufficient
         return True, f"Error: {str(e)}", []
 
@@ -396,7 +396,7 @@ async def generate_multi_queries(
         )
 
         # 3. Call LLM
-        logger.debug(f"Generating multi-queries for: {original_query[:50]}...")
+        logger.debug(f"Generating multi-queries for: {original_query[:50]}...")  # noqa: G004
         result_text = await llm_provider.generate(
             prompt=prompt,
             temperature=0.4,  # Slightly higher temperature to increase query diversity
@@ -406,9 +406,9 @@ async def generate_multi_queries(
         # 4. Parse response
         queries, reasoning = parse_multi_query_response(result_text, original_query)
 
-        logger.info(f"Generated {len(queries)} queries")
+        logger.info(f"Generated {len(queries)} queries")  # noqa: G004
         for i, q in enumerate(queries, 1):
-            logger.debug(f"  Query {i}: {q[:80]}{'...' if len(q) > 80 else ''}")
+            logger.debug(f"  Query {i}: {q[:80]}{'...' if len(q) > 80 else ''}")  # noqa: G004
 
         return queries, reasoning
 
@@ -418,6 +418,6 @@ async def generate_multi_queries(
         return [original_query], "Timeout: used original query"
 
     except Exception as e:
-        logger.error(f"Multi-query generation failed: {e}", exc_info=True)
+        logger.error(f"Multi-query generation failed: {e}", exc_info=True)  # noqa: G004, G201
         # Fallback to original query
         return [original_query], f"Error: {str(e)}"

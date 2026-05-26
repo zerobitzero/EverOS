@@ -12,7 +12,6 @@ Technical implementation:
 - Supports idempotent operations (using upsert semantics)
 """
 
-import traceback
 from datetime import timedelta
 from typing import Optional, List, Dict, Any
 
@@ -164,9 +163,8 @@ async def sync_episodic_memory_docs(
                     success_count += inserted_count
                     logger.info("Bulk insert successful: %d records", inserted_count)
 
-                except Exception as e:  # noqa: BLE001
-                    logger.error("Bulk insert to Milvus failed: %s", e)
-                    traceback.print_exc()
+                except Exception:  # noqa: BLE001
+                    logger.exception("Bulk insert to Milvus failed")
                     error_count += len(milvus_entities)
 
             # Update statistics
@@ -199,7 +197,6 @@ async def sync_episodic_memory_docs(
             error_count,
         )
 
-    except Exception as exc:  # noqa: BLE001
-        logger.error("Error occurred during sync: %s", exc)
-        traceback.print_exc()
+    except Exception:  # noqa: BLE001
+        logger.exception("Error occurred during sync")
         raise

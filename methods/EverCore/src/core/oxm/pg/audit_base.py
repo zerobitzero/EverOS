@@ -136,6 +136,6 @@ def _get_current_user_id() -> Optional[str]:
         user_info = get_current_user_info()
         if user_info and 'user_id' in user_info:
             return str(user_info['user_id'])
-    except Exception as e:  # pylint: disable=broad-except
+    except Exception as e:  # pylint: disable=broad-except  # noqa: BLE001
         logger.debug("Failed to get current user information: %s", e)
     return None

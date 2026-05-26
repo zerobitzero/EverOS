@@ -352,7 +352,7 @@ class TenantAwareMongoClient(AsyncMongoClient):
             try:
                 await client.close()
                 logger.info("🔌 MongoDB client closed [cache_key=%s]", cache_key)
-            except Exception as e:
+            except Exception as e:  # noqa: BLE001
                 logger.error(
                     "❌ Failed to close client [cache_key=%s]: %s", cache_key, e
                 )
@@ -364,7 +364,7 @@ class TenantAwareMongoClient(AsyncMongoClient):
             try:
                 await self._fallback_client.close()
                 logger.info("🔌 Fallback MongoDB client closed")
-            except Exception as e:
+            except Exception as e:  # noqa: BLE001
                 logger.error("❌ Failed to close fallback client: %s", e)
 
             self._fallback_client = None

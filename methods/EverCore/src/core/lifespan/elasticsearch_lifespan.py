@@ -98,5 +98,5 @@ class ElasticsearchLifespanProvider(LifespanProvider):
             try:
                 await self._es_factory.close_all_clients()
                 logger.info("✅ Elasticsearch connection closed successfully")
-            except Exception as e:
+            except Exception as e:  # noqa: BLE001
                 logger.error("❌ Error closing Elasticsearch connection: %s", str(e))

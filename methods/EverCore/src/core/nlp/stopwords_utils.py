@@ -44,7 +44,7 @@ class StopwordsManager:
 
         # Check if file exists
         if not os.path.exists(self.stopwords_file_path):
-            logger.warning(f"Stopwords file does not exist: {self.stopwords_file_path}")
+            logger.warning(f"Stopwords file does not exist: {self.stopwords_file_path}")  # noqa: G004
             logger.info("An empty stopwords set will be used")
             self._stopwords = stopwords
             return stopwords
@@ -57,13 +57,13 @@ class StopwordsManager:
                         stopwords.add(word)
 
             logger.info(
-                f"Successfully loaded stopwords, total {len(stopwords)} stopwords"
+                f"Successfully loaded stopwords, total {len(stopwords)} stopwords"  # noqa: G004
             )
             self._stopwords = stopwords
             return stopwords
 
-        except Exception as e:
-            logger.error(f"Failed to load stopwords: {e}")
+        except Exception as e:  # noqa: BLE001
+            logger.error(f"Failed to load stopwords: {e}")  # noqa: G004
             logger.info("An empty stopwords set will be used")
             self._stopwords = set()
             return set()

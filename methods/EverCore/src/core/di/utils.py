@@ -269,7 +269,7 @@ def get_or_create(bean_type: Type[T], factory: Callable[[], T] = None) -> T:
                 instance = bean_type()
                 register_bean(bean_type, instance)
                 return instance
-            except Exception:
+            except Exception:  # noqa: BLE001
                 raise BeanNotFoundError(bean_type=bean_type)
 
 

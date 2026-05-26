@@ -147,7 +147,7 @@ class UserProfileMilvusRepository(BaseMilvusRepository[UserProfileCollection]):
 
             return count
 
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001
             logger.error(
                 "Failed to delete profile items: user_id=%s, group_id=%s, error=%s",
                 user_id,

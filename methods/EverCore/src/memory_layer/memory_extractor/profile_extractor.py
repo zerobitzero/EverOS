@@ -158,7 +158,7 @@ class ProfileExtractor(MemoryExtractor):
         # Initialize profile
         if old_profile is None:
             logger.info(
-                f"[ProfileExtractor] No old_profile for user={request.user_id}, creating new"
+                f"[ProfileExtractor] No old_profile for user={request.user_id}, creating new"  # noqa: G004
             )
             current_profile = ProfileMemory(
                 memory_type=MemoryType.PROFILE,
@@ -168,7 +168,7 @@ class ProfileExtractor(MemoryExtractor):
             )
         else:
             logger.info(
-                f"[ProfileExtractor] Using old_profile for user={request.user_id}: "
+                f"[ProfileExtractor] Using old_profile for user={request.user_id}: "  # noqa: G004
                 f"explicit={len(old_profile.explicit_info)}, implicit={len(old_profile.implicit_traits)}"
             )
             current_profile = old_profile
@@ -176,7 +176,7 @@ class ProfileExtractor(MemoryExtractor):
         # Check if already processed
         ep_id = new_episode.get("id")
         if ep_id in current_profile.processed_episode_ids:
-            logger.info(f"Episode {ep_id} already processed, skipping")
+            logger.info(f"Episode {ep_id} already processed, skipping")  # noqa: G004
             return current_profile
 
         # Create ID mapping
@@ -187,7 +187,7 @@ class ProfileExtractor(MemoryExtractor):
         )
         id_map = _create_id_mapping(all_ids)
 
-        logger.info(f"Processing profile: cluster={len(cluster_episodes)}, new=1")
+        logger.info(f"Processing profile: cluster={len(cluster_episodes)}, new=1")  # noqa: G004
 
         # Resolve target_user_name for TEAM scene
         target_user_name = request.target_user_name
@@ -230,7 +230,7 @@ class ProfileExtractor(MemoryExtractor):
 
         if current_profile.total_items() > compact_threshold:
             logger.info(
-                f"Profile has {current_profile.total_items()} items (threshold={compact_threshold}), "
+                f"Profile has {current_profile.total_items()} items (threshold={compact_threshold}), "  # noqa: G004
                 f"compacting to {compact_target}..."
             )
             current_profile = await self._compact_profile(
@@ -306,12 +306,12 @@ class ProfileExtractor(MemoryExtractor):
                     if op_type == ProfileItemType.EXPLICIT_INFO:
                         explicit_list.append(data)
                         logger.info(
-                            f"[Profile] Added explicit_info: {data.get('description', '')[:30]}..."
+                            f"[Profile] Added explicit_info: {data.get('description', '')[:30]}..."  # noqa: G004
                         )
                     elif op_type == ProfileItemType.IMPLICIT_TRAITS:
                         implicit_list.append(data)
                         logger.info(
-                            f"[Profile] Added implicit_trait: {data.get('trait', '')}..."
+                            f"[Profile] Added implicit_trait: {data.get('trait', '')}..."  # noqa: G004
                         )
 
                 elif action == ProfileAction.UPDATE:
@@ -336,7 +336,7 @@ class ProfileExtractor(MemoryExtractor):
                                     )
                                 else:
                                     target_list[index][key] = val
-                        logger.info(f"[Profile] Updated {op_type}[{index}]")
+                        logger.info(f"[Profile] Updated {op_type}[{index}]")  # noqa: G004
 
                 elif action == ProfileAction.DELETE:
                     op_type = op.get("type")
@@ -350,7 +350,7 @@ class ProfileExtractor(MemoryExtractor):
                     if 0 <= index < len(target_list) and reason:
                         target_list.pop(index)
                         logger.warning(
-                            f"[Profile] Deleted {op_type}[{index}]: {reason}"
+                            f"[Profile] Deleted {op_type}[{index}]: {reason}"  # noqa: G004
                         )
 
             result_dict = {
@@ -359,8 +359,8 @@ class ProfileExtractor(MemoryExtractor):
             }
             return _replace_sources(result_dict, id_map, reverse=True)
 
-        except Exception as e:
-            logger.error(f"LLM update profile failed: {e}")
+        except Exception as e:  # noqa: BLE001
+            logger.error(f"LLM update profile failed: {e}")  # noqa: G004
             return None
 
     def _build_timestamp_map(
@@ -455,8 +455,8 @@ class ProfileExtractor(MemoryExtractor):
 
             return profile
 
-        except Exception as e:
-            logger.error(f"LLM compact profile failed: {e}")
+        except Exception as e:  # noqa: BLE001
+            logger.error(f"LLM compact profile failed: {e}")  # noqa: G004
             return profile
 
     def _format_profile_for_llm(self, profile_dict: Dict[str, Any]) -> str:
@@ -545,7 +545,7 @@ class ProfileExtractor(MemoryExtractor):
                         return name
         # Fallback to user_id itself
         logger.warning(
-            f"Could not resolve sender_name for user_id={user_id}, using user_id as fallback"
+            f"Could not resolve sender_name for user_id={user_id}, using user_id as fallback"  # noqa: G004
         )
         return user_id
 
@@ -564,7 +564,7 @@ class ProfileExtractor(MemoryExtractor):
             if brace_start >= 0 and brace_end > brace_start:
                 try:
                     data = json.loads(response[brace_start:brace_end])
-                except Exception:
+                except Exception:  # noqa: BLE001
                     logger.warning("Failed to parse profile response JSON")
                     return None
             else:
@@ -573,6 +573,6 @@ class ProfileExtractor(MemoryExtractor):
 
         update_note = data.get("update_note") or data.get("compact_note")
         if update_note:
-            logger.info(f"Profile update: {update_note}")
+            logger.info(f"Profile update: {update_note}")  # noqa: G004
 
         return data

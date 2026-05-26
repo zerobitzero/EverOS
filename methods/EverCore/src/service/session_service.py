@@ -62,7 +62,7 @@ class SessionService:
 
             await repo.upsert_by_session_id(session_id, update_data)
             logger.debug("Session auto-registered: session_id=%s", session_id)
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001
             # Fire-and-forget: log error but don't raise
             logger.warning(
                 "Failed to auto-register session: session_id=%s, error=%s",

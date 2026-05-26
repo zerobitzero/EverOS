@@ -57,7 +57,7 @@ class MemCellRawRepository(BaseRepository[MemCell]):
             else:
                 logger.debug("⚠️  MemCell not found: event_id=%s", event_id)
             return result
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001
             logger.error("❌ Failed to retrieve MemCell by event_id: %s", e)
             return None
 
@@ -89,7 +89,7 @@ class MemCellRawRepository(BaseRepository[MemCell]):
                 try:
                     object_ids.append(ObjectId(event_id))
                     valid_event_ids.append(event_id)
-                except Exception as e:
+                except Exception as e:  # noqa: BLE001
                     logger.warning("⚠️  Invalid event_id: %s, error: %s", event_id, e)
 
             if not object_ids:
@@ -119,7 +119,7 @@ class MemCellRawRepository(BaseRepository[MemCell]):
 
             return result_dict
 
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001
             logger.error("❌ Failed to batch retrieve MemCell by event_ids: %s", e)
             return {}
 
@@ -133,7 +133,7 @@ class MemCellRawRepository(BaseRepository[MemCell]):
             await memcell.insert(session=session)
             logger.debug("Successfully appended MemCell: %s", memcell.event_id)
             return memcell
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001
             logger.error("❌ Failed to append MemCell: %s", e)
             return None
 
@@ -196,7 +196,7 @@ class MemCellRawRepository(BaseRepository[MemCell]):
                 )
                 return True
             return False
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001
             logger.error("❌ Failed to soft delete MemCell by event_id: %s", e)
             return False
 
@@ -224,7 +224,7 @@ class MemCellRawRepository(BaseRepository[MemCell]):
                 )
                 return True
             return False
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001
             logger.error("❌ Failed to hard delete MemCell by event_id: %s", e)
             return False
 
@@ -271,7 +271,7 @@ class MemCellRawRepository(BaseRepository[MemCell]):
                 len(results),
             )
             return results
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001
             logger.error("❌ Failed to query MemCell by user ID: %s", e)
             return []
 
@@ -329,7 +329,7 @@ class MemCellRawRepository(BaseRepository[MemCell]):
                 len(results),
             )
             return results
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001
             logger.error("❌ Failed to query MemCell by user and time range: %s", e)
             return []
 
@@ -372,7 +372,7 @@ class MemCellRawRepository(BaseRepository[MemCell]):
                 len(results),
             )
             return results
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001
             logger.error("❌ Failed to query MemCell by group ID: %s", e)
             return []
 
@@ -422,7 +422,7 @@ class MemCellRawRepository(BaseRepository[MemCell]):
             return results
         except Exception as e:
             logger.error("❌ Failed to query MemCell by time range: %s", e)
-            logger.error("Detailed error information:", exc_info=True)
+            logger.error("Detailed error information:", exc_info=True)  # noqa: G201
             return []
 
     async def find_by_participants(
@@ -467,7 +467,7 @@ class MemCellRawRepository(BaseRepository[MemCell]):
                 len(results),
             )
             return results
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001
             logger.error("❌ Failed to query MemCell by participants: %s", e)
             return []
 
@@ -511,7 +511,7 @@ class MemCellRawRepository(BaseRepository[MemCell]):
                 len(results),
             )
             return results
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001
             logger.error("❌ Failed to query MemCell by keywords: %s", e)
             return []
 
@@ -545,7 +545,7 @@ class MemCellRawRepository(BaseRepository[MemCell]):
                 count,
             )
             return count
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001
             logger.error("❌ Failed to soft delete all MemCell of user: %s", e)
             return 0
 
@@ -577,7 +577,7 @@ class MemCellRawRepository(BaseRepository[MemCell]):
                 count,
             )
             return count
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001
             logger.error("❌ Failed to soft delete all MemCell of group: %s", e)
             return 0
 
@@ -665,7 +665,7 @@ class MemCellRawRepository(BaseRepository[MemCell]):
                 count,
             )
             return count
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001
             logger.error("❌ Failed to hard delete all MemCell of user: %s", e)
             return 0
 
@@ -707,7 +707,7 @@ class MemCellRawRepository(BaseRepository[MemCell]):
                 count,
             )
             return count
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001
             logger.error("❌ Failed to soft delete MemCell within time range: %s", e)
             return 0
 
@@ -747,7 +747,7 @@ class MemCellRawRepository(BaseRepository[MemCell]):
                 count,
             )
             return count
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001
             logger.error("❌ Failed to hard delete MemCell within time range: %s", e)
             return 0
 
@@ -776,7 +776,7 @@ class MemCellRawRepository(BaseRepository[MemCell]):
                 )
                 return True
             return False
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001
             logger.error("❌ Failed to restore MemCell by event_id: %s", e)
             return False
 
@@ -804,7 +804,7 @@ class MemCellRawRepository(BaseRepository[MemCell]):
                 count,
             )
             return count
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001
             logger.error("❌ Failed to restore all MemCell of user: %s", e)
             return 0
 
@@ -845,7 +845,7 @@ class MemCellRawRepository(BaseRepository[MemCell]):
                 count,
             )
             return count
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001
             logger.error("❌ Failed to restore MemCell within time range: %s", e)
             return 0
 
@@ -869,7 +869,7 @@ class MemCellRawRepository(BaseRepository[MemCell]):
                 count,
             )
             return count
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001
             logger.error("❌ Failed to count user MemCell: %s", e)
             return 0
 
@@ -905,7 +905,7 @@ class MemCellRawRepository(BaseRepository[MemCell]):
                 count,
             )
             return count
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001
             logger.error("❌ Failed to count MemCell within time range: %s", e)
             return 0
 
@@ -933,7 +933,7 @@ class MemCellRawRepository(BaseRepository[MemCell]):
                 len(results),
             )
             return results
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001
             logger.error("❌ Failed to retrieve latest user MemCell: %s", e)
             return []
 

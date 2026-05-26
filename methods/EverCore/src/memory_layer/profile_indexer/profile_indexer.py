@@ -216,7 +216,7 @@ class ProfileIndexer:
                 return stats
 
             except Exception as e:
-                logger.error(
+                logger.error(  # noqa: G201
                     "[ProfileIndexer] ❌ Failed to index profile: user_id=%s, group_id=%s, error=%s",
                     user_id,
                     group_id,
@@ -247,7 +247,7 @@ class ProfileIndexer:
                 deleted_count,
             )
             return deleted_count
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001
             logger.error("[ProfileIndexer] Failed to delete profile index: %s", e)
             return 0
 
@@ -274,7 +274,7 @@ class ProfileIndexer:
 
             return vectors
 
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001
             logger.error("[ProfileIndexer] Failed to generate embeddings: %s", e)
             return []
 
@@ -300,7 +300,7 @@ async def index_user_profile(
     try:
         indexer = get_bean_by_type(ProfileIndexer)
         return await indexer.index_profile(user_id, group_id, profile, doc_id=doc_id)
-    except Exception as e:
+    except Exception as e:  # noqa: BLE001
         logger.error("[ProfileIndexer] Failed to get indexer service: %s", e)
         return {
             "deleted_count": 0,

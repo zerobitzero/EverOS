@@ -77,7 +77,7 @@ class DatabaseLifespanProvider(LifespanProvider):
             try:
                 await self._db_provider.close()
                 logger.info("Database connection closed successfully")
-            except Exception as e:
+            except Exception as e:  # noqa: BLE001
                 logger.error("Error while closing database connection: %s", str(e))
 
         # Clean up database-related attributes in app.state

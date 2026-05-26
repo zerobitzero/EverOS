@@ -16,7 +16,6 @@ Arguments:
 
 import argparse
 import asyncio
-import traceback
 
 from core.observation.logger import get_logger
 
@@ -57,9 +56,8 @@ async def run(
         else:
             raise ValueError(f"Unsupported Collection type: {collection_name}")
 
-    except Exception as exc:  # noqa: BLE001
-        logger.error("Failed to sync documents: %s", exc)
-        traceback.print_exc()
+    except Exception:  # noqa: BLE001
+        logger.exception("Failed to sync documents")
         raise
 
 

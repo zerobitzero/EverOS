@@ -190,7 +190,7 @@ def _replace_strategy():
             "  📌 Addon priority configuration: %s (environment variable: ADDON_PRIORITY)",
             AddonBeanOrderStrategy.load_addon_priority_map(),
         )
-    except Exception as e:
+    except Exception as e:  # noqa: BLE001
         logger.error("Failed to replace Bean ordering strategy: %s", e)
 
 

@@ -118,10 +118,10 @@ def main():
             try:
                 filepath = manager.create_migration(args.name)
                 logger.info("🎉 Migration file created successfully!")
-                logger.info(f"📝 Please edit file: {filepath}")
+                logger.info(f"📝 Please edit file: {filepath}")  # noqa: G004
 
-            except Exception as e:
-                logger.error(f"❌ Failed to create migration: {e}")
+            except Exception as e:  # noqa: BLE001
+                logger.error(f"❌ Failed to create migration: {e}")  # noqa: G004
                 sys.exit(1)
 
         elif args.command == "migrate":
@@ -135,12 +135,12 @@ def main():
                 sys.exit(exit_code)
 
         else:
-            logger.error(f"❌ Unknown command: {sys.argv[1]}")
+            logger.error(f"❌ Unknown command: {sys.argv[1]}")  # noqa: G004
             show_help()
             sys.exit(1)
 
-    except Exception as e:
-        logger.error(f"❌ Error: {e}")
+    except Exception as e:  # noqa: BLE001
+        logger.error(f"❌ Error: {e}")  # noqa: G004
         sys.exit(1)
 
 

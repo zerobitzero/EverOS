@@ -98,7 +98,7 @@ class SenderController(BaseController):
         except HTTPException:
             raise
         except Exception as e:
-            logger.error("Sender create failed: %s", e, exc_info=True)
+            logger.error("Sender create failed: %s", e, exc_info=True)  # noqa: G201
             raise HTTPException(
                 status_code=500, detail="Failed to create sender"
             ) from e
@@ -145,7 +145,7 @@ class SenderController(BaseController):
         except HTTPException:
             raise
         except Exception as e:
-            logger.error("Sender get failed: %s", e, exc_info=True)
+            logger.error("Sender get failed: %s", e, exc_info=True)  # noqa: G201
             raise HTTPException(
                 status_code=500, detail="Failed to retrieve sender"
             ) from e
@@ -204,7 +204,7 @@ class SenderController(BaseController):
         except HTTPException:
             raise
         except Exception as e:
-            logger.error("Sender patch failed: %s", e, exc_info=True)
+            logger.error("Sender patch failed: %s", e, exc_info=True)  # noqa: G201
             raise HTTPException(
                 status_code=500, detail="Failed to update sender"
             ) from e

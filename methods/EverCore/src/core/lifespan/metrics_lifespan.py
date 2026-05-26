@@ -56,7 +56,7 @@ class MetricsLifespanProvider(LifespanProvider):
 
             return (port, success)
 
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001
             logger.error("Failed to start metrics server: %s", str(e))
             # Don't raise - metrics failure shouldn't prevent app startup
             return (port, False)

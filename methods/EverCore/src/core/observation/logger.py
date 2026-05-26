@@ -346,7 +346,7 @@ def warning(message: str, *args, **kwargs):
 
 def warn(message: str, *args, **kwargs):
     """Log warning (alias)"""
-    logger_provider.warn(message, *args, **kwargs)
+    logger_provider.warn(message, *args, **kwargs)  # noqa: G010
 
 
 def error(message: str, exc_info: bool = True, *args, **kwargs):

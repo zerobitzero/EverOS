@@ -39,23 +39,23 @@ async def enable_timestamp_sharding(session=None):
                 )
                 return
             logger.info(
-                f"✅ Sharded cluster detected, total {len(shard_status['shards'])} shards"
+                f"✅ Sharded cluster detected, total {len(shard_status['shards'])} shards"  # noqa: G004
             )
         except OperationFailure as e:
             logger.warning(
-                f"⚠️  Unable to check sharding status: {e}, may not be a sharded environment"
+                f"⚠️  Unable to check sharding status: {e}, may not be a sharded environment"  # noqa: G004
             )
             return
 
         # 2. Enable database sharding
         try:
             await admin_db.command('enableSharding', db.name)
-            logger.info(f"✅ Sharding enabled for database '{db.name}'")
+            logger.info(f"✅ Sharding enabled for database '{db.name}'")  # noqa: G004
         except OperationFailure as e:
             if "already enabled" in str(e).lower():
-                logger.info(f"📝 Sharding already exists for database '{db.name}'")
+                logger.info(f"📝 Sharding already exists for database '{db.name}'")  # noqa: G004
             else:
-                logger.error(f"❌ Failed to enable database sharding: {e}")
+                logger.error(f"❌ Failed to enable database sharding: {e}")  # noqa: G004
                 raise
 
         # 3. Set collection shard key - timestamp
@@ -69,7 +69,7 @@ async def enable_timestamp_sharding(session=None):
             if "already sharded" in str(e).lower():
                 logger.info("📝 Sharding already exists for MemCell collection")
             else:
-                logger.error(f"❌ Failed to set collection sharding: {e}")
+                logger.error(f"❌ Failed to set collection sharding: {e}")  # noqa: G004
                 raise
 
         # 4. Create pre-split chunks (optional, improves initial performance)
@@ -90,15 +90,15 @@ async def enable_timestamp_sharding(session=None):
             for point in split_points:
                 try:
                     await admin_db.command('split', collection_name, middle=point)
-                    logger.debug(f"📅 Created split point: {point['timestamp']}")
+                    logger.debug(f"📅 Created split point: {point['timestamp']}")  # noqa: G004
                 except OperationFailure as e:
                     if "already exists" not in str(e).lower():
-                        logger.debug(f"Failed to create pre-split point: {e}")
+                        logger.debug(f"Failed to create pre-split point: {e}")  # noqa: G004
 
-            logger.info(f"✅ Created {len(split_points)} pre-split points")
+            logger.info(f"✅ Created {len(split_points)} pre-split points")  # noqa: G004
 
-        except Exception as e:
-            logger.warning(f"⚠️  Pre-splitting creation failed: {e}")
+        except Exception as e:  # noqa: BLE001
+            logger.warning(f"⚠️  Pre-splitting creation failed: {e}")  # noqa: G004
 
         # 5. Verify sharding configuration
         try:
@@ -108,17 +108,17 @@ async def enable_timestamp_sharding(session=None):
                 logger.info(
                     "✅ MemCell collection sharding configuration verified successfully"
                 )
-                logger.info(f"📊 Shard key: {shard_info.get('shardKey', {})}")
+                logger.info(f"📊 Shard key: {shard_info.get('shardKey', {})}")  # noqa: G004
             else:
                 logger.warning("⚠️  Sharding configuration verification failed")
 
-        except Exception as e:
-            logger.warning(f"⚠️  Sharding verification failed: {e}")
+        except Exception as e:  # noqa: BLE001
+            logger.warning(f"⚠️  Sharding verification failed: {e}")  # noqa: G004
 
         logger.info("🎉 Timestamp sharding configuration completed")
 
     except Exception as e:
-        logger.error(f"❌ Error occurred during sharding configuration: {e}")
+        logger.error(f"❌ Error occurred during sharding configuration: {e}")  # noqa: G004
         raise
 
 

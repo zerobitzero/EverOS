@@ -61,7 +61,7 @@ class AtomicFactRecordRawRepository(BaseRepository[AtomicFactRecord]):
                 record.parent_id,
             )
             return record
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001
             logger.error("Failed to save atomic fact record: %s", e)
             return None
 
@@ -105,7 +105,7 @@ class AtomicFactRecordRawRepository(BaseRepository[AtomicFactRecord]):
             else:
                 logger.debug("ℹ️  Personal atomic fact not found: id=%s", log_id)
             return result
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001
             logger.error("❌ Failed to retrieve personal atomic fact by ID: %s", e)
             return None
 
@@ -138,7 +138,7 @@ class AtomicFactRecordRawRepository(BaseRepository[AtomicFactRecord]):
                     query_filter, projection_model=projection_model, session=session
                 ).to_list()
             return await self.model.find(query_filter, session=session).to_list()
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001
             logger.error("❌ Failed to find atomic facts by ids: %s", e)
             return []
 
@@ -187,7 +187,7 @@ class AtomicFactRecordRawRepository(BaseRepository[AtomicFactRecord]):
                 target_model.__name__,
             )
             return results
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001
             logger.error(
                 "❌ Failed to retrieve atomic facts by parent episodic memory ID: %s", e
             )
@@ -297,7 +297,7 @@ class AtomicFactRecordRawRepository(BaseRepository[AtomicFactRecord]):
                 target_model.__name__,
             )
             return results
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001
             logger.error("❌ Failed to retrieve atomic facts: %s", e)
             return []
 
@@ -356,7 +356,7 @@ class AtomicFactRecordRawRepository(BaseRepository[AtomicFactRecord]):
                 count,
             )
             return count
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001
             logger.error("❌ Failed to count atomic facts: %s", e)
             return 0
 

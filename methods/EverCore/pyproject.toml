@@ -132,6 +132,12 @@ select = [
     "B",     # flake8-bugbear (common bugs)
     "C4",    # flake8-comprehensions
     "ASYNC", # flake8-async (blocking calls in async, missing awaits)
+    # Phase 3 W5 baseline rules. Active enforcement holds the line on new
+    # code via `# noqa: <RULE>` markers on existing violations (added
+    # mechanically with `ruff check --add-noqa`). Removing the noqa as code
+    # is touched is how the baseline shrinks over time.
+    "G",     # flake8-logging-format (e.g. G004 logging-f-string)
+    "BLE",   # flake8-blind-except (BLE001 bare `except Exception`)
 ]
 ignore = [
     "E501",  # line too long — formatter's job

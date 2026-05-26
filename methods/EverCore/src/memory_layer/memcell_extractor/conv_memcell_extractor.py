@@ -265,7 +265,7 @@ class ConvMemCellExtractor(MemCellExtractor):
         )
 
         logger.info(
-            f"[ConvMemCellExtractor] ✅ MemCell created: "
+            f"[ConvMemCellExtractor] ✅ MemCell created: "  # noqa: G004
             f"messages={len(messages)}, trigger={trigger_type}"
         )
 
@@ -308,7 +308,7 @@ class ConvMemCellExtractor(MemCellExtractor):
                     lines.append(f"[{i}] {sender_name}: {content}")
             else:
                 logger.debug(
-                    f"[ConvMemCellExtractor] Warning: message {i} has no content"
+                    f"[ConvMemCellExtractor] Warning: message {i} has no content"  # noqa: G004
                 )
 
         return "\n".join(lines)
@@ -365,7 +365,7 @@ class ConvMemCellExtractor(MemCellExtractor):
                 boundaries.append(int(item))
             except (TypeError, ValueError):
                 logger.warning(
-                    f"[ConvMemCellExtractor] Skipping unparseable boundary value: {item!r}"
+                    f"[ConvMemCellExtractor] Skipping unparseable boundary value: {item!r}"  # noqa: G004
                 )
 
         return BatchBoundaryResult(
@@ -390,7 +390,7 @@ class ConvMemCellExtractor(MemCellExtractor):
         messages_text = self._format_messages_with_indices(messages)
 
         logger.debug(
-            f"[ConvMemCellExtractor] Detect boundaries – total messages: {len(messages)}, "
+            f"[ConvMemCellExtractor] Detect boundaries – total messages: {len(messages)}, "  # noqa: G004
             f"formatted text length: {len(messages_text)}"
         )
 
@@ -399,7 +399,7 @@ class ConvMemCellExtractor(MemCellExtractor):
         )
 
         logger.debug(
-            f"[ConvMemCellExtractor] === BOUNDARY DETECTION PROMPT ===\n{prompt}\n"
+            f"[ConvMemCellExtractor] === BOUNDARY DETECTION PROMPT ===\n{prompt}\n"  # noqa: G004
             f"[ConvMemCellExtractor] === END PROMPT ==="
         )
 
@@ -410,7 +410,7 @@ class ConvMemCellExtractor(MemCellExtractor):
             for i in range(5):
                 resp = await self.llm_provider.generate(prompt)
                 logger.debug(
-                    f"[ConvMemCellExtractor] === BOUNDARY DETECTION RESPONSE (attempt {i + 1}) ===\n"
+                    f"[ConvMemCellExtractor] === BOUNDARY DETECTION RESPONSE (attempt {i + 1}) ===\n"  # noqa: G004
                     f"{resp}\n"
                     f"[ConvMemCellExtractor] === END RESPONSE ==="
                 )
@@ -423,7 +423,7 @@ class ConvMemCellExtractor(MemCellExtractor):
                     ]
                     if len(valid_boundaries) != len(result.boundaries):
                         logger.warning(
-                            f"[ConvMemCellExtractor] Filtered {len(result.boundaries) - len(valid_boundaries)} "
+                            f"[ConvMemCellExtractor] Filtered {len(result.boundaries) - len(valid_boundaries)} "  # noqa: G004
                             f"out-of-range boundaries (total messages: {len(messages)})"
                         )
                     result.boundaries = sorted(valid_boundaries)
@@ -441,7 +441,7 @@ class ConvMemCellExtractor(MemCellExtractor):
                     return result
 
                 logger.warning(
-                    f"[ConvMemCellExtractor] Failed to parse JSON from LLM response "
+                    f"[ConvMemCellExtractor] Failed to parse JSON from LLM response "  # noqa: G004
                     f"(attempt {i + 1}/5), response: {resp[:200]}..."
                 )
 
@@ -484,7 +484,7 @@ class ConvMemCellExtractor(MemCellExtractor):
         if not new_message_dict_list:
             if request.flush and history_message_dict_list:
                 logger.info(
-                    f"[ConvMemCellExtractor] Flush with no new messages: "
+                    f"[ConvMemCellExtractor] Flush with no new messages: "  # noqa: G004
                     f"packing {len(history_message_dict_list)} history messages into final MemCell"
                 )
                 memcell = self._create_memcell_directly(
@@ -518,7 +518,7 @@ class ConvMemCellExtractor(MemCellExtractor):
             trigger_type = 'token_limit' if exceeds_token else 'message_limit'
 
             logger.debug(
-                f"[ConvMemCellExtractor] Force split triggered: "
+                f"[ConvMemCellExtractor] Force split triggered: "  # noqa: G004
                 f"tokens={total_tokens}/{self.hard_token_limit}, "
                 f"messages={total_messages}/{self.hard_message_limit}, "
                 f"split_at={split_at}"
@@ -554,7 +554,7 @@ class ConvMemCellExtractor(MemCellExtractor):
         # === Phase 3: Flush tail ===
         if request.flush and all_msgs:
             logger.info(
-                f"[ConvMemCellExtractor] Flush mode: packing {len(all_msgs)} remaining "
+                f"[ConvMemCellExtractor] Flush mode: packing {len(all_msgs)} remaining "  # noqa: G004
                 f"messages into final MemCell"
             )
             memcell = self._create_memcell_directly(all_msgs, request, 'flush')
@@ -565,12 +565,12 @@ class ConvMemCellExtractor(MemCellExtractor):
 
         if result_memcells:
             logger.info(
-                f"[ConvMemCellExtractor] ✅ Extracted {len(result_memcells)} MemCell(s), "
+                f"[ConvMemCellExtractor] ✅ Extracted {len(result_memcells)} MemCell(s), "  # noqa: G004
                 f"remaining_msgs={len(all_msgs)}, should_wait={should_wait}"
             )
         else:
             logger.debug(
-                f"[ConvMemCellExtractor] ⏳ No boundary detected, "
+                f"[ConvMemCellExtractor] ⏳ No boundary detected, "  # noqa: G004
                 f"remaining_msgs={len(all_msgs)}, should_wait={should_wait}"
             )
 

@@ -104,7 +104,7 @@ class AnthropicAdapter(LLMBackendAdapter):
                                 usage.get("output_tokens", 0),
                                 call_type="llm",
                             )
-                        except Exception:
+                        except Exception:  # noqa: BLE001
                             pass
                     return self._convert_anthropic_response(
                         response_json, request.model
@@ -186,7 +186,7 @@ class AnthropicAdapter(LLMBackendAdapter):
                 try:
                     collector = get_bean_by_type(TokenUsageCollector)
                     collector.add(model, input_tokens, output_tokens, call_type="llm")
-                except Exception:
+                except Exception:  # noqa: BLE001
                     pass
 
     def get_available_models(self) -> List[str]:

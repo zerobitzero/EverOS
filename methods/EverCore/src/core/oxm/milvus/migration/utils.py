@@ -70,7 +70,7 @@ def find_collection_manager_by_alias(alias: str) -> Type[MilvusCollectionBase]:
                 base_name = doc_class._COLLECTION_NAME  # pylint: disable=protected-access
                 if alias.startswith(base_name):
                     return doc_class
-            except Exception:  # pylint: disable=broad-except  # Ignore instantiation failure, continue to next class
+            except Exception:  # pylint: disable=broad-except  # Ignore instantiation failure, continue to next class  # noqa: BLE001
                 continue
         else:
             # For MilvusCollectionBase, directly compare _COLLECTION_NAME

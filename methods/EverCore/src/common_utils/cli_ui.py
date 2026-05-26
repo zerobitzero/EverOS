@@ -259,7 +259,7 @@ def get_terminal_width(fallback: int = 80, min_width: int = 40) -> int:
     """Return the current terminal column width with reasonable bounds."""
     try:
         width = shutil.get_terminal_size((fallback, 24)).columns
-    except Exception:
+    except Exception:  # noqa: BLE001
         width = fallback
     if width < min_width:
         width = min_width

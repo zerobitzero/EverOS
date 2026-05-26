@@ -127,7 +127,7 @@ async def init_mongodb() -> bool:
         logger.info("✅ Tenant's MongoDB database initialized successfully")
         await mongodb_provider.shutdown(mock_app)
         return True
-    except Exception as e:
+    except Exception as e:  # noqa: BLE001
         logger.error("❌ Failed to initialize tenant's MongoDB database: %s", e)
         return False
 
@@ -145,7 +145,7 @@ async def init_milvus() -> bool:
         logger.info("✅ Tenant's Milvus database initialized successfully")
         await milvus_provider.shutdown(mock_app)
         return True
-    except Exception as e:
+    except Exception as e:  # noqa: BLE001
         logger.error("❌ Failed to initialize tenant's Milvus database: %s", e)
         return False
 
@@ -163,7 +163,7 @@ async def init_elasticsearch() -> bool:
         logger.info("✅ Tenant's Elasticsearch database initialized successfully")
         await es_provider.shutdown(mock_app)
         return True
-    except Exception as e:
+    except Exception as e:  # noqa: BLE001
         logger.error("❌ Failed to initialize tenant's Elasticsearch database: %s", e)
         return False
 

@@ -5,7 +5,6 @@ Provides generic Elasticsearch index rebuilding and migration functionality.
 """
 
 import asyncio
-import traceback
 from typing import Type, Any
 from elasticsearch import NotFoundError, RequestError
 from elasticsearch.dsl import AsyncDocument
@@ -176,9 +175,8 @@ async def wait_for_task_completion(es_connect: Any, task_id: str) -> None:
 
             await asyncio.sleep(5)  # Check every 5 seconds
 
-        except (NotFoundError, RequestError) as e:
-            traceback.print_exc()
-            logger.error("Failed to check task status: %s", e)
+        except (NotFoundError, RequestError):
+            logger.exception("Failed to check task status")
             await asyncio.sleep(10)  # Wait longer when error occurs
 
 

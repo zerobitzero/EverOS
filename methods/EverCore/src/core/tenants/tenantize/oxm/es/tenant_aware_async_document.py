@@ -156,7 +156,7 @@ class TenantAwareAsyncDocument(AliasSupportDoc):
             async_connections.get_connection(using)
             # Connection exists, return directly
             return
-        except Exception:
+        except Exception:  # noqa: BLE001
             # Connection does not exist, need to register
             pass
 

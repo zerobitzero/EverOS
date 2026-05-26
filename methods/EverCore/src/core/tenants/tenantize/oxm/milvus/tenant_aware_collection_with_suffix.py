@@ -288,7 +288,7 @@ class TenantAwareMilvusCollectionWithSuffix(MilvusCollectionWithSuffix):
             # Note: First delete any existing old alias
             try:
                 utility.drop_alias(tenant_aware_alias_name, using=using)
-            except Exception:
+            except Exception:  # noqa: BLE001
                 pass  # alias does not exist, ignore
 
             utility.create_alias(
@@ -425,7 +425,7 @@ class TenantAwareMilvusCollectionWithSuffix(MilvusCollectionWithSuffix):
             old_real_name = (
                 desc.get("collection_name") if isinstance(desc, dict) else None
             )
-        except Exception:
+        except Exception:  # noqa: BLE001
             old_real_name = None
 
         # Alias switching
@@ -437,11 +437,11 @@ class TenantAwareMilvusCollectionWithSuffix(MilvusCollectionWithSuffix):
                 tenant_aware_alias_name,
                 tenant_aware_new_real_name,
             )
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001
             logger.warning("alter_alias failed, trying drop/create: %s", e)
             try:
                 utility.drop_alias(tenant_aware_alias_name, using=using)
-            except Exception:
+            except Exception:  # noqa: BLE001
                 pass
             utility.create_alias(
                 collection_name=tenant_aware_new_real_name,
@@ -459,7 +459,7 @@ class TenantAwareMilvusCollectionWithSuffix(MilvusCollectionWithSuffix):
             try:
                 utility.drop_collection(old_real_name, using=using)
                 logger.info("Old collection deleted: %s", old_real_name)
-            except Exception as e:
+            except Exception as e:  # noqa: BLE001
                 logger.warning(
                     "Failed to delete old collection (can handle manually): %s", e
                 )
@@ -471,7 +471,7 @@ class TenantAwareMilvusCollectionWithSuffix(MilvusCollectionWithSuffix):
                 schema=self._SCHEMA,
                 consistency_level=ConsistencyLevel.Bounded,
             )
-        except Exception:
+        except Exception:  # noqa: BLE001
             pass
 
     # ==================== Tenant Field Isolation ====================
@@ -538,7 +538,7 @@ class TenantAwareMilvusCollectionWithSuffix(MilvusCollectionWithSuffix):
         try:
             utility.drop_collection(name, using=using)
             logger.info("Collection '%s' deleted", name)
-        except Exception as e:  # pylint: disable=broad-except
+        except Exception as e:  # pylint: disable=broad-except  # noqa: BLE001
             logger.warning(
                 "Collection '%s' does not exist or deletion failed: %s", name, e
             )

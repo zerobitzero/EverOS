@@ -82,7 +82,7 @@ class UserContextMiddleware(BaseHTTPMiddleware):
                     e.detail,
                 )
                 # Other HTTP exceptions do not affect request processing continuation
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001
             logger.error("Exception occurred while setting user context: %s", str(e))
             # User context setup failure does not affect request processing continuation
             # Specific authentication checks are handled by individual endpoints
@@ -103,7 +103,7 @@ class UserContextMiddleware(BaseHTTPMiddleware):
                 try:
                     clear_current_user_context(token)
                     logger.debug("User context cleaned up")
-                except Exception as reset_error:
+                except Exception as reset_error:  # noqa: BLE001
                     logger.warning(
                         "Error occurred while cleaning up user context: %s",
                         str(reset_error),

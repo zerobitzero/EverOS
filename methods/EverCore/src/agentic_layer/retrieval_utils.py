@@ -239,11 +239,11 @@ async def lightweight_retrieval(
                         if doc_norm > 0:
                             sim = np.dot(query_vec, doc_vec) / (query_norm * doc_norm)
                             scores.append((mem, float(sim)))
-                except Exception:
+                except Exception:  # noqa: BLE001
                     continue
 
             emb_results = sorted(scores, key=lambda x: x[1], reverse=True)[:emb_top_n]
-    except Exception:
+    except Exception:  # noqa: BLE001
         pass
 
     metadata["emb_count"] = len(emb_results)
@@ -397,7 +397,7 @@ async def multi_query_retrieval(
         metadata["total_latency_ms"] = (time.time() - start_time) * 1000
         return [], metadata
 
-    logger.info(f"Executing {len(queries)} queries in parallel...")
+    logger.info(f"Executing {len(queries)} queries in parallel...")  # noqa: G004
 
     # Execute hybrid retrieval for all queries in parallel
     tasks = [
@@ -414,7 +414,7 @@ async def multi_query_retrieval(
     valid_results = []
     for i, result in enumerate(multi_query_results, 1):
         if isinstance(result, Exception):
-            logger.error(f"Query {i} failed: {result}")
+            logger.error(f"Query {i} failed: {result}")  # noqa: G004
             continue
 
         results, query_metadata = result
@@ -427,7 +427,7 @@ async def multi_query_retrieval(
                     "latency_ms": query_metadata.get("total_latency_ms", 0),
                 }
             )
-            logger.debug(f"Query {i}: Retrieved {len(results)} documents")
+            logger.debug(f"Query {i}: Retrieved {len(results)} documents")  # noqa: G004
 
     if not valid_results:
         logger.warning("All queries failed")
@@ -438,7 +438,7 @@ async def multi_query_retrieval(
     metadata["total_docs_before_fusion"] = sum(len(r) for r in valid_results)
 
     # Use multi-query RRF fusion
-    logger.info(f"Fusing {len(valid_results)} query results...")
+    logger.info(f"Fusing {len(valid_results)} query results...")  # noqa: G004
     fused_results = multi_rrf_fusion(valid_results, k=rrf_k)
 
     # Take Top-N
@@ -448,7 +448,7 @@ async def multi_query_retrieval(
     metadata["total_latency_ms"] = (time.time() - start_time) * 1000
 
     logger.info(
-        f"Multi-query retrieval: {metadata['total_docs_before_fusion']} → {len(final_results)} docs"
+        f"Multi-query retrieval: {metadata['total_docs_before_fusion']} → {len(final_results)} docs"  # noqa: G004
     )
 
     return final_results, metadata
@@ -480,7 +480,7 @@ async def rerank_candidates(
 
     try:
         logger.debug(
-            f"Reranking {len(candidates)} candidates for query: {query[:50]}..."
+            f"Reranking {len(candidates)} candidates for query: {query[:50]}..."  # noqa: G004
         )
 
         # 🔥 Convert format: transform [(doc, score)] to format expected by rerank service
@@ -531,21 +531,21 @@ async def rerank_candidates(
                     new_score = hit.get("score", 0.0)
                 else:
                     # If returned is tuple, format is wrong, skip
-                    logger.warning(f"Unexpected rerank result type: {type(hit)}")
+                    logger.warning(f"Unexpected rerank result type: {type(hit)}")  # noqa: G004
                     continue
 
                 if 0 <= idx < len(candidates):
                     doc = candidates[idx][0]
                     reranked_results.append((doc, new_score))
 
-            logger.debug(f"Rerank complete: {len(reranked_results)} results")
+            logger.debug(f"Rerank complete: {len(reranked_results)} results")  # noqa: G004
             return reranked_results if reranked_results else candidates[:top_n]
         else:
             logger.warning("Rerank returned empty results, using original")
             return candidates[:top_n]
 
     except Exception as e:
-        logger.error(f"Rerank failed: {e}, using original ranking", exc_info=True)
+        logger.error(f"Rerank failed: {e}, using original ranking", exc_info=True)  # noqa: G004, G201
         return candidates[:top_n]
 
 
@@ -614,9 +614,9 @@ async def agentic_retrieval(
         "total_latency_ms": 0.0,
     }
 
-    logger.info(f"{'=' * 60}")
-    logger.info(f"Agentic Retrieval: {query[:60]}...")
-    logger.info(f"{'=' * 60}")
+    logger.info(f"{'=' * 60}")  # noqa: G004
+    logger.info(f"Agentic Retrieval: {query[:60]}...")  # noqa: G004
+    logger.info(f"{'=' * 60}")  # noqa: G004
 
     # ========== Round 1: Hybrid search Top 20 ==========
     logger.info("Round 1: Hybrid search for Top 20...")
@@ -633,15 +633,15 @@ async def agentic_retrieval(
         metadata["round1_count"] = len(round1_results)
         metadata["round1_latency_ms"] = round1_metadata.get("total_latency_ms", 0)
 
-        logger.info(f"Round 1: Retrieved {len(round1_results)} documents")
+        logger.info(f"Round 1: Retrieved {len(round1_results)} documents")  # noqa: G004
 
         if not round1_results:
             logger.warning("Round 1 returned no results")
             metadata["total_latency_ms"] = (time.time() - start_time) * 1000
             return [], metadata
 
-    except Exception as e:
-        logger.error(f"Round 1 failed: {e}")
+    except Exception as e:  # noqa: BLE001
+        logger.error(f"Round 1 failed: {e}")  # noqa: G004
         metadata["total_latency_ms"] = (time.time() - start_time) * 1000
         return [], metadata
 
@@ -659,10 +659,10 @@ async def agentic_retrieval(
             )
 
             metadata["round1_reranked_count"] = len(reranked_top5)
-            logger.info(f"Rerank: Got Top {len(reranked_top5)} for sufficiency check")
+            logger.info(f"Rerank: Got Top {len(reranked_top5)} for sufficiency check")  # noqa: G004
 
-        except Exception as e:
-            logger.error(f"Rerank failed: {e}, using original Top 10")
+        except Exception as e:  # noqa: BLE001
+            logger.error(f"Rerank failed: {e}, using original Top 10")  # noqa: G004
             reranked_top5 = round1_results[: config.round1_rerank_top_n]
             metadata["round1_reranked_count"] = len(reranked_top5)
     else:
@@ -692,12 +692,12 @@ async def agentic_retrieval(
         metadata["missing_info"] = missing_info
 
         logger.info(
-            f"LLM Result: {'✅ Sufficient' if is_sufficient else '❌ Insufficient'}"
+            f"LLM Result: {'✅ Sufficient' if is_sufficient else '❌ Insufficient'}"  # noqa: G004
         )
-        logger.info(f"LLM Reasoning: {reasoning}")
+        logger.info(f"LLM Reasoning: {reasoning}")  # noqa: G004
 
-    except Exception as e:
-        logger.error(f"Sufficiency check failed: {e}, assuming sufficient")
+    except Exception as e:  # noqa: BLE001
+        logger.error(f"Sufficiency check failed: {e}, assuming sufficient")  # noqa: G004
         metadata["total_latency_ms"] = (time.time() - start_time) * 1000
         return round1_results, metadata
 
@@ -709,14 +709,14 @@ async def agentic_retrieval(
         metadata["final_count"] = len(final_results)
         metadata["total_latency_ms"] = (time.time() - start_time) * 1000
 
-        logger.info(f"Complete: Latency {metadata['total_latency_ms']:.0f}ms")
+        logger.info(f"Complete: Latency {metadata['total_latency_ms']:.0f}ms")  # noqa: G004
         return final_results, metadata
 
     # ========== If insufficient: enter Round 2 ==========
     metadata["is_multi_round"] = True
     logger.info("Decision: Insufficient, entering Round 2")
     if missing_info:
-        logger.info(f"Missing: {', '.join(missing_info)}")
+        logger.info(f"Missing: {', '.join(missing_info)}")  # noqa: G004
 
     # ========== LLM generate multiple refined queries ==========
     if config.enable_multi_query:
@@ -736,12 +736,12 @@ async def agentic_retrieval(
             metadata["query_strategy"] = query_strategy
             metadata["num_queries"] = len(refined_queries)
 
-            logger.info(f"Generated {len(refined_queries)} queries")
+            logger.info(f"Generated {len(refined_queries)} queries")  # noqa: G004
             for i, q in enumerate(refined_queries, 1):
-                logger.debug(f"  Query {i}: {q[:80]}...")
+                logger.debug(f"  Query {i}: {q[:80]}...")  # noqa: G004
 
-        except Exception as e:
-            logger.error(f"Query generation failed: {e}, using original query")
+        except Exception as e:  # noqa: BLE001
+            logger.error(f"Query generation failed: {e}, using original query")  # noqa: G004
             refined_queries = [query]
             metadata["refined_queries"] = refined_queries
             metadata["num_queries"] = 1
@@ -752,7 +752,7 @@ async def agentic_retrieval(
         metadata["num_queries"] = 1
 
     # ========== Round 2: Execute multiple queries retrieval in parallel ==========
-    logger.info(f"Round 2: Executing {len(refined_queries)} queries in parallel...")
+    logger.info(f"Round 2: Executing {len(refined_queries)} queries in parallel...")  # noqa: G004
 
     try:
         round2_results, round2_metadata = await multi_query_retrieval(
@@ -770,10 +770,10 @@ async def agentic_retrieval(
             "total_docs_before_fusion", 0
         )
 
-        logger.info(f"Round 2: Retrieved {len(round2_results)} unique documents")
+        logger.info(f"Round 2: Retrieved {len(round2_results)} unique documents")  # noqa: G004
 
-    except Exception as e:
-        logger.error(f"Round 2 failed: {e}, using Round 1 results")
+    except Exception as e:  # noqa: BLE001
+        logger.error(f"Round 2 failed: {e}, using Round 1 results")  # noqa: G004
         metadata["total_latency_ms"] = (time.time() - start_time) * 1000
         return round1_results, metadata
 
@@ -792,12 +792,12 @@ async def agentic_retrieval(
     combined_results.extend(round2_unique[:needed_from_round2])
 
     logger.info(
-        f"Merge: Round1={len(round1_results)}, Round2_unique={len(round2_unique[:needed_from_round2])}, Total={len(combined_results)}"
+        f"Merge: Round1={len(round1_results)}, Round2_unique={len(round2_unique[:needed_from_round2])}, Total={len(combined_results)}"  # noqa: G004
     )
 
     # ========== Rerank merged documents ==========
     if config.use_reranker and len(combined_results) > 0:
-        logger.info(f"Rerank: Reranking {len(combined_results)} documents...")
+        logger.info(f"Rerank: Reranking {len(combined_results)} documents...")  # noqa: G004
 
         try:
             rerank_service = get_rerank_service()
@@ -808,22 +808,22 @@ async def agentic_retrieval(
                 rerank_service=rerank_service,
             )
 
-            logger.info(f"Rerank: Final Top {len(final_results)} selected")
+            logger.info(f"Rerank: Final Top {len(final_results)} selected")  # noqa: G004
 
-        except Exception as e:
-            logger.error(f"Final rerank failed: {e}, using top {config.final_top_n}")
+        except Exception as e:  # noqa: BLE001
+            logger.error(f"Final rerank failed: {e}, using top {config.final_top_n}")  # noqa: G004
             final_results = combined_results[: config.final_top_n]
     else:
         # No Reranker, directly return Top N
         final_results = combined_results[: config.final_top_n]
-        logger.info(f"No Rerank: Returning Top {len(final_results)}")
+        logger.info(f"No Rerank: Returning Top {len(final_results)}")  # noqa: G004
 
     metadata["final_count"] = len(final_results)
     metadata["total_latency_ms"] = (time.time() - start_time) * 1000
 
     logger.info(
-        f"Complete: Final {len(final_results)} docs | Latency {metadata['total_latency_ms']:.0f}ms"
+        f"Complete: Final {len(final_results)} docs | Latency {metadata['total_latency_ms']:.0f}ms"  # noqa: G004
     )
-    logger.info(f"{'=' * 60}\n")
+    logger.info(f"{'=' * 60}\n")  # noqa: G004
 
     return final_results, metadata

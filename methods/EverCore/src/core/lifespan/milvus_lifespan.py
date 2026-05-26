@@ -109,7 +109,7 @@ class MilvusLifespanProvider(LifespanProvider):
             try:
                 self._milvus_factory.close_all_clients()
                 logger.info("✅ Milvus connections closed successfully")
-            except Exception as e:
+            except Exception as e:  # noqa: BLE001
                 logger.error("❌ Error while closing Milvus connections: %s", str(e))
 
         # Clean up Milvus-related attributes in app.state

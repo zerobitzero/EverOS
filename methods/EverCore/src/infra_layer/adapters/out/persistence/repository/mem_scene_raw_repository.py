@@ -54,9 +54,9 @@ class MemSceneRawRepository(BaseRepository[MemScene]):
     async def get_by_group_id(self, group_id: str) -> Optional[MemScene]:
         try:
             return await self.model.find_one(MemScene.group_id == group_id)
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001
             logger.error(
-                f"Failed to retrieve mem scene: group_id={group_id}, error={e}"
+                f"Failed to retrieve mem scene: group_id={group_id}, error={e}"  # noqa: G004
             )
             return None
 
@@ -71,16 +71,16 @@ class MemSceneRawRepository(BaseRepository[MemScene]):
                     if hasattr(existing, key):
                         setattr(existing, key, value)
                 await existing.save()
-                logger.debug(f"Updated mem scene: group_id={group_id}")
+                logger.debug(f"Updated mem scene: group_id={group_id}")  # noqa: G004
                 return existing
             else:
                 state["group_id"] = group_id
                 mem_scene = MemScene(**state)
                 await mem_scene.insert()
-                logger.info(f"Created mem scene: group_id={group_id}")
+                logger.info(f"Created mem scene: group_id={group_id}")  # noqa: G004
                 return mem_scene
-        except Exception as e:
-            logger.error(f"Failed to save mem scene: group_id={group_id}, error={e}")
+        except Exception as e:  # noqa: BLE001
+            logger.error(f"Failed to save mem scene: group_id={group_id}, error={e}")  # noqa: G004
             return None
 
     async def get_cluster_assignments(self, group_id: str) -> Dict[str, str]:
@@ -91,9 +91,9 @@ class MemSceneRawRepository(BaseRepository[MemScene]):
             # Derive eventid_to_cluster from memcell_info
             memcell_info = mem_scene.memcell_info or {}
             return {eid: info.get("memscene", "") for eid, info in memcell_info.items()}
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001
             logger.error(
-                f"Failed to retrieve cluster assignments: group_id={group_id}, error={e}"
+                f"Failed to retrieve cluster assignments: group_id={group_id}, error={e}"  # noqa: G004
             )
             return {}
 
@@ -102,18 +102,18 @@ class MemSceneRawRepository(BaseRepository[MemScene]):
             mem_scene = await self.model.find_one(MemScene.group_id == group_id)
             if mem_scene:
                 await mem_scene.delete()
-                logger.info(f"Deleted mem scene: group_id={group_id}")
+                logger.info(f"Deleted mem scene: group_id={group_id}")  # noqa: G004
             return True
-        except Exception as e:
-            logger.error(f"Failed to delete mem scene: group_id={group_id}, error={e}")
+        except Exception as e:  # noqa: BLE001
+            logger.error(f"Failed to delete mem scene: group_id={group_id}, error={e}")  # noqa: G004
             return False
 
     async def delete_all(self) -> int:
         try:
             result = await self.model.delete_all()
             count = result.deleted_count if result else 0
-            logger.info(f"Deleted all mem scenes: {count} items")
+            logger.info(f"Deleted all mem scenes: {count} items")  # noqa: G004
             return count
-        except Exception as e:
-            logger.error(f"Failed to delete all mem scenes: {e}")
+        except Exception as e:  # noqa: BLE001
+            logger.error(f"Failed to delete all mem scenes: {e}")  # noqa: G004
             return 0

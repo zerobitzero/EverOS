@@ -17,6 +17,7 @@ from core.asynctasks.task_scan_registry import TaskScanDirectoriesRegistry
 from core.context.context_manager import ContextManager
 from core.context.context import get_current_user_info
 from core.di.decorators import component
+from core.longjob.interfaces import RetryConfig
 from core.observation.logger import get_logger
 from core.authorize.enums import Role
 
@@ -48,16 +49,6 @@ class TaskResult:
     user_id: Optional[int] = None
     user_context: Optional[Dict[str, Any]] = None
     metadata: Dict[str, Any] = field(default_factory=dict)
-
-
-@dataclass
-class RetryConfig:
-    """Retry configuration"""
-
-    max_retries: int = 1
-    retry_delay: float = 1.0  # seconds
-    exponential_backoff: bool = True
-    max_retry_delay: float = 60.0  # seconds
 
 
 @dataclass
@@ -159,7 +150,7 @@ class TaskManager:
             task_function: Task function to register
         """
         self._task_registry[task_function.name] = task_function
-        logger.info(f"Task registered: {task_function.name}")
+        logger.info(f"Task registered: {task_function.name}")  # noqa: G004
 
     def scan_and_register_tasks(self, registry: TaskScanDirectoriesRegistry) -> None:
         """
@@ -185,7 +176,7 @@ class TaskManager:
             relative_path = Path(directory).resolve().relative_to(src_dir)
             package_name = ".".join(relative_path.parts)
 
-            logger.info(f"Scanning task package: {package_name}")
+            logger.info(f"Scanning task package: {package_name}")  # noqa: G004
 
             # Import package and scan
             try:
@@ -200,19 +191,19 @@ class TaskManager:
                         try:
                             module = importlib.import_module(module_name)
                             self._scan_module_for_tasks(module)
-                        except Exception as e:
+                        except Exception as e:  # noqa: BLE001
                             logger.error(
-                                f"Failed to import module: {module_name}, error: {e}"
+                                f"Failed to import module: {module_name}, error: {e}"  # noqa: G004
                             )
                 else:
                     # This is a module, scan directly
                     self._scan_module_for_tasks(package)
 
-            except Exception as e:
-                logger.error(f"Failed to import package: {package_name}, error: {e}")
+            except Exception as e:  # noqa: BLE001
+                logger.error(f"Failed to import package: {package_name}, error: {e}")  # noqa: G004
 
-        except Exception as e:
-            logger.error(f"Failed to scan directory: {directory}, error: {e}")
+        except Exception as e:  # noqa: BLE001
+            logger.error(f"Failed to scan directory: {directory}, error: {e}")  # noqa: G004
 
     def _scan_module_for_tasks(self, module: Any) -> None:
         """
@@ -235,16 +226,16 @@ class TaskManager:
                     if isinstance(attr, TaskFunction):
                         self.register_task(attr)
                         logger.info(
-                            f"Task found in module {module.__name__}: {attr.name}"
+                            f"Task found in module {module.__name__}: {attr.name}"  # noqa: G004
                         )
 
-                except Exception as e:
+                except Exception as e:  # noqa: BLE001
                     logger.debug(
-                        f"Failed to get module attribute: {module.__name__}.{attr_name}, error: {e}"
+                        f"Failed to get module attribute: {module.__name__}.{attr_name}, error: {e}"  # noqa: G004
                     )
 
-        except Exception as e:
-            logger.error(f"Failed to scan module tasks: {module.__name__}, error: {e}")
+        except Exception as e:  # noqa: BLE001
+            logger.error(f"Failed to scan module tasks: {module.__name__}, error: {e}")  # noqa: G004
 
     async def enqueue_task(
         self,
@@ -342,7 +333,7 @@ class TaskManager:
 
         user_id_for_log = user_data.get("user_id") if user_data else "unknown"
         logger.info(
-            f"Task added to queue: {task_id}, task name: {task_name}, user: {user_id_for_log}"
+            f"Task added to queue: {task_id}, task name: {task_name}, user: {user_id_for_log}"  # noqa: G004
         )
         return task_id
 
@@ -377,7 +368,7 @@ class TaskManager:
             from core.context.context import set_current_app_info
 
             set_current_app_info(app_info)
-            logger.debug(f"🔧 app_info_context restored: {app_info}")
+            logger.debug(f"🔧 app_info_context restored: {app_info}")  # noqa: G004
 
         # Use ContextManager to execute task, automatically injecting user context and database session
         # 🔧 Configurable session isolation: Only force new session when explicitly needed
@@ -394,7 +385,7 @@ class TaskManager:
         task_id = task_context.get("task_id")
         user_id = user_data.get("user_id") if user_data else "unknown"
         logger.info(
-            f"Task execution completed (independent session): {task_id}, user: {user_id}"
+            f"Task execution completed (independent session): {task_id}, user: {user_id}"  # noqa: G004
         )
         return result
 
@@ -440,8 +431,8 @@ class TaskManager:
 
             return result
 
-        except Exception as e:
-            logger.error(f"Failed to get task result: {task_id}, error: {str(e)}")
+        except Exception as e:  # noqa: BLE001
+            logger.error(f"Failed to get task result: {task_id}, error: {str(e)}")  # noqa: G004
             return None
 
     def _map_arq_status_to_task_status(self, arq_status: str) -> TaskStatus:
@@ -479,10 +470,10 @@ class TaskManager:
         try:
             job = Job(task_id, pool)
             await job.abort()
-            logger.info(f"Task cancelled: {task_id}")
+            logger.info(f"Task cancelled: {task_id}")  # noqa: G004
             return True
-        except Exception as e:
-            logger.error(f"Failed to cancel task: {task_id}, error: {str(e)}")
+        except Exception as e:  # noqa: BLE001
+            logger.error(f"Failed to cancel task: {task_id}, error: {str(e)}")  # noqa: G004
             return False
 
     async def delete_task(self, task_id: str) -> bool:
@@ -500,10 +491,10 @@ class TaskManager:
         try:
             # Delete task record
             await pool.delete(f"arq:job:{task_id}")
-            logger.info(f"Task deleted: {task_id}")
+            logger.info(f"Task deleted: {task_id}")  # noqa: G004
             return True
-        except Exception as e:
-            logger.error(f"Failed to delete task: {task_id}, error: {str(e)}")
+        except Exception as e:  # noqa: BLE001
+            logger.error(f"Failed to delete task: {task_id}, error: {str(e)}")  # noqa: G004
             return False
 
     async def list_tasks(
@@ -551,8 +542,8 @@ class TaskManager:
 
             return tasks
 
-        except Exception as e:
-            logger.error(f"Failed to list tasks: {str(e)}")
+        except Exception as e:  # noqa: BLE001
+            logger.error(f"Failed to list tasks: {str(e)}")  # noqa: G004
             return []
 
     async def get_task_count(self, status: Optional[TaskStatus] = None) -> int:

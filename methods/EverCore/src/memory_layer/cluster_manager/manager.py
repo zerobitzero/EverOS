@@ -233,8 +233,8 @@ class ClusterManager:
         if VECTORIZE_SERVICE_AVAILABLE:
             try:
                 self._vectorize_service = get_vectorize_service()
-            except Exception as e:
-                logger.warning(f"Failed to initialize vectorize service: {e}")
+            except Exception as e:  # noqa: BLE001
+                logger.warning(f"Failed to initialize vectorize service: {e}")  # noqa: G004
 
         # LLM provider (for llm algorithm)
         self._llm_provider = llm_provider
@@ -302,7 +302,7 @@ class ClusterManager:
         vector = await self._get_embedding(text)
         if vector is None or vector.size == 0:
             logger.warning(
-                f"Failed to get embedding for event {event_id}, creating singleton cluster"
+                f"Failed to get embedding for event {event_id}, creating singleton cluster"  # noqa: G004
             )
             cluster_id = state.assign_new_cluster(event_id)
             state.event_ids.append(event_id)
@@ -442,7 +442,7 @@ class ClusterManager:
             self._append_event(state, event_id, vector, timestamp)
             self._stats["clustered_memcells"] += 1
             logger.info(
-                f"[LLM Clustering] First case cluster: {event_id} -> {cluster_id}"
+                f"[LLM Clustering] First case cluster: {event_id} -> {cluster_id}"  # noqa: G004
             )
             return cluster_id, state
 
@@ -457,7 +457,7 @@ class ClusterManager:
         candidate_ids = [cid for cid, _ in scored_candidates]
         top1_sim = scored_candidates[0][1] if scored_candidates else -1.0
         logger.info(
-            f"[LLM Clustering] Embedding recall: {len(candidate_ids)} candidates "
+            f"[LLM Clustering] Embedding recall: {len(candidate_ids)} candidates "  # noqa: G004
             f"(top1_sim={top1_sim:.3f}), "
             f"from {len(state.case_cluster_ids)} case clusters"
         )
@@ -469,7 +469,7 @@ class ClusterManager:
             self._append_event(state, event_id, vector, timestamp)
             self._stats["clustered_memcells"] += 1
             logger.info(
-                f"[LLM Clustering] Fast path: {event_id} -> {cluster_id} "
+                f"[LLM Clustering] Fast path: {event_id} -> {cluster_id} "  # noqa: G004
                 f"(sim={top1_sim:.3f} >= {self.config.llm_skip_threshold})"
             )
             return cluster_id, state
@@ -490,7 +490,7 @@ class ClusterManager:
 
         if llm_result is None:
             logger.warning(
-                f"[LLM Clustering] LLM call failed for event {event_id}, "
+                f"[LLM Clustering] LLM call failed for event {event_id}, "  # noqa: G004
                 f"falling back to embedding top-1"
             )
             # Fall back to embedding: use top-1 candidate if available, else new cluster
@@ -521,7 +521,7 @@ class ClusterManager:
         self._stats["clustered_memcells"] += 1
         reason = llm_result.get("reason", "") if llm_result else ""
         logger.info(
-            f"[LLM Clustering] 🎯 Event {event_id} -> {cluster_id} "
+            f"[LLM Clustering] 🎯 Event {event_id} -> {cluster_id} "  # noqa: G004
             f"| intent: {text} | reason: {reason}"
         )
         return cluster_id, state
@@ -642,10 +642,10 @@ class ClusterManager:
                 if data and "cluster_id" in data:
                     return data
                 logger.warning(
-                    f"[LLM Clustering] Retry {attempt + 1}/3: invalid response format"
+                    f"[LLM Clustering] Retry {attempt + 1}/3: invalid response format"  # noqa: G004
                 )
-            except Exception as e:
-                logger.warning(f"[LLM Clustering] Retry {attempt + 1}/3: {e}")
+            except Exception as e:  # noqa: BLE001
+                logger.warning(f"[LLM Clustering] Retry {attempt + 1}/3: {e}")  # noqa: G004
         return None
 
     def _find_best_cluster(
@@ -701,8 +701,8 @@ class ClusterManager:
             vector_arr = await self._vectorize_service.get_embedding(text)
             if vector_arr is not None:
                 return np.array(vector_arr, dtype=np.float32)
-        except Exception as e:
-            logger.warning(f"Failed to get embedding: {e}")
+        except Exception as e:  # noqa: BLE001
+            logger.warning(f"Failed to get embedding: {e}")  # noqa: G004
 
         return None
 
@@ -748,8 +748,8 @@ class ClusterManager:
 
                 dt = from_iso_format(timestamp)
                 return dt.timestamp()
-        except Exception as e:
-            logger.warning(f"Failed to parse timestamp {timestamp}: {e}")
+        except Exception as e:  # noqa: BLE001
+            logger.warning(f"Failed to parse timestamp {timestamp}: {e}")  # noqa: G004
 
         return None
 
@@ -763,8 +763,8 @@ class ClusterManager:
                     await callback(group_id, memcell, cluster_id)
                 else:
                     callback(group_id, memcell, cluster_id)
-            except Exception as e:
-                logger.error(f"Callback error: {e}")
+            except Exception as e:  # noqa: BLE001
+                logger.error(f"Callback error: {e}")  # noqa: G004
 
     def get_stats(self) -> Dict[str, Any]:
         """Get clustering statistics."""

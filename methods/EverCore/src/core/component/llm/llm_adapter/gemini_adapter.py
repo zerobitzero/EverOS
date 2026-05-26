@@ -133,7 +133,7 @@ class GeminiAdapter(LLMBackendAdapter):
             try:
                 collector = get_bean_by_type(TokenUsageCollector)
                 collector.add(model, prompt_tokens, completion_tokens, call_type="llm")
-            except Exception:
+            except Exception:  # noqa: BLE001
                 pass
 
         result = ChatCompletionResponse(
@@ -186,7 +186,7 @@ class GeminiAdapter(LLMBackendAdapter):
                         or 0,
                         call_type="llm",
                     )
-                except Exception:
+                except Exception:  # noqa: BLE001
                     pass
 
     def get_available_models(self) -> List[str]:

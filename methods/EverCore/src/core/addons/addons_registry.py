@@ -204,7 +204,7 @@ class AddonsRegistry:
                     ep.load()
                     logger.info("  ✅ Loaded entrypoint: %s", ep.name)
 
-                except Exception as e:  # pylint: disable=broad-except
+                except Exception as e:  # pylint: disable=broad-except  # noqa: BLE001
                     logger.error("  ❌ Failed to load entrypoint %s: %s", ep.name, e)
 
             logger.info(
@@ -215,7 +215,7 @@ class AddonsRegistry:
             logger.warning(
                 "⚠️  importlib.metadata is not available, skipping entry points loading"
             )
-        except Exception as e:  # pylint: disable=broad-except
+        except Exception as e:  # pylint: disable=broad-except  # noqa: BLE001
             logger.error("❌ Failed to load addons entry points: %s", e)
 
         return self

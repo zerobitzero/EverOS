@@ -439,13 +439,13 @@ class BaseController(ABC):
                                     "name": "X-Signature",
                                     "description": "HMAC signature authentication",
                                 }
-                except Exception as e:
+                except Exception as e:  # noqa: BLE001
                     # If getting security schemes fails, log error but don't affect other functionality
                     import logging
 
                     logger = logging.getLogger(__name__)
                     logger.warning(
-                        f"Failed to get security schemes definition for controller {controller.__class__.__name__}: {str(e)}"
+                        f"Failed to get security schemes definition for controller {controller.__class__.__name__}: {str(e)}"  # noqa: G004
                     )
 
         # Add security schemes definition to OpenAPI schema

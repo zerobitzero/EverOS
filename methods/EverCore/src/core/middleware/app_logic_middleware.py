@@ -91,7 +91,7 @@ class AppLogicMiddleware(BaseHTTPMiddleware):
                 await self._app_logic_provider.on_request_complete(
                     request=request, http_code=http_code, error_message=error_message
                 )
-            except Exception as callback_error:
+            except Exception as callback_error:  # noqa: BLE001
                 logger.warning(
                     "on_request_complete execution failed: %s", callback_error
                 )

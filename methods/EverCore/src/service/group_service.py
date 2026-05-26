@@ -160,7 +160,7 @@ class GroupService:
 
             await repo.upsert_by_group_id(group_id, update_data)
             logger.debug("Group auto-registered: group_id=%s", group_id)
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001
             # Fire-and-forget: log error but don't raise
             logger.warning(
                 "Failed to auto-register group: group_id=%s, error=%s", group_id, e

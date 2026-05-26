@@ -56,7 +56,7 @@ def get_space_id_for_metrics() -> str:
         tenant = get_current_tenant()
         if tenant and tenant.tenant_detail and tenant.tenant_detail.tenant_info:
             return tenant.tenant_detail.tenant_info.get('space_id', 'default')
-    except Exception:
+    except Exception:  # noqa: BLE001
         pass
     return 'default'
 

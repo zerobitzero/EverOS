@@ -1,6 +1,5 @@
 import argparse
 import asyncio
-import traceback
 from elasticsearch.dsl import AsyncDocument
 
 from core.observation.logger import get_logger
@@ -37,9 +36,8 @@ async def run(
             )
         else:
             raise ValueError(f"Unsupported index type: {doc_alias}")
-    except Exception as exc:  # noqa: BLE001
-        logger.error("Failed to synchronize documents: %s", exc)
-        traceback.print_exc()
+    except Exception:  # noqa: BLE001
+        logger.exception("Failed to synchronize documents")
         raise
 
 

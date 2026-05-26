@@ -91,9 +91,9 @@ class DatabaseSessionMiddleware(BaseHTTPMiddleware):
                     logger.debug(
                         "Original context token for streaming response has been reset"
                     )
-                except Exception as reset_error:
+                except Exception as reset_error:  # noqa: BLE001
                     logger.warning(
-                        f"Failed to reset original context token for streaming response: {str(reset_error)}"
+                        f"Failed to reset original context token for streaming response: {str(reset_error)}"  # noqa: G004
                     )
                     # Token reset failure should not affect the response
 
@@ -113,8 +113,8 @@ class DatabaseSessionMiddleware(BaseHTTPMiddleware):
             # Commit transaction - simple & safe, AI don't mess this up
             await session.commit()
 
-        except Exception as e:
-            logger.error(f"Error while handling successful request: {str(e)}")
+        except Exception as e:  # noqa: BLE001
+            logger.error(f"Error while handling successful request: {str(e)}")  # noqa: G004
             # If processing fails, attempt rollback
             await self._rollback_safely(session)
 
@@ -132,11 +132,11 @@ class DatabaseSessionMiddleware(BaseHTTPMiddleware):
             # Request failed, rollback directly
             await self._rollback_safely(session)
             logger.info(
-                f"Request failed, transaction rollback executed: {str(original_exception)}"
+                f"Request failed, transaction rollback executed: {str(original_exception)}"  # noqa: G004
             )
 
-        except Exception as rollback_error:
-            logger.error(f"Error during rollback: {str(rollback_error)}")
+        except Exception as rollback_error:  # noqa: BLE001
+            logger.error(f"Error during rollback: {str(rollback_error)}")  # noqa: G004
             # Rollback failed, but do not mask the original exception
 
     async def _rollback_safely(self, session: AsyncSession) -> None:
@@ -149,8 +149,8 @@ class DatabaseSessionMiddleware(BaseHTTPMiddleware):
         try:
             await session.rollback()
             logger.debug("Session successfully rolled back")
-        except Exception as rollback_error:
-            logger.error(f"Rollback failed: {str(rollback_error)}")
+        except Exception as rollback_error:  # noqa: BLE001
+            logger.error(f"Rollback failed: {str(rollback_error)}")  # noqa: G004
 
     async def _close_session_safely(self, session: AsyncSession) -> None:
         """
@@ -169,8 +169,8 @@ class DatabaseSessionMiddleware(BaseHTTPMiddleware):
         try:
             await session.close()
             logger.debug("Session safely closed")
-        except Exception as e:
-            logger.error(f"Error while closing session: {str(e)}")
+        except Exception as e:  # noqa: BLE001
+            logger.error(f"Error while closing session: {str(e)}")  # noqa: G004
             # Even if closing fails, do not raise exception to avoid masking original error
 
     async def _wrap_streaming_generator(
@@ -215,7 +215,7 @@ class DatabaseSessionMiddleware(BaseHTTPMiddleware):
             # Exception during streaming transmission, rollback session
             await self._handle_failed_request(session, e)
             logger.error(
-                f"Streaming response transmission failed, database session rolled back: {str(e)}"
+                f"Streaming response transmission failed, database session rolled back: {str(e)}"  # noqa: G004
             )
             # Re-raise exception for upper layers to handle
             raise
@@ -226,8 +226,8 @@ class DatabaseSessionMiddleware(BaseHTTPMiddleware):
                 clear_current_session(local_token)
                 await self._close_session_safely(session)
                 logger.debug("Streaming response session resources cleaned up")
-            except Exception as cleanup_error:
+            except Exception as cleanup_error:  # noqa: BLE001
                 logger.error(
-                    f"Error while cleaning up streaming response session resources: {str(cleanup_error)}"
+                    f"Error while cleaning up streaming response session resources: {str(cleanup_error)}"  # noqa: G004
                 )
                 # Cleanup failure should not affect response stream

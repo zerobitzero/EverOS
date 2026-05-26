@@ -61,7 +61,7 @@ class ForesightRecordRawRepository(BaseRepository[ForesightRecord]):
                 foresight.parent_id,
             )
             return foresight
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001
             logger.error("❌ Failed to save personal foresight: %s", e)
             return None
 
@@ -105,7 +105,7 @@ class ForesightRecordRawRepository(BaseRepository[ForesightRecord]):
             else:
                 logger.debug("ℹ️  Personal foresight not found: id=%s", memory_id)
             return result
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001
             logger.error("❌ Failed to retrieve personal foresight by ID: %s", e)
             return None
 
@@ -154,7 +154,7 @@ class ForesightRecordRawRepository(BaseRepository[ForesightRecord]):
                 target_model.__name__,
             )
             return results
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001
             logger.error(
                 "❌ Failed to retrieve foresights by parent episodic memory ID: %s", e
             )
@@ -275,7 +275,7 @@ class ForesightRecordRawRepository(BaseRepository[ForesightRecord]):
                 target_model.__name__,
             )
             return results
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001
             logger.error("❌ Failed to retrieve foresights: %s", e)
             return []
 
@@ -341,7 +341,7 @@ class ForesightRecordRawRepository(BaseRepository[ForesightRecord]):
                 count,
             )
             return count
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001
             logger.error("❌ Failed to count foresights: %s", e)
             return 0
 

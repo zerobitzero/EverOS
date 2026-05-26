@@ -138,7 +138,7 @@ class BaseRepository(ABC, Generic[T]):
             if isinstance(object_id, str):
                 object_id = PydanticObjectId(object_id)
             return await self.model.get(object_id)
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001
             logger.error("❌ Failed to get document by ID [%s]: %s", self.model_name, e)
             return None
 
@@ -193,7 +193,7 @@ class BaseRepository(ABC, Generic[T]):
                 )
                 return True
             return False
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001
             logger.error("❌ Failed to delete document [%s]: %s", self.model_name, e)
             return False
 
@@ -218,7 +218,7 @@ class BaseRepository(ABC, Generic[T]):
                 getattr(document, 'id', 'unknown'),
             )
             return True
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001
             logger.error("❌ Failed to delete document [%s]: %s", self.model_name, e)
             return False
 
@@ -331,7 +331,7 @@ class BaseRepository(ABC, Generic[T]):
                     count,
                 )
             return count
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001
             logger.error("❌ Failed to count documents [%s]: %s", self.model_name, e)
             return 0
 
@@ -350,7 +350,7 @@ class BaseRepository(ABC, Generic[T]):
                 object_id = PydanticObjectId(object_id)
             document = await self.model.get(object_id)
             return document is not None
-        except Exception:
+        except Exception:  # noqa: BLE001
             return False
 
     # ==================== Helper Methods ====================

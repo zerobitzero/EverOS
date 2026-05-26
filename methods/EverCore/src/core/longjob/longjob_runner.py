@@ -41,7 +41,7 @@ async def run_longjob_mode(longjob_name: str):
                 longjob_name,
                 type(longjob_instance).__name__,
             )
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001
             logger.error(
                 "❌ Unable to find long-running job '%s': %s", longjob_name, str(e)
             )
@@ -86,7 +86,7 @@ async def run_longjob_mode(longjob_name: str):
                     longjob_name,
                 )
             except Exception as e:
-                logger.error(
+                logger.error(  # noqa: G201
                     "❌ Error during long-running job shutdown: %s",
                     str(e),
                     exc_info=True,
@@ -96,13 +96,13 @@ async def run_longjob_mode(longjob_name: str):
 
     except Exception as e:
         # Exception occurred during execution
-        logger.error("❌ Error running long-running job: %s", str(e), exc_info=True)
+        logger.error("❌ Error running long-running job: %s", str(e), exc_info=True)  # noqa: G201
         if longjob_instance:
             try:
                 await longjob_instance.shutdown()
                 logger.info("✅ Long-running job has been shut down after exception")
             except Exception as shutdown_error:
-                logger.error(
+                logger.error(  # noqa: G201
                     "❌ Error during long-running job shutdown: %s",
                     str(shutdown_error),
                     exc_info=True,

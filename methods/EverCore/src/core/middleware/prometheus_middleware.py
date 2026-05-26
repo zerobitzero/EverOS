@@ -86,7 +86,7 @@ def _get_fastapi_route_template(request: Request) -> str:
                     path = path.replace(str(param_value), f"{{{param_name}}}")
             return path
 
-    except Exception as e:
+    except Exception as e:  # noqa: BLE001
         logger.debug("Failed to get FastAPI route template: %s", str(e))
 
     return ""

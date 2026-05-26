@@ -120,7 +120,7 @@ class ElasticsearchClientWrapper:
             await self.async_client.ping()
             logger.info("✅ Elasticsearch connection test successful: %s", self.hosts)
             return True
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001
             logger.error(
                 "❌ Elasticsearch connection test failed: %s, error: %s", self.hosts, e
             )
@@ -132,7 +132,7 @@ class ElasticsearchClientWrapper:
             if self.async_client:
                 await self.async_client.close()
             logger.info("🔌 Elasticsearch connection closed: %s", self.hosts)
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001
             logger.error("Error closing Elasticsearch connection: %s", e)
 
 
@@ -322,7 +322,7 @@ class ElasticsearchClientFactory:
                 client_wrapper = self._clients[cache_key]
                 try:
                     await client_wrapper.close()
-                except Exception as e:
+                except Exception as e:  # noqa: BLE001
                     logger.error(
                         "Error closing Elasticsearch client during removal: %s", e
                     )
@@ -340,7 +340,7 @@ class ElasticsearchClientFactory:
             for cache_key, client_wrapper in self._clients.items():
                 try:
                     await client_wrapper.close()
-                except Exception as e:
+                except Exception as e:  # noqa: BLE001
                     logger.error(
                         "Error closing Elasticsearch client %s: %s", cache_key, e
                     )

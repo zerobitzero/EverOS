@@ -94,7 +94,7 @@ class RawMessageService:
                 )
                 if message_id:
                     saved_message_ids.append(message_id)
-            except Exception as e:
+            except Exception as e:  # noqa: BLE001
                 logger.error(
                     "Failed to save RawData to RawMessage: data_id=%s, error=%s",
                     raw_data.data_id,
@@ -195,7 +195,7 @@ class RawMessageService:
                 )
                 return True
             return False
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001
             logger.error(
                 "Failed to check duplicate message: group_id=%s, sender_id=%s, message_id=%s, error=%s",
                 group_id,
@@ -269,7 +269,7 @@ class RawMessageService:
                 len(results),
             )
             return results
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001
             logger.error(
                 "Failed to get pending raw messages: sender_id=%s, group_ids=%s, error=%s",
                 sender_id,

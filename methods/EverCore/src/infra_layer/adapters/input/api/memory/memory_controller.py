@@ -209,7 +209,7 @@ class MemoryController(BaseController):
             )
             raise
         except Exception as e:
-            logger.error("Personal add failed: %s", e, exc_info=True)
+            logger.error("Personal add failed: %s", e, exc_info=True)  # noqa: G201
             error_type = classify_memorize_error(e)
             record_memorize_error(
                 space_id=space_id,
@@ -356,7 +356,7 @@ class MemoryController(BaseController):
             )
             raise
         except Exception as e:
-            logger.error("Group add failed: %s", e, exc_info=True)
+            logger.error("Group add failed: %s", e, exc_info=True)  # noqa: G201
             error_type = classify_memorize_error(e)
             record_memorize_error(
                 space_id=space_id,
@@ -425,7 +425,7 @@ class MemoryController(BaseController):
             logger.error("Personal flush parameter error: %s", e)
             raise HTTPException(status_code=422, detail=str(e)) from e
         except Exception as e:
-            logger.error("Personal flush failed: %s", e, exc_info=True)
+            logger.error("Personal flush failed: %s", e, exc_info=True)  # noqa: G201
             raise HTTPException(
                 status_code=500, detail="Flush failed, please try again later"
             ) from e
@@ -477,7 +477,7 @@ class MemoryController(BaseController):
             logger.error("Group flush parameter error: %s", e)
             raise HTTPException(status_code=422, detail=str(e)) from e
         except Exception as e:
-            logger.error("Group flush failed: %s", e, exc_info=True)
+            logger.error("Group flush failed: %s", e, exc_info=True)  # noqa: G201
             raise HTTPException(
                 status_code=500, detail="Flush failed, please try again later"
             ) from e
@@ -598,7 +598,7 @@ class MemoryController(BaseController):
             logger.error("Agent flush parameter error: %s", e)
             raise HTTPException(status_code=422, detail=str(e)) from e
         except Exception as e:
-            logger.error("Agent flush failed: %s", e, exc_info=True)
+            logger.error("Agent flush failed: %s", e, exc_info=True)  # noqa: G201
             raise HTTPException(
                 status_code=500, detail="Flush failed, please try again later"
             ) from e
@@ -866,7 +866,7 @@ class MemoryController(BaseController):
             )
             raise
         except Exception as e:
-            logger.error("Agent add failed: %s", e, exc_info=True)
+            logger.error("Agent add failed: %s", e, exc_info=True)  # noqa: G201
             record_memorize_error(
                 space_id=space_id,
                 raw_data_type=raw_data_type,
@@ -912,7 +912,7 @@ class MemoryController(BaseController):
             await group_service.ensure_group_exists(
                 group_id=group_id, name=name, description=description
             )
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001
             logger.warning(
                 "Failed to auto-register group: group_id=%s, error=%s", group_id, e
             )
@@ -950,7 +950,7 @@ class MemoryController(BaseController):
                 sid = raw_data.content.get("sender_id")
                 if sid in name_map:
                     raw_data.content["sender_name"] = name_map[sid]
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001
             logger.warning("Failed to enrich sender names: %s", e)
 
     async def _ensure_sender_exists(
@@ -964,7 +964,7 @@ class MemoryController(BaseController):
             await sender_service.ensure_sender_exists(
                 sender_id=sender_id, name=sender_name
             )
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001
             logger.warning(
                 "Failed to auto-register sender: sender_id=%s, error=%s", sender_id, e
             )
@@ -974,7 +974,7 @@ class MemoryController(BaseController):
         try:
             publisher = get_bean_by_type(ApplicationEventPublisher)
             await publisher.publish(event)
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001
             logger.warning("Failed to publish event %s: %s", type(event).__name__, e)
 
     async def _ensure_session_exists(self, session_id: str) -> None:
@@ -984,7 +984,7 @@ class MemoryController(BaseController):
 
             session_service = get_bean_by_type(SessionService)
             await session_service.ensure_session_exists(session_id=session_id)
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001
             logger.warning(
                 "Failed to auto-register session: session_id=%s, error=%s",
                 session_id,

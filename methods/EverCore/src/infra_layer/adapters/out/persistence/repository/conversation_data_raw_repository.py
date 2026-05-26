@@ -202,7 +202,7 @@ class ConversationDataRepositoryImpl(ConversationDataRepository):
             )
             return True
 
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001
             logger.error(
                 "Window accumulation confirmation failed: group_id=%s, session_id=%s, error=%s",
                 group_id,
@@ -281,7 +281,7 @@ class ConversationDataRepositoryImpl(ConversationDataRepository):
             )
             return raw_data_list
 
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001
             logger.error(
                 "Conversation data fetch failed: group_id=%s, session_id=%s, error=%s",
                 group_id,
@@ -332,7 +332,7 @@ class ConversationDataRepositoryImpl(ConversationDataRepository):
             )
             return True
 
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001
             logger.error(
                 "Failed to mark conversation data as used: group_id=%s, session_id=%s, error=%s",
                 group_id,
@@ -395,7 +395,7 @@ class ConversationDataRepositoryImpl(ConversationDataRepository):
             )
             return raw_data_list
 
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001
             logger.error(
                 "Unprocessed conversation data fetch failed: group_id=%s, session_id=%s, error=%s",
                 group_id,

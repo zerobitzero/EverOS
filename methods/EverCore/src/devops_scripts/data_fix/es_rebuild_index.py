@@ -1,6 +1,5 @@
 import argparse
 import asyncio
-import traceback
 
 from elasticsearch.dsl import AsyncDocument
 
@@ -24,9 +23,8 @@ async def run(index_name: str, close_old: bool, delete_old: bool) -> None:
         logger.info("Index alias: %s", document_class.get_index_name())
 
         await rebuild_index(document_class, close_old=close_old, delete_old=delete_old)
-    except Exception as exc:  # noqa: BLE001
-        logger.error("Failed to rebuild index: %s", exc)
-        traceback.print_exc()
+    except Exception:  # noqa: BLE001
+        logger.exception("Failed to rebuild index")
         raise
 
 

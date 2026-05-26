@@ -1,4 +1,3 @@
-import traceback
 from datetime import timedelta
 from typing import Optional, AsyncIterator, Dict, Any
 
@@ -141,7 +140,6 @@ async def sync_episodic_memory_docs(
             success_count,
             error_count,
         )
-    except Exception as exc:  # noqa: BLE001
-        logger.error("An error occurred during sync: %s", exc)
-        traceback.print_exc()
+    except Exception:  # noqa: BLE001
+        logger.exception("An error occurred during sync")
         raise

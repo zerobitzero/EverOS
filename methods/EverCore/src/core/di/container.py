@@ -348,7 +348,7 @@ class DIContainer:
                 if self._is_bean_available(bean_def):
                     try:
                         result[name] = self._create_instance(bean_def)
-                    except Exception:
+                    except Exception:  # noqa: BLE001
                         # Skip Beans that cannot be created
                         continue
             return result
@@ -476,7 +476,7 @@ class DIContainer:
             if bean_def.factory_method:
                 try:
                     return bean_def.factory_method()
-                except Exception as e:
+                except Exception as e:  # noqa: BLE001
                     raise FactoryError(bean_def.bean_type, str(e))
             else:
                 raise FactoryError(bean_def.bean_type, "Factory method not set")
@@ -515,7 +515,7 @@ class DIContainer:
         # Get constructor signature
         try:
             signature = inspect.signature(bean_type.__init__)
-        except Exception:
+        except Exception:  # noqa: BLE001
             # If signature cannot be obtained, try parameterless constructor
             return bean_type()
 
@@ -562,7 +562,7 @@ class DIContainer:
                     continue
                 if param.annotation != inspect.Parameter.empty:
                     bean_def.dependencies.add(param.annotation)
-        except Exception:
+        except Exception:  # noqa: BLE001
             # If analysis fails, skip
             pass
 

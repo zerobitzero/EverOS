@@ -44,7 +44,7 @@ class DeepInfraRerankService(RerankServiceInterface):
         self.config = config
         self.session: Optional[aiohttp.ClientSession] = None
         self._semaphore = asyncio.Semaphore(config.max_concurrent_requests)
-        logger.info(f"Initialized DeepInfraRerankService | model={config.model}")
+        logger.info(f"Initialized DeepInfraRerankService | model={config.model}")  # noqa: G004
 
     async def _ensure_session(self):
         """Ensure HTTP session is created"""
@@ -110,7 +110,7 @@ class DeepInfraRerankService(RerankServiceInterface):
                         else:
                             error_text = await response.text()
                             logger.error(
-                                f"DeepInfra rerank API error {response.status}: {error_text}"
+                                f"DeepInfra rerank API error {response.status}: {error_text}"  # noqa: G004
                             )
                             if attempt < self.config.max_retries - 1:
                                 await asyncio.sleep(2**attempt)
@@ -118,8 +118,8 @@ class DeepInfraRerankService(RerankServiceInterface):
                             raise RerankError(
                                 f"API failed: {response.status} - {error_text}"
                             )
-                except Exception as e:
-                    logger.error(f"DeepInfra rerank exception: {e}")
+                except Exception as e:  # noqa: BLE001
+                    logger.error(f"DeepInfra rerank exception: {e}")  # noqa: G004
                     if attempt < self.config.max_retries - 1:
                         await asyncio.sleep(2**attempt)
                         continue
@@ -182,7 +182,7 @@ class DeepInfraRerankService(RerankServiceInterface):
 
         for i, result in enumerate(batch_results):
             if isinstance(result, Exception):
-                logger.error(f"Rerank batch {i} failed: {result}")
+                logger.error(f"Rerank batch {i} failed: {result}")  # noqa: G004
                 batch_len = len(batches[i])
                 all_scores.extend([-100.0] * batch_len)
                 continue
@@ -196,7 +196,7 @@ class DeepInfraRerankService(RerankServiceInterface):
         try:
             collector = get_bean_by_type(TokenUsageCollector)
             collector.add(self.config.model, total_input_tokens, 0, call_type="rerank")
-        except Exception:
+        except Exception:  # noqa: BLE001
             pass
 
         combined_response = {
@@ -262,7 +262,7 @@ class DeepInfraRerankService(RerankServiceInterface):
         # Call reranking API
         try:
             logger.debug(
-                f"Starting reranking, query text: {query}, number of texts: {len(all_texts)}"
+                f"Starting reranking, query text: {query}, number of texts: {len(all_texts)}"  # noqa: G004
             )
             rerank_result = await self.rerank_documents(query, all_texts, instruction)
 
@@ -290,12 +290,12 @@ class DeepInfraRerankService(RerankServiceInterface):
             if reranked_hits:
                 top_scores = [f"{h.get('score', 0):.4f}" for h in reranked_hits[:3]]
                 logger.info(
-                    f"Reranking completed: {len(reranked_hits)} results, top scores: {top_scores}"
+                    f"Reranking completed: {len(reranked_hits)} results, top scores: {top_scores}"  # noqa: G004
                 )
             return reranked_hits
 
-        except Exception as e:
-            logger.error(f"Error during reranking: {e}")
+        except Exception as e:  # noqa: BLE001
+            logger.error(f"Error during reranking: {e}")  # noqa: G004
             # If reranking fails, return original results (sorted by original score)
             sorted_hits = sorted(hits, key=lambda x: x.get('score', 0), reverse=True)
             if top_k is not None and top_k > 0:

@@ -218,7 +218,7 @@ class GeminiClient:
                     contents.append(
                         ContentDict(role="user", parts=[{"text": str(msg)}])
                     )
-            except Exception:
+            except Exception:  # noqa: BLE001
                 # Final fallback
                 contents.append(ContentDict(role="user", parts=[{"text": str(msg)}]))
 

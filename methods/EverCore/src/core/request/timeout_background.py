@@ -16,7 +16,6 @@ Background mode configuration:
 from typing import Any, Callable, Coroutine, TypeVar, ParamSpec, Union, Optional
 from functools import wraps
 import asyncio
-import traceback
 
 from fastapi import Request
 from fastapi.responses import JSONResponse
@@ -193,12 +192,9 @@ async def _run_background_task(
             "[TimeoutBackground] Background task '%s' was cancelled", task_name
         )
     except Exception as e:
-        logger.error(
-            "[TimeoutBackground] Background task '%s' execution failed: %s",
-            task_name,
-            e,
+        logger.exception(
+            "[TimeoutBackground] Background task '%s' execution failed", task_name
         )
-        traceback.print_exc()
         await _call_on_request_complete(provider, http_code=500, error_message=str(e))
 
 
@@ -222,7 +218,7 @@ async def _call_on_request_complete(
         await provider.on_request_complete(
             request=request, http_code=http_code, error_message=error_message
         )
-    except Exception as e:
+    except Exception as e:  # noqa: BLE001
         logger.warning(
             "[TimeoutBackground] on_request_complete callback execution failed: %s", e
         )

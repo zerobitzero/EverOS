@@ -185,7 +185,7 @@ class AppLogicProvider(ABC):
 
             collector = get_bean_by_type(TokenUsageCollector)
             collector.reset()
-        except Exception:
+        except Exception:  # noqa: BLE001
             pass
 
     def _cleanup_token_usage_collector(self) -> None:
@@ -199,7 +199,7 @@ class AppLogicProvider(ABC):
 
             collector = get_bean_by_type(TokenUsageCollector)
             collector.reset()
-        except Exception:
+        except Exception:  # noqa: BLE001
             pass
 
 

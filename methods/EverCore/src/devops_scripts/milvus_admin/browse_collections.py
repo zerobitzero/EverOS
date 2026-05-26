@@ -88,13 +88,13 @@ def show_collection_details(client: MilvusClient, names: List[str]) -> None:
         try:
             stats = client.get_collection_stats(name)
             row_count = int(stats.get("row_count", 0))
-        except Exception:
+        except Exception:  # noqa: BLE001
             row_count = -1
 
         try:
             aliases = utility.list_aliases(collection_name=name, using="_admin")
             alias_str = ", ".join(aliases) if aliases else "-"
-        except Exception:
+        except Exception:  # noqa: BLE001
             alias_str = "?"
 
         row_str = _format_row_count(row_count) if row_count >= 0 else "?"
@@ -177,13 +177,13 @@ def drop_collection(client: MilvusClient, name: str) -> bool:
             for alias in aliases:
                 utility.drop_alias(alias, using="_admin")
                 print(f"  Dropped alias: {alias}")
-        except Exception:
+        except Exception:  # noqa: BLE001
             pass
 
         client.drop_collection(name)
         print(f"  Deleted: {name}")
         return True
-    except Exception as e:
+    except Exception as e:  # noqa: BLE001
         print(f"  Failed to delete {name}: {e}")
         return False
 
@@ -283,7 +283,7 @@ Example usage:
         try:
             client.close()
             connections.disconnect("_admin")
-        except Exception:
+        except Exception:  # noqa: BLE001
             pass
 
     return 0

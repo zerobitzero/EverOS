@@ -84,7 +84,7 @@ def create_lifespan_with_providers(providers: list[LifespanProvider]):
             for listener in listeners:
                 try:
                     listener.on_app_ready()
-                except Exception as e:
+                except Exception as e:  # noqa: BLE001
                     logger.error(
                         "Application ready listener execution failed: %s - %s",
                         type(listener).__name__,
@@ -102,7 +102,7 @@ def create_lifespan_with_providers(providers: list[LifespanProvider]):
                     logger.info(
                         "Lifecycle provider shutdown completed: %s", provider.name
                     )
-                except Exception as e:
+                except Exception as e:  # noqa: BLE001
                     logger.error(
                         "Failed to shut down lifecycle provider: %s - %s",
                         provider.name,

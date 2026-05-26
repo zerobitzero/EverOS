@@ -134,7 +134,7 @@ class MemCellDeleteService:
             return result
 
         except Exception as e:
-            logger.error(
+            logger.error(  # noqa: G201
                 "Failed to delete by memory_id=%s: error=%s",
                 memory_id,
                 e,
@@ -182,7 +182,7 @@ class MemCellDeleteService:
             return result
 
         except Exception as e:
-            logger.error("Failed to delete by filters: error=%s", e, exc_info=True)
+            logger.error("Failed to delete by filters: error=%s", e, exc_info=True)  # noqa: G201
             raise
 
     # ------------------------------------------------------------------

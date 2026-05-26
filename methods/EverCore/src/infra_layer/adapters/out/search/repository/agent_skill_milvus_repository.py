@@ -151,7 +151,7 @@ class AgentSkillMilvusRepository(BaseMilvusRepository[AgentSkillCollection]):
                     "Deleted %d Milvus records for cluster=%s", count, cluster_id
                 )
             return count
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001
             logger.error(
                 "Failed to delete Milvus records for cluster=%s: %s", cluster_id, e
             )

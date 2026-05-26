@@ -243,7 +243,7 @@ def get_tenant_aware_index_name(original_name: str) -> str:
         )
         return _base_prefixed_index_name(original_name)
 
-    except Exception as e:
+    except Exception as e:  # noqa: BLE001
         logger.warning(
             "Failed to get tenant-aware index name, using base prefix: %s", e
         )

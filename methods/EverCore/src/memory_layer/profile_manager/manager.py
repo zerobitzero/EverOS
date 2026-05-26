@@ -116,7 +116,7 @@ class ProfileManager:
 
         # Convert old_profiles list to dict by user_id
         old_profiles_dict: Dict[str, ProfileMemory] = {}
-        logger.info(f"[Profile] Processing {len(old_profiles or [])} old profiles")
+        logger.info(f"[Profile] Processing {len(old_profiles or [])} old profiles")  # noqa: G004
         for p in old_profiles or []:
             uid = (
                 p.get("user_id") if isinstance(p, dict) else getattr(p, "user_id", None)
@@ -124,24 +124,24 @@ class ProfileManager:
             p_dict = p if isinstance(p, dict) else p.to_dict()
             has_explicit = "explicit_info" in p_dict
             logger.info(
-                f"[Profile] Old profile: user_id={uid}, has_explicit_info={has_explicit}, keys={list(p_dict.keys())[:5]}"
+                f"[Profile] Old profile: user_id={uid}, has_explicit_info={has_explicit}, keys={list(p_dict.keys())[:5]}"  # noqa: G004
             )
             if uid and has_explicit:
                 old_profiles_dict[uid] = ProfileMemory.from_dict(p_dict)
                 logger.info(
-                    f"[Profile] Loaded profile for {uid}: {old_profiles_dict[uid].total_items()} items"
+                    f"[Profile] Loaded profile for {uid}: {old_profiles_dict[uid].total_items()} items"  # noqa: G004
                 )
 
         results: List[ProfileMemory] = []
         logger.info(
-            f"[Profile] user_id_list={user_id_list}, old_profiles_dict keys={list(old_profiles_dict.keys())}"
+            f"[Profile] user_id_list={user_id_list}, old_profiles_dict keys={list(old_profiles_dict.keys())}"  # noqa: G004
         )
 
         # Extract for each user
         for user_id in user_id_list:
             old_profile = old_profiles_dict.get(user_id)
             logger.info(
-                f"[Profile] Looking for user_id={user_id}, found={old_profile is not None}"
+                f"[Profile] Looking for user_id={user_id}, found={old_profile is not None}"  # noqa: G004
             )
 
             # --- Per-user original_data filtering (Layer 2 of 2) ---
@@ -178,7 +178,7 @@ class ProfileManager:
             for attempt in range(self.config.max_retries):
                 try:
                     logger.info(
-                        f"Extracting profile for user {user_id} (attempt {attempt + 1})..."
+                        f"Extracting profile for user {user_id} (attempt {attempt + 1})..."  # noqa: G004
                     )
 
                     result = await self._extractor.extract_memory(request)
@@ -186,27 +186,27 @@ class ProfileManager:
                     if result:
                         self._stats["successful_extractions"] += 1
                         logger.info(
-                            f"Profile extracted for {user_id}: {result.total_items()} items "
+                            f"Profile extracted for {user_id}: {result.total_items()} items "  # noqa: G004
                             f"(explicit: {len(result.explicit_info)}, implicit: {len(result.implicit_traits)})"
                         )
                         results.append(result)
                     else:
                         logger.warning(
-                            f"Profile extraction returned None for {user_id}"
+                            f"Profile extraction returned None for {user_id}"  # noqa: G004
                         )
                         if old_profile:
                             results.append(old_profile)
                     break
 
-                except Exception as e:
+                except Exception as e:  # noqa: BLE001
                     logger.warning(
-                        f"Profile extraction attempt {attempt + 1} for {user_id} failed: {e}"
+                        f"Profile extraction attempt {attempt + 1} for {user_id} failed: {e}"  # noqa: G004
                     )
                     if attempt < self.config.max_retries - 1:
                         await asyncio.sleep(0.5 * (attempt + 1))
                     else:
                         logger.error(
-                            f"All profile extraction attempts failed for {user_id}"
+                            f"All profile extraction attempts failed for {user_id}"  # noqa: G004
                         )
                         if old_profile:
                             results.append(old_profile)

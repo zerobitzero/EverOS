@@ -231,7 +231,7 @@ class HybridRerankService(RerankServiceInterface):
             )
 
         logger.info(
-            f"Initialized HybridRerankService | "
+            f"Initialized HybridRerankService | "  # noqa: G004
             f"primary={config.primary_provider} | "
             f"fallback={config.fallback_provider} | "
             f"fallback_enabled={config.enable_fallback} | "
@@ -264,7 +264,7 @@ class HybridRerankService(RerankServiceInterface):
             logger.info(
                 "Rerank input: %d docs, %d tokens", documents_count, total_tokens
             )
-        except Exception:
+        except Exception:  # noqa: BLE001
             logger.info(
                 "Rerank input: %d docs (token count unavailable)", documents_count
             )
@@ -379,7 +379,7 @@ class HybridRerankService(RerankServiceInterface):
             > self.config.failure_reset_interval
         ):
             logger.info(
-                f"🔄 Resetting failure count ({self.config._primary_failure_count}) after "
+                f"🔄 Resetting failure count ({self.config._primary_failure_count}) after "  # noqa: G004
                 f"{int(current_time - self.config._last_failure_time)}s of no failures"
             )
             self.config._primary_failure_count = 0
@@ -392,7 +392,7 @@ class HybridRerankService(RerankServiceInterface):
             and self.config._primary_failure_count >= self.config.max_primary_failures
         ):
             logger.info(
-                f"⚠️ Primary service has {self.config._primary_failure_count} failures "
+                f"⚠️ Primary service has {self.config._primary_failure_count} failures "  # noqa: G004
                 f"(>= {self.config.max_primary_failures}), skipping and using {self.config.fallback_provider} directly"
             )
 
@@ -407,8 +407,8 @@ class HybridRerankService(RerankServiceInterface):
                 result = await fallback_func()
                 return result
 
-            except Exception as fallback_error:
-                logger.error(f"❌ Fallback service also failed: {fallback_error}")
+            except Exception as fallback_error:  # noqa: BLE001
+                logger.error(f"❌ Fallback service also failed: {fallback_error}")  # noqa: G004
 
                 # Record fallback error
                 fallback_error_type = self._classify_error(fallback_error)
@@ -426,13 +426,13 @@ class HybridRerankService(RerankServiceInterface):
             self.config._primary_failure_count = 0
             return result
 
-        except Exception as primary_error:
+        except Exception as primary_error:  # noqa: BLE001
             # Increment failure count and update timestamp
             self.config._primary_failure_count += 1
             self.config._last_failure_time = time.time()
 
             logger.warning(
-                f"Primary service ({self.config.primary_provider}) {operation_name} failed "
+                f"Primary service ({self.config.primary_provider}) {operation_name} failed "  # noqa: G004
                 f"(count: {self.config._primary_failure_count}): {primary_error}"
             )
 
@@ -454,14 +454,14 @@ class HybridRerankService(RerankServiceInterface):
             if self.config._primary_failure_count >= self.config.max_primary_failures:
                 fallback_reason = 'max_failures_exceeded'
                 logger.warning(
-                    f"⚠️ Primary service exceeded max failures ({self.config.max_primary_failures}), "
+                    f"⚠️ Primary service exceeded max failures ({self.config.max_primary_failures}), "  # noqa: G004
                     f"using {self.config.fallback_provider} fallback"
                 )
 
             # Try fallback service
             try:
                 logger.info(
-                    f"🔄 Falling back to {self.config.fallback_provider} for {operation_name}"
+                    f"🔄 Falling back to {self.config.fallback_provider} for {operation_name}"  # noqa: G004
                 )
 
                 # Record fallback event
@@ -474,8 +474,8 @@ class HybridRerankService(RerankServiceInterface):
                 result = await fallback_func()
                 return result
 
-            except Exception as fallback_error:
-                logger.error(f"❌ Fallback also failed: {fallback_error}")
+            except Exception as fallback_error:  # noqa: BLE001
+                logger.error(f"❌ Fallback also failed: {fallback_error}")  # noqa: G004
 
                 # Record fallback error
                 fallback_error_type = self._classify_error(fallback_error)

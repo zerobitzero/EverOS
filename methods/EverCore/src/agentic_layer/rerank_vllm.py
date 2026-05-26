@@ -45,7 +45,7 @@ class VllmRerankService(RerankServiceInterface):
         self.session: Optional[aiohttp.ClientSession] = None
         self._semaphore = asyncio.Semaphore(config.max_concurrent_requests)
         logger.info(
-            f"Initialized VllmRerankService | url={config.base_url} | model={config.model}"  # skip-sensitive-check
+            f"Initialized VllmRerankService | url={config.base_url} | model={config.model}"  # skip-sensitive-check  # noqa: G004
         )
 
     async def _ensure_session(self):
@@ -117,7 +117,7 @@ class VllmRerankService(RerankServiceInterface):
                         else:
                             error_text = await response.text()
                             logger.warning(
-                                f"vLLM rerank API error (status {response.status}, attempt {attempt + 1}/{self.config.max_retries}): {error_text}"
+                                f"vLLM rerank API error (status {response.status}, attempt {attempt + 1}/{self.config.max_retries}): {error_text}"  # noqa: G004
                             )
                             if attempt < self.config.max_retries - 1:
                                 await asyncio.sleep(2**attempt)
@@ -128,7 +128,7 @@ class VllmRerankService(RerankServiceInterface):
                                 )
                 except asyncio.TimeoutError:
                     logger.warning(
-                        f"vLLM rerank timeout (attempt {attempt + 1}/{self.config.max_retries}), timeout={self.config.timeout}s"
+                        f"vLLM rerank timeout (attempt {attempt + 1}/{self.config.max_retries}), timeout={self.config.timeout}s"  # noqa: G004
                     )
                     if attempt < self.config.max_retries - 1:
                         await asyncio.sleep(2**attempt)
@@ -139,7 +139,7 @@ class VllmRerankService(RerankServiceInterface):
                         )
                 except aiohttp.ClientError as e:
                     logger.warning(
-                        f"vLLM rerank client error (attempt {attempt + 1}/{self.config.max_retries}): {e}"
+                        f"vLLM rerank client error (attempt {attempt + 1}/{self.config.max_retries}): {e}"  # noqa: G004
                     )
                     if attempt < self.config.max_retries - 1:
                         await asyncio.sleep(2**attempt)
@@ -148,8 +148,8 @@ class VllmRerankService(RerankServiceInterface):
                         raise RerankError(
                             f"Rerank request failed after {self.config.max_retries} attempts: {e}"
                         )
-                except Exception as e:
-                    logger.error(f"Unexpected error in vLLM rerank request: {e}")
+                except Exception as e:  # noqa: BLE001
+                    logger.error(f"Unexpected error in vLLM rerank request: {e}")  # noqa: G004
                     raise RerankError(f"Unexpected rerank error: {e}")
 
     async def rerank_documents(
@@ -189,7 +189,7 @@ class VllmRerankService(RerankServiceInterface):
         all_scores = []
         for i, result in enumerate(batch_results):
             if isinstance(result, Exception):
-                logger.error(f"Rerank batch {i} failed: {result}")
+                logger.error(f"Rerank batch {i} failed: {result}")  # noqa: G004
                 batch_len = len(batches[i])
                 all_scores.extend([-100.0] * batch_len)
                 continue
@@ -204,7 +204,7 @@ class VllmRerankService(RerankServiceInterface):
         try:
             collector = get_bean_by_type(TokenUsageCollector)
             collector.add(self.config.model, 0, 0, call_type="rerank")
-        except Exception:
+        except Exception:  # noqa: BLE001
             pass
 
         # Convert to same format as DeepInfra
@@ -297,14 +297,14 @@ class VllmRerankService(RerankServiceInterface):
             if reranked_hits:
                 top_scores = [f"{h.get('score', 0):.4f}" for h in reranked_hits[:3]]
                 logger.info(
-                    f"Reranked {len(hits)} hits -> {len(reranked_hits)} results, "
+                    f"Reranked {len(hits)} hits -> {len(reranked_hits)} results, "  # noqa: G004
                     f"top scores: {top_scores}"
                 )
 
             return reranked_hits
 
         except Exception as e:
-            logger.error(f"Error in rerank_memories: {e}")
+            logger.error(f"Error in rerank_memories: {e}")  # noqa: G004
             # Re-raise exception to allow HybridRerankService fallback
             raise
 

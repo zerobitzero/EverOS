@@ -157,7 +157,7 @@ class MilvusClientFactory:
         for _, client in self._clients.items():
             try:
                 client.close()
-            except Exception as e:
+            except Exception as e:  # noqa: BLE001
                 logger.error("Error closing Milvus client: %s", e)
 
         self._clients.clear()

@@ -183,7 +183,7 @@ class KafkaConsumerRecordItem(RedisGroupQueueItem):
             if isinstance(key, str):
                 try:
                     key = self._decode_base64_to_bytes(key)
-                except Exception:
+                except Exception:  # noqa: BLE001
                     # If decoding fails, keep original string
                     pass
 
@@ -194,7 +194,7 @@ class KafkaConsumerRecordItem(RedisGroupQueueItem):
                     try:
                         # Try to decode from base64
                         headers_bytes.append((name, self._decode_base64_to_bytes(data)))
-                    except Exception:
+                    except Exception:  # noqa: BLE001
                         # If decoding fails, encode as UTF-8 bytes
                         headers_bytes.append((name, data.encode('utf-8')))
                 else:
