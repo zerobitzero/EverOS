@@ -347,6 +347,7 @@ class TenantAwareMilvusCollectionWithSuffix(MilvusCollectionWithSuffix):
         # Use tenant-aware alias name
         using = self.using
         origin_alias_name = self._original_alias_name
+        tenant_aware_alias_name = get_tenant_aware_collection_name(origin_alias_name)
         new_real_name = generate_new_collection_name(origin_alias_name)
         tenant_aware_new_real_name = get_tenant_aware_collection_name(new_real_name)
 

@@ -137,6 +137,12 @@ ignore = [
     "E501",  # line too long — formatter's job
     "B008",  # function calls in argument defaults (FastAPI uses Depends())
     "B904",  # raise from inside except (large existing baseline)
+    # F841 (unused-variable) intentionally not enforced: `--unsafe-fixes`
+    # would auto-delete assignments. Some "unused" locals are kept on purpose
+    # — e.g. names that aid debugging, vestigial metric labels paired with
+    # other state, and `var = await ...` bindings where the await is the
+    # real intent. Manual review is required; auto-removal is unsafe.
+    "F841",
 ]
 
 [tool.ruff.lint.per-file-ignores]

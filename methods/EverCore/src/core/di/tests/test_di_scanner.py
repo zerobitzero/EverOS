@@ -281,6 +281,7 @@ class TestConditionalRegistration:
     def test_lazy_registration(self):
         """Test lazy registration"""
         container = get_container()
+        initial_bean_count = len(container._named_beans)
 
         # Define component with lazy registration
         @component(name="lazy_comp_unique_1", lazy=True)

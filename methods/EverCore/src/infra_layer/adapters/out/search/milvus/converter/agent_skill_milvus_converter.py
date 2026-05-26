@@ -46,6 +46,7 @@ class AgentSkillMilvusConverter(BaseMilvusConverter[AgentSkillCollection]):
         try:
             name = source_doc.name or ""
             description = source_doc.description or ""
+            content = source_doc.content or ""
 
             # Primary text field: name + description combined
             content_field = "\n".join(s for s in [name, description] if s)

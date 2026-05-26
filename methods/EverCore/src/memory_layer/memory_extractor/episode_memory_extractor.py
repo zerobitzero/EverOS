@@ -225,6 +225,7 @@ class EpisodeMemoryExtractor(MemoryExtractor):
                 prompt_template = self.episode_generation_prompt
                 content_key = "conversation"
                 time_key = "conversation_start_time"
+            default_title = "Conversation Episode"
         else:
             return None
 

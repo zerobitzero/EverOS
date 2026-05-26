@@ -447,7 +447,7 @@ class MemoryManager:
         """Keyword-based memory retrieval"""
         top_k = retrieve_mem_request.top_k
         is_unlimited_mode = top_k == -1
-        (
+        memory_type = (
             retrieve_mem_request.memory_types[0].value
             if retrieve_mem_request.memory_types
             else 'unknown'
@@ -577,7 +577,7 @@ class MemoryManager:
         """Vector-based memory retrieval"""
         top_k = retrieve_mem_request.top_k
         is_unlimited_mode = top_k == -1
-        (
+        memory_type = (
             retrieve_mem_request.memory_types[0].value
             if retrieve_mem_request.memory_types
             else 'unknown'
@@ -791,7 +791,7 @@ class MemoryManager:
         self, retrieve_mem_request: 'RetrieveMemRequest'
     ) -> RetrieveMemResponse:
         """Hybrid memory retrieval: keyword + vector + rerank"""
-        (
+        memory_type = (
             retrieve_mem_request.memory_types[0].value
             if retrieve_mem_request.memory_types
             else 'unknown'
@@ -1305,7 +1305,7 @@ class MemoryManager:
             atomic_fact = fields['atomic_fact']
             foresight = fields['foresight']
             evidence = fields['evidence']
-            fields['extend_data']
+            extend_data = fields['extend_data']
             search_source = fields['search_source']
             # Process timestamp
             timestamp = from_iso_format(timestamp_raw)
