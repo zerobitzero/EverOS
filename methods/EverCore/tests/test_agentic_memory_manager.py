@@ -219,19 +219,16 @@ class TestRetrieveMemDispatcher:
 
         memory_manager.retrieve_mem_keyword.assert_awaited_once()
 
-    @pytest.mark.xfail(
-        reason=(
-            "Audit-flagged bug: when retrieve_mem_request is None, the "
-            "ValueError is caught but the fallback path then calls "
-            "QueryMetadata.from_request(None) which raises AttributeError. "
-            "Tracked in exception_handling_analysis.md; will be fixed in "
-            "Phase 3 W7. Once fixed, this test flips to xpass."
-        ),
-        strict=True,
-    )
     @pytest.mark.asyncio
     async def test_no_request_returns_empty_response(self, memory_manager):
-        """Passing a falsy request should yield an empty response, not crash."""
+        """Passing a falsy request yields an empty response, not a crash.
+
+        Fixed in Phase 3 W7 — the original implementation entered the
+        broad fallback path which then crashed inside
+        ``QueryMetadata.from_request(None)`` (audit's named
+        possibly-unbound case). The fix short-circuits None at the top
+        of ``retrieve_mem`` so the response shape is honored.
+        """
         result = await memory_manager.retrieve_mem(None)
 
         assert isinstance(result, RetrieveMemResponse)

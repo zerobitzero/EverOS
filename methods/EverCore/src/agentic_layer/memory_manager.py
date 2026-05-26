@@ -202,11 +202,30 @@ class MemoryManager:
         Returns:
             RetrieveMemResponse containing retrieval results
         """
-        try:
-            # Validate request parameters
-            if not retrieve_mem_request:
-                raise ValueError("retrieve_mem_request is required for retrieve_mem")
+        # Short-circuit a missing request before the try block. The fallback
+        # path below dereferences ``retrieve_mem_request`` (for QueryMetadata
+        # and Metadata) — raising inside the try with None would crash the
+        # except handler itself with AttributeError. Return the empty shape
+        # directly so the swallow-and-empty contract is preserved.
+        if not retrieve_mem_request:
+            logger.error(
+                "retrieve_mem called with no request; returning empty response"
+            )
+            return RetrieveMemResponse(
+                profiles=[],
+                memories=[],
+                total_count=0,
+                has_more=False,
+                query_metadata=QueryMetadata(),
+                metadata=Metadata(
+                    source="retrieve_mem_service",
+                    user_id="",
+                    memory_types=[],
+                ),
+                pending_messages=[],
+            )
 
+        try:
             # Get memory types from request (defaults already applied in converter)
             memory_types = retrieve_mem_request.memory_types
 
