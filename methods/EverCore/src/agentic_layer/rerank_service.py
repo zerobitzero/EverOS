@@ -491,22 +491,15 @@ class HybridRerankService(RerankServiceInterface):
                 )
 
     def _classify_error(self, error: Exception) -> str:
-        """Classify error type for metrics"""
-        error_str = str(error).lower()
-        error_type = type(error).__name__.lower()
+        """Classify error type for metrics.
 
-        if 'timeout' in error_str or 'timeout' in error_type:
-            return 'timeout'
-        elif 'rate' in error_str and 'limit' in error_str:
-            return 'rate_limit'
-        elif 'validation' in error_str or 'invalid' in error_str:
-            return 'validation_error'
-        elif 'connection' in error_str or 'connect' in error_type:
-            return 'connection_error'
-        elif 'api' in error_str or 'http' in error_str:
-            return 'api_error'
-        else:
-            return 'unknown'
+        Delegates to :func:`classify_exception` for a project-wide taxonomy.
+        Unknown errors surface their concrete class name instead of the
+        previous opaque ``"unknown"`` bucket.
+        """
+        from core.observation.error_classification import classify_exception
+
+        return classify_exception(error)
 
     def get_failure_count(self) -> int:
         """Get current primary service failure count"""

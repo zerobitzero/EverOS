@@ -376,18 +376,16 @@ def record_memorize_message(
 
 
 def classify_memorize_error(error: Exception) -> str:
-    """
-    Classify error type for metrics
+    """Classify ``error`` into a stable Prometheus label.
 
-    Args:
-        error: Exception instance
-
-    Returns:
-        Error type string for metrics label
+    Delegates to the shared :func:`classify_exception` so the memorize
+    pipeline uses the same taxonomy as retrieve / rerank / vectorize
+    metrics. Unknown exception classes surface their snake-cased class
+    name instead of the previous opaque ``"error"`` bucket.
     """
-    # TODO: Add detailed error classification based on actual scenarios
-    _ = error  # Placeholder for future use
-    return 'error'
+    from core.observation.error_classification import classify_exception
+
+    return classify_exception(error)
 
 
 def record_boundary_detection(

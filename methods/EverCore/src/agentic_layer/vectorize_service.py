@@ -487,18 +487,16 @@ class HybridVectorizeService(VectorizeServiceInterface):
                 )
 
     def _classify_error(self, error: Exception) -> str:
-        """Classify error type for metrics"""
-        error_str = str(error).lower()
-        if 'timeout' in error_str or 'timed out' in error_str:
-            return 'timeout'
-        elif 'rate' in error_str and 'limit' in error_str:
-            return 'rate_limit'
-        elif 'validation' in error_str or 'invalid' in error_str:
-            return 'validation_error'
-        elif isinstance(error, VectorizeError):
-            return 'api_error'
-        else:
-            return 'unknown'
+        """Classify error type for metrics.
+
+        Delegates to :func:`classify_exception` so vectorize and rerank
+        share the same taxonomy. ``VectorizeError`` falls through to
+        ``vectorize_error`` via the class-name path, which is more
+        actionable than the previous flat ``"api_error"``.
+        """
+        from core.observation.error_classification import classify_exception
+
+        return classify_exception(error)
 
     def get_failure_count(self) -> int:
         """Get current primary service failure count"""

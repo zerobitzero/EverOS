@@ -911,18 +911,15 @@ class MemoryManager:
         return reranked
 
     def _classify_retrieve_error(self, error: Exception) -> str:
-        """Classify error type for metrics"""
-        error_str = str(error).lower()
-        if 'timeout' in error_str or 'timed out' in error_str:
-            return 'timeout'
-        elif 'connection' in error_str or 'connect' in error_str:
-            return 'connection_error'
-        elif 'not found' in error_str or 'notfound' in error_str:
-            return 'not_found'
-        elif 'validation' in error_str or 'invalid' in error_str:
-            return 'validation_error'
-        else:
-            return 'unknown'
+        """Classify error type for metrics.
+
+        Delegates to :func:`classify_exception` so retrieve, rerank, and
+        vectorize metrics share a single taxonomy. Unknown errors now
+        report their concrete class name instead of ``"unknown"``.
+        """
+        from core.observation.error_classification import classify_exception
+
+        return classify_exception(error)
 
     async def _to_response(
         self, hits: List[Dict], req: 'RetrieveMemRequest'
