@@ -14,14 +14,22 @@
 | Phase | State | Notes |
 |---|---|---|
 | Phase 1: Observability | ✅ **Done** (2026-05-26) | P0 (T1.1 `/livez`+`/readyz`, T1.2 JSON logging, T1.3 typed error metrics) and P1 (T1.4 OpenTelemetry opt-in skeleton, T1.5 SLO doc) all merged. |
-| Phase 2: Test foundation | 🟡 **Partial** (2026-05-26) | T2.1 pytest job in CI (non-blocking until tests are explicitly tagged), T2.2 coverage XML + artifact upload, T2.3 path-based test markers + `make test-unit/integration/e2e`, T2.5 typecheck in CI (continue-on-error). T2.4 unit-test backfill and T2.6 benchmark baseline still pending. |
+| Phase 2: Test foundation | 🟡 **Partial** (2026-05-26) | T2.1 pytest job in CI (non-blocking until tests are explicitly tagged), T2.2 coverage XML + artifact upload, T2.3 path-based test markers + `make test-unit/integration/e2e`, T2.5 typecheck in CI (continue-on-error), T2.6 benchmark scaffolding (opt-in, `make benchmark`). **Still pending: T2.4 unit-test backfill on critical paths.** |
 | Phase 3: try-catch cleanup | 🟡 **Week 5 done** (2026-05-26) | W5 mechanical fixes merged: 20× `traceback.print_exc` → `logger.exception`, duplicate `RetryConfig` consolidated (longjob is canonical), `ruff G` + `BLE` rules enabled with baseline noqa markers. W6 (retry refactor) and W7 (catch-all + custom exceptions + large try-block splits) deferred — both require 24h staging soak per §4.2 and are unsafe to bundle into a doc-driven session. |
 
-**Where this session stopped**: at the Phase 3 W5 / W6 boundary. The
-remaining work — Type-A/B/E retry refactor, custom exception hierarchy,
-splitting the 241-line try block — depends on test backfill (T2.4) being
-real before changes can be validated, and per §4.2 each PR needs a 24h
-staging soak. Pick up Phase 3 W6 after T2.4 lands.
+**Where this session stopped**: T2.4 (unit-test backfill on critical
+paths) and Phase 3 W6/W7. T2.4 is the natural next item — Phase 3 W6/W7
+both depend on real coverage of `biz_layer/mem_memorize.py`,
+`agentic_layer/memory_manager.py`, and
+`memory_layer/memory_extractor/agent_skill_extractor.py` before the
+retry refactor and custom exception hierarchy can be validated. Per §4.2
+each W6/W7 PR also needs a 24h staging soak.
+
+Order of attack from here:
+1. T2.4 — unit-test backfill (3-5 days).
+2. Phase 3 W6 — retry refactor (tenacity / circuit breaker) once T2.4 lands.
+3. Phase 3 W7 — custom exception hierarchy + catch-all overhaul +
+   splitting the 241-line try block.
 
 ---
 
