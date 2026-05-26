@@ -373,6 +373,9 @@ class MemoryManager:
         conversation_text = "\n".join(lines)
 
         # Best-effort resolve user_name from raw messages
+        # Default keeps display_name bound when the else-branch loop finds
+        # no matching sender_id, so the downstream call below doesn't raise.
+        display_name = None
 
         if uid is None:
             display_name = ",".join(

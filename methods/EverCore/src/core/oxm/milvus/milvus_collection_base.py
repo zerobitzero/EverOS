@@ -541,9 +541,13 @@ class MilvusCollectionWithSuffix(MilvusCollectionBase):
             create_kwargs["num_partitions"] = num_partitions
         Collection(**create_kwargs)
 
+        # Bind the new collection handle outside the try so that an index-
+        # creation failure (warning-only path) doesn't prevent us from
+        # returning the collection that we just successfully created above.
+        new_coll = Collection(name=new_real_name, using=self._using)
+
         # Create indexes for new collection
         try:
-            new_coll = Collection(name=new_real_name, using=self._using)
             self._create_indexes_for_collection(new_coll)
             new_coll.load()
         except Exception as e:

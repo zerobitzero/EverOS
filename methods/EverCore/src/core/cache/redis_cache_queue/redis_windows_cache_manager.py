@@ -416,6 +416,9 @@ class RedisWindowsCacheManager:
                 return []
 
             for i in range(0, len(messages), 2):
+                # Bind early so the except branch can log it even if the
+                # indexing below raises before `message` would be assigned.
+                message = None
                 try:
                     if i + 1 >= len(messages):
                         logger.warning(

@@ -132,7 +132,7 @@ async def _trigger_clustering(
         )
         from core.di import get_bean_by_type
 
-        logger.info(f"[Clustering] Retrieving MemSceneRawRepository...")
+        logger.info("[Clustering] Retrieving MemSceneRawRepository...")
         # Get MongoDB storage
         cluster_storage = get_bean_by_type(MemSceneRawRepository)
         logger.info(
@@ -235,7 +235,7 @@ async def _trigger_clustering(
             )
 
             await cluster_storage.save_mem_scene(group_id, mem_scene_state.to_dict())
-            logger.info(f"[Clustering] Clustering state saved")
+            logger.info("[Clustering] Clustering state saved")
 
             if cluster_id:
                 logger.debug(
@@ -388,6 +388,9 @@ async def _trigger_profile_extraction(
     # Initialize so the except branch can iterate even if failure happens
     # before the in-try assignment at the participant-aggregation step.
     user_id_list: List[str] = []
+    # profile_repo is resolved via DI inside the try; the recovery branch
+    # checks for None before attempting to advance last_updated_ts.
+    profile_repo = None
 
     try:
         from memory_layer.profile_manager import ProfileManager, ProfileManagerConfig
@@ -526,6 +529,9 @@ async def _trigger_profile_extraction(
         # Advance last_updated_ts even on failure to prevent repeated re-selection
         # of the same clusters. The data is "skipped" — acceptable tradeoff vs.
         # getting stuck in a loop retrying the same failing extraction.
+        if profile_repo is None:
+            # Failure happened before DI lookup; nothing to advance.
+            return
         try:
             memcell_ts = memcell.timestamp.timestamp() if memcell.timestamp else 0.0
             for uid in user_id_list:
@@ -1444,12 +1450,12 @@ async def update_status_when_no_memcell(
 
             if status_result.should_wait:
                 logger.info(
-                    f"[mem_memorize] Determined as unable to decide boundary, continue waiting, no status update"
+                    "[mem_memorize] Determined as unable to decide boundary, continue waiting, no status update"
                 )
                 return
             else:
                 logger.info(
-                    f"[mem_memorize] Determined as non-boundary, continue accumulating messages, update status table"
+                    "[mem_memorize] Determined as non-boundary, continue accumulating messages, update status table"
                 )
                 # Get latest message timestamp
                 latest_time = to_iso_format(current_time)
@@ -1500,7 +1506,7 @@ async def update_status_after_memcell(
             )
 
             logger.info(
-                f"[mem_memorize] Memory extraction completed, status table updated"
+                "[mem_memorize] Memory extraction completed, status table updated"
             )
 
         except Exception as e:

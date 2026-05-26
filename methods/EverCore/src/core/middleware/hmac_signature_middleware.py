@@ -75,6 +75,12 @@ class HMACSignatureMiddleware(BaseHTTPMiddleware):
         # Set user context token
         token = None
 
+        # Initialize header vars so the except branch's error logging works
+        # even if request.headers itself raises before they're assigned.
+        timestamp_header = None
+        nonce_header = None
+        signature_header = None
+
         # Step 1: Attempt HMAC signature verification and set user context
         try:
             # Get timestamp, nonce, and signature from request headers
