@@ -44,6 +44,7 @@ import re
 import asyncio
 import json
 import subprocess
+import aiofiles
 from fnmatch import fnmatch
 from pathlib import Path
 from typing import Optional, TYPE_CHECKING
@@ -660,8 +661,8 @@ async def translate_file(
                     save_translation_progress(progress)
                 return (file_path, True, "Skipped: file too large")
 
-            with open(file_path, 'r', encoding='utf-8') as f:
-                original_content = f.read()
+            async with aiofiles.open(file_path, 'r', encoding='utf-8') as f:
+                original_content = await f.read()
 
             if not contains_chinese(original_content):
                 print(f"{progress_prefix} [SKIP] {file_path} - No Chinese text found")
@@ -698,8 +699,8 @@ async def translate_file(
                 return (file_path, False, error_msg)
 
             if not dry_run:
-                with open(file_path, 'w', encoding='utf-8') as f:
-                    f.write(translated_content)
+                async with aiofiles.open(file_path, 'w', encoding='utf-8') as f:
+                    await f.write(translated_content)
                 print(f"{progress_prefix} [DONE] {file_path}")
             else:
                 print(f"{progress_prefix} [DRY-RUN] {file_path} - Would translate")

@@ -24,6 +24,7 @@ import os
 import sys
 import asyncio
 import json
+import aiofiles
 from fnmatch import fnmatch
 from pathlib import Path
 from dataclasses import dataclass, field
@@ -474,8 +475,10 @@ async def analyze_file_with_ai(
 
     # Read file content
     try:
-        with open(file_path, "r", encoding="utf-8", errors="ignore") as f:
-            content = f.read()
+        async with aiofiles.open(
+            file_path, "r", encoding="utf-8", errors="ignore"
+        ) as f:
+            content = await f.read()
     except Exception as e:
         return FileCheckResult(file_path=file_path, error=str(e))
 

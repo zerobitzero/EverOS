@@ -4,7 +4,7 @@ Elasticsearch index migration tool
 Provides generic Elasticsearch index rebuilding and migration functionality.
 """
 
-import time
+import asyncio
 import traceback
 from typing import Type, Any
 from elasticsearch import NotFoundError, RequestError
@@ -174,12 +174,12 @@ async def wait_for_task_completion(es_connect: Any, task_id: str) -> None:
                         "Rebuild progress: %d/%d (%.1f%%)", created, total, progress
                     )
 
-            time.sleep(5)  # Check every 5 seconds
+            await asyncio.sleep(5)  # Check every 5 seconds
 
         except (NotFoundError, RequestError) as e:
             traceback.print_exc()
             logger.error("Failed to check task status: %s", e)
-            time.sleep(10)  # Wait longer when error occurs
+            await asyncio.sleep(10)  # Wait longer when error occurs
 
 
 async def update_aliases(
