@@ -219,6 +219,20 @@ cpu = [
 gpu = [
 ]
 
+# OpenTelemetry — optional, opt-in.
+# Activate at runtime via OTEL_EXPORTER_OTLP_ENDPOINT and install with:
+#   uv sync --group otel
+# Default sync does NOT pull these in; the app stays no-op if not installed.
+otel = [
+    "opentelemetry-api>=1.27.0",
+    "opentelemetry-sdk>=1.27.0",
+    "opentelemetry-exporter-otlp>=1.27.0",
+    "opentelemetry-instrumentation-fastapi>=0.48b0",
+    "opentelemetry-instrumentation-httpx>=0.48b0",
+    "opentelemetry-instrumentation-redis>=0.48b0",
+    "opentelemetry-instrumentation-pymongo>=0.48b0",
+]
+
 # Full development environment - includes dev tools
 dev-full = [
     {include-group = "dev"},

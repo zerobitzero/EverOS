@@ -6,10 +6,29 @@ This module contains various decorators used for validation and processing befor
 
 from functools import wraps
 from typing import Callable, Optional
+from contextlib import contextmanager
 import logging
 import time
 
+from core.observation.tracing.otel import get_tracer
+
 logger = logging.getLogger(__name__)
+
+
+@contextmanager
+def _otel_span(operation: str, module: str):
+    """Open an OTel span if tracing is active; otherwise a no-op.
+
+    Kept here (not in otel.py) so that the import surface in decorators
+    stays minimal and the soft-import logic in otel.py remains the single
+    source of truth for OTel availability.
+    """
+    tracer = get_tracer(module)
+    if tracer is None:
+        yield None
+        return
+    with tracer.start_as_current_span(operation) as span:
+        yield span
 
 
 def trace_logger(
@@ -49,30 +68,36 @@ def trace_logger(
 
             _log_message(logger, log_level, log_message)
 
-            try:
-                # Execute original function
-                result = await func(*args, **kwargs)
+            with _otel_span(operation, func.__module__) as span:
+                try:
+                    # Execute original function
+                    result = await func(*args, **kwargs)
 
-                # Log success completion message
-                end_time = time.time()
-                duration = round((end_time - start_time) * 1000, 2)  # milliseconds
+                    # Log success completion message
+                    end_time = time.time()
+                    duration = round((end_time - start_time) * 1000, 2)  # milliseconds
 
-                log_message = f"\n\t[trace] {operation} - Processing completed (duration: {duration}ms)"
-                if include_result and result is not None:
-                    result_str = _format_result(result)
-                    log_message += f" | Result: {result_str}"
+                    log_message = f"\n\t[trace] {operation} - Processing completed (duration: {duration}ms)"
+                    if include_result and result is not None:
+                        result_str = _format_result(result)
+                        log_message += f" | Result: {result_str}"
 
-                _log_message(logger, log_level, log_message)
-                return result
+                    _log_message(logger, log_level, log_message)
+                    if span is not None:
+                        span.set_attribute("duration_ms", duration)
+                    return result
 
-            except Exception as e:
-                # Log exception message
-                end_time = time.time()
-                duration = round((end_time - start_time) * 1000, 2)
+                except Exception as e:
+                    # Log exception message
+                    end_time = time.time()
+                    duration = round((end_time - start_time) * 1000, 2)
 
-                log_message = f"\n\t[trace] {operation} - Processing failed (duration: {duration}ms) | Error: {str(e)}"
-                _log_message(logger, "error", log_message)
-                raise
+                    log_message = f"\n\t[trace] {operation} - Processing failed (duration: {duration}ms) | Error: {str(e)}"
+                    _log_message(logger, "error", log_message)
+                    if span is not None:
+                        span.record_exception(e)
+                        span.set_attribute("duration_ms", duration)
+                    raise
 
         @wraps(func)
         def sync_wrapper(*args, **kwargs):
@@ -94,30 +119,36 @@ def trace_logger(
 
             _log_message(logger, log_level, log_message)
 
-            try:
-                # Execute original function
-                result = func(*args, **kwargs)
+            with _otel_span(operation, func.__module__) as span:
+                try:
+                    # Execute original function
+                    result = func(*args, **kwargs)
 
-                # Log success completion message
-                end_time = time.time()
-                duration = round((end_time - start_time) * 1000, 2)
+                    # Log success completion message
+                    end_time = time.time()
+                    duration = round((end_time - start_time) * 1000, 2)
 
-                log_message = f"\n\t[trace] {operation} - Processing completed (duration: {duration}ms)"
-                if include_result and result is not None:
-                    result_str = _format_result(result)
-                    log_message += f" | Result: {result_str}"
+                    log_message = f"\n\t[trace] {operation} - Processing completed (duration: {duration}ms)"
+                    if include_result and result is not None:
+                        result_str = _format_result(result)
+                        log_message += f" | Result: {result_str}"
 
-                _log_message(logger, log_level, log_message)
-                return result
+                    _log_message(logger, log_level, log_message)
+                    if span is not None:
+                        span.set_attribute("duration_ms", duration)
+                    return result
 
-            except Exception as e:
-                # Log exception message
-                end_time = time.time()
-                duration = round((end_time - start_time) * 1000, 2)
+                except Exception as e:
+                    # Log exception message
+                    end_time = time.time()
+                    duration = round((end_time - start_time) * 1000, 2)
 
-                log_message = f"\n\t[trace] {operation} - Processing failed (duration: {duration}ms) | Error: {str(e)}"
-                _log_message(logger, "error", log_message)
-                raise
+                    log_message = f"\n\t[trace] {operation} - Processing failed (duration: {duration}ms) | Error: {str(e)}"
+                    _log_message(logger, "error", log_message)
+                    if span is not None:
+                        span.record_exception(e)
+                        span.set_attribute("duration_ms", duration)
+                    raise
 
         # Return corresponding wrapper based on whether the function is a coroutine
         import asyncio

@@ -10,6 +10,7 @@ from fastapi.exceptions import RequestValidationError
 from fastapi.middleware.cors import CORSMiddleware
 
 from core.observation.logger import get_logger
+from core.observation.tracing.otel import init_tracing
 from core.middleware.global_exception_handler import global_exception_handler
 from core.middleware.profile_middleware import ProfileMiddleware
 from core.di.utils import get_bean_by_type
@@ -102,6 +103,10 @@ def create_base_app(
 
     # Mount lifespan management methods to app instance
     _mount_lifespan_methods(app)
+
+    # Initialise OpenTelemetry. No-op unless OTEL_EXPORTER_OTLP_ENDPOINT is
+    # set AND the optional `otel` dependency group is installed.
+    init_tracing(app)
 
     return app
 
