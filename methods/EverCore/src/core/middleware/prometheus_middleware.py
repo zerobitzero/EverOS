@@ -137,8 +137,18 @@ class PrometheusMiddleware(BaseHTTPMiddleware):
         app.add_middleware(PrometheusMiddleware)
     """
 
-    # Paths to skip metrics collection
-    SKIP_PATHS = {'/metrics', '/health', '/healthz', '/ready', '/favicon.ico'}
+    # Paths to skip metrics collection.
+    # /livez and /readyz are K8s probe endpoints — including them would let
+    # probe traffic dominate request-rate dashboards.
+    SKIP_PATHS = {
+        '/metrics',
+        '/health',
+        '/healthz',
+        '/ready',
+        '/livez',
+        '/readyz',
+        '/favicon.ico',
+    }
 
     async def dispatch(self, request: Request, call_next: Callable) -> Response:
         # Skip metrics for certain paths
