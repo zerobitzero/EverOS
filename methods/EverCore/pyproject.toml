@@ -178,16 +178,9 @@ include = ["src"]
 # so this first ty rollout stays focused instead of failing on the full baseline.
 possibly-unresolved-reference = "error"
 
-[tool.pytest.ini_options]
-testpaths = ["tests", "unit_test"]
-python_files = ["test_*.py", "*_test.py"]
-python_classes = ["Test*"]
-python_functions = ["test_*"]
-addopts = "-v --tb=short"
-# Pin pytest-asyncio mode explicitly so existing tests keep their current behavior
-# (requires @pytest.mark.asyncio on async tests). Avoids silent behavior changes
-# if pytest-asyncio ships a new default in a future release.
-asyncio_mode = "strict"
+# Pytest config lives in pytest.ini (single source of truth). A duplicate
+# section here was silently ignored by pytest >= 8 and only caused a
+# rootdir warning. Update pytest.ini for marker / asyncio_mode changes.
 
 [dependency-groups]
 # Development dependencies - for local development

@@ -1,4 +1,4 @@
-.PHONY: dev-setup setup-hooks lint ruff ruff-fix typecheck typecheck-pyright test clean help
+.PHONY: dev-setup setup-hooks lint ruff ruff-fix typecheck typecheck-pyright test test-unit test-integration test-e2e test-cov clean help
 
 # Default target
 help:
@@ -10,7 +10,11 @@ help:
 	@echo "  ruff-fix           - Run ruff with --fix and apply formatter"
 	@echo "  typecheck          - Run ty type checker (default, fast)"
 	@echo "  typecheck-pyright  - Run pyright type checker (fallback)"
-	@echo "  test               - Run tests"
+	@echo "  test               - Run all tests"
+	@echo "  test-unit          - Run unit tests only (no docker required)"
+	@echo "  test-integration   - Run integration tests (needs docker-compose up)"
+	@echo "  test-e2e           - Run end-to-end tests"
+	@echo "  test-cov           - Run unit tests with coverage report (xml + term)"
 	@echo "  clean              - Clean up generated files"
 	@echo "  help               - Show this help message"
 
@@ -70,6 +74,24 @@ typecheck-pyright:
 # Run tests
 test:
 	PYTHONPATH=src uv run pytest tests/
+
+# Unit tests only. No docker-compose dependencies; safe for CI on every PR.
+# Markers are applied automatically in tests/conftest.py based on file path.
+test-unit:
+	PYTHONPATH=src uv run pytest tests/ -m unit
+
+# Integration tests. Require docker-compose services (Redis, MongoDB, ES, Milvus).
+test-integration:
+	PYTHONPATH=src uv run pytest tests/ -m integration
+
+# End-to-end tests. Heaviest tier; run on demand or in a nightly job.
+test-e2e:
+	PYTHONPATH=src uv run pytest tests/ -m e2e
+
+# Coverage report (XML for CI tooling + terminal summary).
+test-cov:
+	PYTHONPATH=src uv run pytest tests/ -m unit \
+		--cov=src --cov-report=xml --cov-report=term
 
 # Clean up
 clean:
