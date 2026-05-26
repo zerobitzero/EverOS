@@ -111,12 +111,69 @@ skip-magic-trailing-comma = true
 profile = "black"
 line_length = 88
 
+# Ruff is introduced alongside black/isort during a transition window.
+# `make ruff` runs the new lints; existing `make lint` keeps using black/isort
+# so contributors' habits and CI don't break. Migrate fully in a follow-up.
+[tool.ruff]
+line-length = 88
+target-version = "py312"
+extend-exclude = ["migrations", "__pycache__", "**/__pycache__"]
+
+[tool.ruff.lint]
+# Conservative initial rule set. Hold back I and UP for follow-up PRs:
+#   - I (isort): isort already runs in `make lint`, avoid double-fixing for now
+#   - UP (pyupgrade): ~1500 PEP 585 / typing-modernization violations in baseline;
+#     deserves a dedicated migration PR with `ruff check --fix`
+# Hold back G (logging f-strings) and PERF until the baseline drops.
+select = [
+    "E",     # pycodestyle errors
+    "W",     # pycodestyle warnings
+    "F",     # pyflakes (undefined names, unused/duplicate imports)
+    "B",     # flake8-bugbear (common bugs)
+    "C4",    # flake8-comprehensions
+    "ASYNC", # flake8-async (blocking calls in async, missing awaits)
+]
+ignore = [
+    "E501",  # line too long — formatter's job
+    "B008",  # function calls in argument defaults (FastAPI uses Depends())
+    "B904",  # raise from inside except (large existing baseline)
+]
+
+[tool.ruff.lint.per-file-ignores]
+"__init__.py" = ["F401"]  # allow re-exports
+"tests/**/*.py" = ["E741", "F811"]  # ambiguous names / fixture redefinition
+"unit_test/**/*.py" = ["E741", "F811"]
+
+[tool.ruff.format]
+# Match the existing black config: preserve original quote style and don't
+# magic-split-on-trailing-comma.
+quote-style = "preserve"
+skip-magic-trailing-comma = true
+
+# ty (Astral's type checker). Runs by default via `make typecheck`.
+# Pre-1.0; revisit when ty hits a stable release.
+[tool.ty.environment]
+python-version = "3.12"
+root = ["src"]
+
+[tool.ty.src]
+include = ["src"]
+
+[tool.ty.rules]
+# Catches "variable assigned inside try, referenced inside except" patterns
+# (e.g., the milvus_start / user_id_list bugs surfaced in the audit).
+possibly-unresolved-reference = "error"
+
 [tool.pytest.ini_options]
 testpaths = ["tests", "unit_test"]
 python_files = ["test_*.py", "*_test.py"]
 python_classes = ["Test*"]
 python_functions = ["test_*"]
 addopts = "-v --tb=short"
+# Pin pytest-asyncio mode explicitly so existing tests keep their current behavior
+# (requires @pytest.mark.asyncio on async tests). Avoids silent behavior changes
+# if pytest-asyncio ships a new default in a future release.
+asyncio_mode = "strict"
 
 [dependency-groups]
 # Development dependencies - for local development
@@ -132,6 +189,13 @@ dev = [
     "pyinstrument",
     "py-spy",
     "pre-commit>=4.3.0",
+    "pyright>=1.1.400",
+    "ruff>=0.15.0",
+    # ty is Astral's type checker (Rust, ~10x faster than pyright).
+    # Still 0.0.x — API and diagnostic wording may change between releases.
+    # We pin a floor and use it as the default for `make typecheck`;
+    # pyright stays available via `make typecheck-pyright` as a fallback.
+    "ty>=0.0.39",
 ]
 
 cpu = [

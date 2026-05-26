@@ -95,8 +95,8 @@ def sync_pythonpath_with_syspath():
     import os
     from pathlib import Path
 
-    # Get current PYTHONPATH
-    pythonpath = os.environ.get("PYTHONPATH", "").split(":")
+    # Get current PYTHONPATH (os.pathsep is ":" on POSIX and ";" on Windows)
+    pythonpath = os.environ.get("PYTHONPATH", "").split(os.pathsep)
     pythonpath = [p for p in pythonpath if p]  # Remove empty strings
 
     # Path patterns to exclude
@@ -138,7 +138,7 @@ def sync_pythonpath_with_syspath():
         # Append new paths to existing PYTHONPATH
         all_paths = pythonpath + new_paths
         # Update environment variable
-        os.environ["PYTHONPATH"] = ":".join(all_paths)
+        os.environ["PYTHONPATH"] = os.pathsep.join(all_paths)
         logger.debug("Updated PYTHONPATH: %s", os.environ["PYTHONPATH"])
 
 
