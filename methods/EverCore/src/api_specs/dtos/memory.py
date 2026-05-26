@@ -771,64 +771,6 @@ class RetrieveMemResponse(BaseModel):
     model_config = {"arbitrary_types_allowed": True}
 
 
-class SearchMemoriesResponse(BaseApiResponse[RetrieveMemResponse]):
-    """Memory search API response
-
-    Response for GET /api/v1/memories/search endpoint.
-    """
-
-    data: RetrieveMemResponse = Field(description="Memory search result")
-
-    model_config = {
-        "json_schema_extra": {
-            "example": {
-                "status": "ok",
-                "message": "Memory search successful",
-                "result": {
-                    "profiles": [
-                        {
-                            "item_type": "explicit_info",
-                            "category": "Dietary Preferences",
-                            "description": "Prefers light flavors, favoring vegetables and seafood",
-                            "score": 0.89,
-                        },
-                        {
-                            "item_type": "implicit_trait",
-                            "trait_name": "Health Conscious",
-                            "description": "Prioritizes dietary health, preferring low oil and low salt",
-                            "score": 0.75,
-                        },
-                    ],
-                    "memories": [
-                        {
-                            "memory_type": "episodic_memory",
-                            "user_id": "user_123",
-                            "timestamp": "2024-01-15T10:30:00",
-                            "summary": "User mentioned controlling their diet recently, eating only two meals a day, with dinner mainly being salad",
-                            "group_id": "group_456",
-                        }
-                    ],
-                    "scores": [0.82],
-                    "original_data": [],
-                    "total_count": 3,
-                    "has_more": False,
-                    "query_metadata": {
-                        "source": "hybrid_search",
-                        "user_id": "user_123",
-                        "memory_type": "retrieve",
-                    },
-                    "metadata": {
-                        "profile_count": 2,
-                        "episodic_count": 1,
-                        "latency_ms": 156,
-                    },
-                    "pending_messages": [],
-                },
-            }
-        }
-    }
-
-
 # =============================================================================
 # Delete DTOs (DELETE /api/v1/memories)
 # =============================================================================
