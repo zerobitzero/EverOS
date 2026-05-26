@@ -46,8 +46,14 @@ import json
 import subprocess
 from fnmatch import fnmatch
 from pathlib import Path
-from typing import Optional
+from typing import Optional, TYPE_CHECKING
 from dataclasses import dataclass
+
+if TYPE_CHECKING:
+    # OpenAIProvider is only used in type annotations; the runtime import
+    # lives inside _load_env_and_get_llm_provider() so the module doesn't
+    # depend on memory_layer being importable just for type-checking.
+    from memory_layer.llm import OpenAIProvider
 from enum import Enum
 
 # ==============================================================================

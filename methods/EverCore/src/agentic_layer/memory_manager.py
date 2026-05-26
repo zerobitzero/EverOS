@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Any, List, Optional
+from typing import Any, Dict, List, Optional
 import logging
 import asyncio
 
@@ -8,7 +8,6 @@ from datetime import datetime, timedelta
 import jieba
 import numpy as np
 import time
-from typing import Dict, Any
 from dataclasses import dataclass
 
 from api_specs import memory_types
@@ -93,7 +92,7 @@ from .profile_search_service import (
     PROFILE_RECALL_THRESHOLD,
     PROFILE_DEFAULT_TOPK,
 )
-from api_specs.memory_models import MemoryType, RetrieveMethod
+from api_specs.memory_models import RetrieveMethod
 from agentic_layer.metrics.retrieve_metrics import (
     record_retrieve_stage,
     record_retrieve_error,
@@ -619,6 +618,12 @@ class MemoryManager:
             if retrieve_mem_request.memory_types
             else 'unknown'
         )
+
+        # Initialize milvus_start so the except branch can always compute a
+        # duration. If the exception fires before the inner re-assignment,
+        # the recorded value will reflect time-from-function-entry — still
+        # better than NameError-on-error masking the original failure.
+        milvus_start = time.perf_counter()
 
         try:
             # Get parameters from Request

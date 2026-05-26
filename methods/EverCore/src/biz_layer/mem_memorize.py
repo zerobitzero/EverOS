@@ -23,7 +23,7 @@ from api_specs.memory_types import (
     AgentCase,
 )
 from api_specs.memory_types import AtomicFact, get_text_from_content_items
-from biz_layer.memorize_config import DEFAULT_MEMORIZE_CONFIG
+from biz_layer.memorize_config import MemorizeConfig, DEFAULT_MEMORIZE_CONFIG
 from core.di import get_bean_by_type
 from infra_layer.adapters.out.persistence.repository.episodic_memory_raw_repository import (
     EpisodicMemoryRawRepository,
@@ -44,9 +44,7 @@ from infra_layer.adapters.out.persistence.repository.memcell_raw_repository impo
 from infra_layer.adapters.out.persistence.repository.conversation_data_raw_repository import (
     ConversationDataRepository,
 )
-from api_specs.memory_types import RawDataType
 from typing import List, Dict, Optional, Any
-from dataclasses import dataclass
 import uuid
 from datetime import datetime, timedelta
 import os
@@ -54,7 +52,6 @@ import asyncio
 from collections import defaultdict
 from common_utils.datetime_utils import get_now_with_timezone, to_iso_format
 from memory_layer.memcell_extractor.base_memcell_extractor import StatusResult
-import traceback
 
 from core.observation.logger import get_logger
 from infra_layer.adapters.out.search.elasticsearch.converter.episodic_memory_converter import (
@@ -84,12 +81,6 @@ async def _load_llm_custom_setting() -> Optional[Dict[str, Any]]:
 class MemoryDocPayload:
     memory_type: MemoryType
     doc: Any
-
-
-from biz_layer.memorize_config import (
-    MemorizeConfig,
-    DEFAULT_MEMORIZE_CONFIG,
-)
 
 
 def _is_agent_case_quality_sufficient(
@@ -394,6 +385,10 @@ async def _trigger_profile_extraction(
         scene: Conversation scene
         config: Memory extraction configuration
     """
+    # Initialize so the except branch can iterate even if failure happens
+    # before the in-try assignment at the participant-aggregation step.
+    user_id_list: List[str] = []
+
     try:
         from memory_layer.profile_manager import ProfileManager, ProfileManagerConfig
         from infra_layer.adapters.out.persistence.repository.user_profile_raw_repository import (
@@ -1709,8 +1704,8 @@ async def memorize(request: MemorizeRequest) -> int:
     ):
         with timed("validate_request"):
             request = await preprocess_conv_request(request, current_time)
-        if request == None:
-            logger.warning(f"[mem_memorize] preprocess_conv_request returned None")
+        if request is None:
+            logger.warning("[mem_memorize] preprocess_conv_request returned None")
             return 0
 
         # Fetch llm_custom_setting from global config (inherits automatically)

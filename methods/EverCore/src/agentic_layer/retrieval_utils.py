@@ -237,7 +237,7 @@ async def lightweight_retrieval(
                         if doc_norm > 0:
                             sim = np.dot(query_vec, doc_vec) / (query_norm * doc_norm)
                             scores.append((mem, float(sim)))
-                except:
+                except Exception:
                     continue
 
             emb_results = sorted(scores, key=lambda x: x[1], reverse=True)[:emb_top_n]

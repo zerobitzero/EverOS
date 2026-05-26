@@ -38,7 +38,7 @@ from infra_layer.adapters.out.persistence.document.memory.foresight_record impor
 from infra_layer.adapters.out.persistence.document.memory.atomic_fact_record import (
     AtomicFactRecord,
 )
-from api_specs.memory_types import RawDataType, AgentCase
+from api_specs.memory_types import AgentCase
 from infra_layer.adapters.out.persistence.document.memory.agent_case import (
     AgentCaseRecord,
 )
