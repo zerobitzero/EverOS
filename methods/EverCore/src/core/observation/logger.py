@@ -1,6 +1,7 @@
+import json
 import logging
 import traceback
-from typing import Optional
+from typing import Any, Dict, Optional
 from enum import Enum
 from functools import lru_cache
 import sys
@@ -9,18 +10,115 @@ import os
 from core.context.context import get_current_app_info
 
 
-class RequestIdFilter(logging.Filter):
-    """Injects request_id from app_info_context into every LogRecord.
+# Keys we lift from app_info onto every LogRecord so they are available
+# both as %(name)s format specifiers and as JSON output fields. Extra
+# keys present in app_info are also forwarded (see ContextFilter).
+_CORE_CONTEXT_KEYS = ("request_id", "tenant_id", "user_id", "group_id", "session_id")
 
-    Reads from the ContextVar-based app_info dict. Falls back to "-"
-    when no request context is available (startup, background tasks
-    without inherited context, etc.).
+
+class ContextFilter(logging.Filter):
+    """Promote contextvars-based ``app_info`` fields onto every LogRecord.
+
+    Reads from the ``app_info_context`` ContextVar populated by middleware.
+    ``request_id`` is always set (defaults to ``"-"``) because the text
+    formatter references it. Other well-known context keys are forwarded
+    when present so JSON output captures them automatically.
     """
 
     def filter(self, record: logging.LogRecord) -> bool:
-        app_info = get_current_app_info()
-        record.request_id = app_info.get("request_id", "-") if app_info else "-"
+        app_info = get_current_app_info() or {}
+        # request_id has a default because %(request_id)s is in the text
+        # formatter and would raise KeyError otherwise.
+        record.request_id = app_info.get("request_id", "-")
+        for key in _CORE_CONTEXT_KEYS[1:]:
+            if key in app_info:
+                setattr(record, key, app_info[key])
         return True
+
+
+# LogRecord attributes that are part of the stdlib API and should not be
+# echoed back as user-supplied "extra" fields in JSON output.
+_RESERVED_LOG_ATTRS = frozenset(
+    {
+        "name",
+        "msg",
+        "args",
+        "levelname",
+        "levelno",
+        "pathname",
+        "filename",
+        "module",
+        "exc_info",
+        "exc_text",
+        "stack_info",
+        "lineno",
+        "funcName",
+        "created",
+        "msecs",
+        "relativeCreated",
+        "thread",
+        "threadName",
+        "processName",
+        "process",
+        "message",
+        "asctime",
+        "taskName",
+    }
+)
+
+
+class JsonFormatter(logging.Formatter):
+    """Render a LogRecord as a single line of JSON.
+
+    Emits the standard fields plus anything that ``ContextFilter`` or a
+    caller's ``extra=...`` mapping attached to the record. Tracebacks are
+    included under the ``exc_info`` key, not concatenated into the
+    message, so downstream log shippers can keep them structured.
+    """
+
+    def formatTime(self, record: logging.LogRecord, datefmt: Optional[str] = None) -> str:
+        """ISO 8601 timestamp with millisecond precision and UTC suffix.
+
+        Overrides the default which uses ``time.strftime`` (no ``%f``
+        support) and so cannot express sub-second precision.
+        """
+        from datetime import datetime, timezone
+
+        return (
+            datetime.fromtimestamp(record.created, tz=timezone.utc)
+            .isoformat(timespec="milliseconds")
+            .replace("+00:00", "Z")
+        )
+
+    def format(self, record: logging.LogRecord) -> str:
+        payload: Dict[str, Any] = {
+            "ts": self.formatTime(record),
+            "level": record.levelname,
+            "logger": record.name,
+            "msg": record.getMessage(),
+            "file": f"{record.filename}:{record.lineno}",
+        }
+
+        # request_id is always populated by ContextFilter.
+        payload["request_id"] = getattr(record, "request_id", "-")
+
+        # Forward any contextual or caller-supplied extras (anything not in
+        # the stdlib attribute set).
+        for key, value in record.__dict__.items():
+            if key in _RESERVED_LOG_ATTRS or key == "request_id":
+                continue
+            if key.startswith("_"):
+                continue
+            payload[key] = value
+
+        if record.exc_info:
+            payload["exc_info"] = self.formatException(record.exc_info)
+        if record.stack_info:
+            payload["stack_info"] = self.formatStack(record.stack_info)
+
+        # default=str keeps datetimes / ObjectIds / Exception objects from
+        # crashing the formatter on unexpected types.
+        return json.dumps(payload, ensure_ascii=False, default=str)
 
 
 class LogLevel(Enum):
@@ -52,29 +150,45 @@ class LoggerProvider:
             self._initialized = True
 
     def _setup_root_logging(self):
-        """Set up logging configuration"""
-        # Get log level from environment variable, default to INFO
-        log_level = os.getenv('LOG_LEVEL', 'INFO').upper()
+        """Set up logging configuration.
 
-        # Configure root logger
-        # force=True ensures handlers are replaced even if root logger
-        # was already configured (e.g. by a library imported before us)
+        Output format is selected by the ``LOG_FORMAT`` environment
+        variable:
+
+        * ``text`` (default) — the human-readable format used historically.
+          Best for local development and existing tail-based debugging.
+        * ``json`` — one JSON object per line via :class:`JsonFormatter`.
+          Use in production so log shippers can index ``request_id``,
+          ``tenant_id``, exception class, etc. as structured fields.
+
+        Existing call sites (``logger.info("text %s", value)``) work
+        unchanged in both formats. Switching to JSON does not require
+        touching any of the 247 logger call sites; structured fields can
+        be added incrementally via ``logger.info(msg, extra={...})``.
+        """
+        log_level = os.getenv('LOG_LEVEL', 'INFO').upper()
+        log_format = os.getenv('LOG_FORMAT', 'text').lower()
+
+        handler = logging.StreamHandler(sys.stdout)
+        handler.addFilter(ContextFilter())
+
+        if log_format == 'json':
+            handler.setFormatter(JsonFormatter())
+        else:
+            handler.setFormatter(
+                logging.Formatter(
+                    fmt='%(asctime)s - %(name)s - %(levelname)s - '
+                    '%(filename)s:%(lineno)d - [%(request_id)s] - %(message)s'
+                )
+            )
+
+        # force=True drops any handlers a third-party library may have
+        # attached to the root logger before our setup runs.
         logging.basicConfig(
             level=getattr(logging, log_level),
-            format='%(asctime)s - %(name)s - %(levelname)s - %(filename)s:%(lineno)d - [%(request_id)s] - %(message)s',
-            handlers=[
-                logging.StreamHandler(sys.stdout)
-                # Can add file handler
-                # logging.FileHandler('app.log', encoding='utf-8')
-            ],
+            handlers=[handler],
             force=True,
         )
-
-        # Register RequestIdFilter on all root handlers so child loggers
-        # inherit it via propagation
-        request_id_filter = RequestIdFilter()
-        for handler in logging.root.handlers:
-            handler.addFilter(request_id_filter)
 
     def _setup_logging(self):
         """Set up logging configuration"""
