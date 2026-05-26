@@ -4,15 +4,12 @@ from typing import Any, Dict, List, Optional
 import logging
 import asyncio
 
-from datetime import datetime, timedelta
+from datetime import datetime
 import jieba
-import numpy as np
 import time
 from dataclasses import dataclass
 
-from api_specs import memory_types
 from api_specs.memory_types import (
-    BaseMemory,
     EpisodeMemory,
     AtomicFact,
     Foresight,
@@ -59,17 +56,11 @@ from core.observation.stage_timer import timed, timed_parallel
 from core.nlp.stopwords_utils import filter_stopwords
 from common_utils.datetime_utils import (
     from_iso_format,
-    get_now_with_timezone,
-    to_iso_format,
 )
 from infra_layer.adapters.out.persistence.repository.memcell_raw_repository import (
     MemCellRawRepository,
 )
 from service.raw_message_service import RawMessageService
-from infra_layer.adapters.out.persistence.document.memory.memcell import DataTypeEnum
-from infra_layer.adapters.out.persistence.document.memory.user_profile import (
-    UserProfile,
-)
 from infra_layer.adapters.out.search.repository.episodic_memory_milvus_repository import (
     EpisodicMemoryMilvusRepository,
 )

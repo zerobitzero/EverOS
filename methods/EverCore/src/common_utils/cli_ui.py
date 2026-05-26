@@ -35,7 +35,7 @@ import re
 import shutil
 import sys
 import unicodedata
-from typing import Any, Dict, Iterable, List, Optional, Sequence, Tuple
+from typing import List, Optional, Sequence
 
 
 # ============================================================================

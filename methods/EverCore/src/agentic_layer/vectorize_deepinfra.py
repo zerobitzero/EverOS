@@ -4,7 +4,6 @@ DeepInfra Vectorize Service Implementation
 Commercial API implementation for DeepInfra embedding service
 """
 
-import os
 import logging
 from typing import Optional, Tuple
 from dataclasses import dataclass

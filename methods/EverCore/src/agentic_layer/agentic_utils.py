@@ -11,7 +11,7 @@ import os
 import json
 import asyncio
 import logging
-from typing import List, Tuple, Optional, Dict, Any
+from typing import List, Tuple, Dict, Any
 from dataclasses import dataclass
 
 logger = logging.getLogger(__name__)

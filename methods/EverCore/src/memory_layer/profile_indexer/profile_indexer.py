@@ -15,7 +15,7 @@ This ensures:
 4. Prevents race conditions in distributed environment
 """
 
-from typing import List, Dict, Any, Optional
+from typing import List, Dict, Optional
 
 from core.di import get_bean_by_type
 from core.di.decorators import service

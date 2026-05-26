@@ -3,7 +3,7 @@
 Responsible for writing unified foresight and atomic facts into Milvus / Elasticsearch.
 """
 
-from typing import Optional, List, Dict, Any
+from typing import Optional, List, Dict
 import logging
 from datetime import datetime
 
@@ -38,7 +38,6 @@ from infra_layer.adapters.out.search.repository.atomic_fact_es_repository import
     AtomicFactEsRepository,
 )
 from core.di import get_bean_by_type, service
-from common_utils.datetime_utils import get_now_with_timezone
 
 logger = logging.getLogger(__name__)
 

@@ -1,7 +1,6 @@
-import os
 import yaml
 import json
-from typing import Dict, Any, Optional
+from typing import Dict, Any
 
 from core.di.decorators import component
 from common_utils.project_path import CURRENT_DIR

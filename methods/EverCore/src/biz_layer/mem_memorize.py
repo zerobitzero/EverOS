@@ -1,7 +1,5 @@
 from dataclasses import dataclass
-import random
 import time
-import json
 import traceback
 
 from core.observation.stage_timer import timed, timed_parallel
@@ -16,7 +14,6 @@ from memory_layer.memory_manager import MemoryManager
 from api_specs.memory_types import (
     MemoryType,
     MemCell,
-    BaseMemory,
     EpisodeMemory,
     RawDataType,
     Foresight,
@@ -45,9 +42,7 @@ from infra_layer.adapters.out.persistence.repository.conversation_data_raw_repos
     ConversationDataRepository,
 )
 from typing import List, Dict, Optional, Any
-import uuid
 from datetime import datetime, timedelta
-import os
 import asyncio
 from collections import defaultdict
 from common_utils.datetime_utils import get_now_with_timezone, to_iso_format
@@ -399,7 +394,6 @@ async def _trigger_profile_extraction(
         )
         from memory_layer.llm.llm_provider import build_default_provider
         from core.di import get_bean_by_type
-        import os
 
         total_memcell_count = sum(
             mem_scene_state.cluster_counts.get(cid, 0) for cid in cluster_ids
@@ -719,7 +713,6 @@ from biz_layer.mem_db_operations import (
     _update_status_for_continuing_conversation,
     _update_status_after_memcell_extraction,
 )
-from typing import Tuple
 
 
 def if_memorize(memcell: MemCell) -> bool:

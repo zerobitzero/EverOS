@@ -3,7 +3,7 @@ Application logic middleware
 Responsible for extracting and setting application-level context information, and handling application-related logic (e.g., reporting)
 """
 
-from typing import Callable, Dict, Any, Optional
+from typing import Callable, Optional
 
 from fastapi import Request, HTTPException
 from starlette.responses import Response

@@ -4,7 +4,7 @@ Generate predictions of potential impacts on user's future life and decisions fr
 """
 
 import json
-from typing import List, Dict, Any, Optional
+from typing import List, Optional
 from datetime import datetime, timedelta
 
 from memory_layer.prompts import get_prompt_by
@@ -13,7 +13,7 @@ from memory_layer.memory_extractor.base_memory_extractor import (
     MemoryExtractor,
     MemoryExtractRequest,
 )
-from api_specs.memory_types import MemoryType, MemCell, Foresight, BaseMemory
+from api_specs.memory_types import MemoryType, Foresight, BaseMemory
 from agentic_layer.vectorize_service import get_vectorize_service
 from core.observation.logger import get_logger
 from core.observation.stage_timer import timed

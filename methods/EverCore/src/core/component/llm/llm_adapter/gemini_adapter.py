@@ -4,12 +4,9 @@ import logging
 from typing import Dict, Any, List, Union, AsyncGenerator
 import os
 from google.genai.client import Client
-from core.di.decorators import service
 from google.genai.types import (
     GenerateContentConfig,
     ContentDict,
-    HarmCategory,
-    HarmBlockThreshold,
 )
 from google.genai.types import ThinkingConfig
 from core.component.llm.llm_adapter.completion import (

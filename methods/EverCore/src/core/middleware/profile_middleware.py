@@ -20,7 +20,7 @@ Usage:
 """
 
 import os
-from typing import Callable, Optional
+from typing import Callable
 
 from fastapi import Request
 from fastapi.responses import HTMLResponse
@@ -59,7 +59,7 @@ class ProfileMiddleware(BaseHTTPMiddleware):
         self._profiler_available = False
         if self._profiling_enabled:
             try:
-                import pyinstrument
+                import pyinstrument  # noqa: F401  # availability probe
 
                 self._profiler_available = True
                 logger.info("✅ Performance profiling middleware enabled")

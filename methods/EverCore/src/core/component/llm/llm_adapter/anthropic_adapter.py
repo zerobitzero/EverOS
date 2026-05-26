@@ -4,7 +4,6 @@ import asyncio
 from typing import Dict, Any, List, Union, AsyncGenerator
 import os
 import httpx
-from core.di.decorators import service
 
 from core.component.llm.llm_adapter.completion import (
     ChatCompletionRequest,

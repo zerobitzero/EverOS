@@ -4,9 +4,7 @@ Redis tenant key utility functions module
 Provides tenant isolation for Redis key names by prepending the tenant ID to achieve multi-tenant data isolation.
 """
 
-from typing import Optional
 
-from core.tenants.tenant_contextvar import get_current_tenant_id
 
 
 def build_tenant_redis_key(prefix: str, tenant_id: str, key: str) -> str:

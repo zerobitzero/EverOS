@@ -5,7 +5,7 @@ This module extracts structured atomic facts from episode memories for optimized
 Each extraction result contains a time and a list of atomic facts extracted from the episode.
 """
 
-from typing import Optional, List, Dict, Any
+from typing import Optional, Dict, Any
 from datetime import datetime
 import json
 import re

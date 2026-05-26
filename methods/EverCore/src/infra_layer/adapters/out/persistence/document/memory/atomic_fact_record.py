@@ -5,7 +5,7 @@ Unified storage for atomic facts (atomic facts) extracted from episodic memory (
 """
 
 from datetime import datetime
-from typing import List, Optional, Dict, Any
+from typing import List, Optional
 from core.oxm.mongo.document_base import DocumentBase
 from core.tenants.tenantize.oxm.mongo.tenant_aware_document import (
     TenantAwareDocumentBaseWithSoftDelete,

@@ -7,7 +7,6 @@ Skills are cluster-scoped: one repository manages all skill items per MemScene.
 
 from typing import List, Optional, Dict, Any
 from pymongo.asynchronous.client_session import AsyncClientSession
-from bson import ObjectId
 from core.observation.logger import get_logger
 from core.di.decorators import repository
 from core.oxm.mongo.base_repository import BaseRepository

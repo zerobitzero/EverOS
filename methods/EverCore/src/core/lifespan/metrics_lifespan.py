@@ -9,7 +9,7 @@ from typing import Any, Tuple
 
 from core.observation.logger import get_logger
 from core.di.decorators import component
-from core.observation.metrics import start_metrics_server, is_metrics_server_running, get_metrics_url
+from core.observation.metrics import start_metrics_server, get_metrics_url
 from .lifespan_interface import LifespanProvider
 
 logger = get_logger(__name__)

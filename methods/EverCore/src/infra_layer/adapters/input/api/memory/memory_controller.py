@@ -11,21 +11,17 @@ Provides RESTful API routes for:
 """
 
 import asyncio
-import json
 import logging
 import time
 
-from contextlib import suppress
 from fastapi import HTTPException, Request as FastAPIRequest
 
 from core.di.decorators import controller
 from core.di import get_bean_by_type
-from core.interface.controller.base_controller import BaseController, get, post
+from core.interface.controller.base_controller import BaseController, post
 from core.observation.stage_timer import stage_timed, timed
-from core.constants.errors import ErrorCode, ErrorStatus
 from agentic_layer.memory_manager import MemoryManager
 from api_specs.request_converter import (
-    convert_dict_to_retrieve_mem_request,
     convert_personal_add_to_memorize_request,
     convert_group_add_to_memorize_request,
     convert_personal_flush_to_memorize_request,
@@ -56,7 +52,6 @@ from service.content_enrich_provider import ContentEnrichProvider
 from service.raw_message_service import RawMessageService
 from service.sender_service import SenderService
 from service.memcell_delete_service import MemCellDeleteService
-from api_specs.memory_types import RawDataType
 from agentic_layer.metrics.memorize_metrics import (
     record_memorize_request,
     record_memorize_error,

@@ -22,7 +22,6 @@ from datetime import datetime
 from typing import Any, Dict, List, Optional
 
 from core.di import service, get_bean
-from api_specs.dtos.memory import SearchAtomicFactItem
 from core.nlp.stopwords_utils import filter_stopwords
 from core.observation.stage_timer import timed, timed_parallel
 from api_specs.dtos.memory import (

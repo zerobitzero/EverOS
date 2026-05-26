@@ -14,7 +14,6 @@ import asyncio
 import json
 import numpy as np
 from typing import Any, Callable, Dict, List, Optional, Tuple
-from pathlib import Path
 
 from memory_layer.cluster_manager.config import ClusterManagerConfig
 from core.observation.logger import get_logger

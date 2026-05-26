@@ -9,7 +9,7 @@ from datetime import datetime
 from typing import List, Optional, Dict, Any, Type
 from bson import ObjectId
 from pydantic import BaseModel
-from beanie.operators import And, GTE, LT, Eq, RegEx, Or
+from beanie.operators import And, GTE, LT, Eq, Or
 from pymongo.asynchronous.client_session import AsyncClientSession
 from core.observation.logger import get_logger
 from core.di.decorators import repository
@@ -18,7 +18,6 @@ from core.oxm.constants import MAGIC_ALL
 
 from infra_layer.adapters.out.persistence.document.memory.memcell import (
     MemCell,
-    DataTypeEnum,
 )
 
 logger = get_logger(__name__)

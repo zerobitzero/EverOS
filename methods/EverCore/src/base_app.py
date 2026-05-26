@@ -10,7 +10,6 @@ from fastapi.exceptions import RequestValidationError
 from fastapi.middleware.cors import CORSMiddleware
 
 from core.observation.logger import get_logger
-from core.middleware.database_session_middleware import DatabaseSessionMiddleware
 from core.middleware.global_exception_handler import global_exception_handler
 from core.middleware.profile_middleware import ProfileMiddleware
 from core.di.utils import get_bean_by_type

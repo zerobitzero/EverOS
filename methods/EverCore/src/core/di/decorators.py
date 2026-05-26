@@ -4,7 +4,6 @@ Dependency injection decorator
 """
 
 from typing import Type, TypeVar, Optional, Callable, Any, Dict
-from functools import wraps
 
 from core.di.container import get_container
 from core.di.bean_definition import BeanScope

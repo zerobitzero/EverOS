@@ -8,7 +8,6 @@ import logging
 import random
 from abc import ABC, abstractmethod
 from typing import Optional, Any, Dict
-from datetime import datetime
 
 from core.longjob.interfaces import (
     LongJobInterface,

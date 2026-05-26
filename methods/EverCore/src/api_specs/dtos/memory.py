@@ -13,7 +13,7 @@ import os
 
 from dataclasses import dataclass
 from datetime import datetime
-from typing import Any, Dict, List, Optional, Tuple, Union
+from typing import Any, Dict, List, Optional, Union
 import json
 import re
 
@@ -25,7 +25,6 @@ from pydantic import (
     field_validator,
     model_validator,
     SkipValidation,
-    SerializeAsAny,
 )
 
 from api_specs.dtos.base import BaseApiResponse
@@ -35,7 +34,6 @@ from api_specs.memory_models import (
     Metadata,
     QueryMetadata,
     RetrieveMethod,
-    MessageSenderRole,
 )
 from core.oxm.constants import MAGIC_ALL, MAX_RETRIEVE_LIMIT
 from biz_layer.retrieve_constants import MAX_GROUP_IDS_COUNT

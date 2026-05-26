@@ -1,7 +1,6 @@
 from abc import ABC, abstractmethod
-from typing import List, Optional, TypeVar, Generic, Type
+from typing import List, Optional, TypeVar, Generic
 from core.oxm.pg.audit_base import get_auditable_model
-from core.di.decorators import repository
 
 # Define generic type
 T = TypeVar('T', bound=get_auditable_model())

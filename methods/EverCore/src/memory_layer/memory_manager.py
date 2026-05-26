@@ -1,7 +1,4 @@
-from dataclasses import dataclass
-from datetime import datetime
 import time
-import asyncio
 from typing import List, Optional, Dict, Any
 
 from core.observation.logger import get_logger
@@ -33,7 +30,6 @@ from api_specs.memory_types import (
 )
 from memory_layer.memory_extractor.episode_memory_extractor import (
     EpisodeMemoryExtractor,
-    EpisodeMemoryExtractRequest,
 )
 from memory_layer.memory_extractor.profile_extractor import (
     ProfileExtractor,

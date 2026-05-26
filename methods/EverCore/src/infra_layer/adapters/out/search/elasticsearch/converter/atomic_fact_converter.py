@@ -4,11 +4,8 @@ AtomicFact ES Converter
 Converts MongoDB v1_atomic_fact_records to ES v1_atomic_fact_record.
 """
 
-from typing import List
-import jieba
 from core.oxm.es.base_converter import BaseEsConverter
 from core.observation.logger import get_logger
-from core.nlp.stopwords_utils import filter_stopwords
 from infra_layer.adapters.out.search.elasticsearch.memory.atomic_fact import (
     AtomicFactDoc,
 )

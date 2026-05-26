@@ -1,7 +1,6 @@
 import typing
 from typing import Type, Any, Dict, Set
 
-import os
 from fnmatch import fnmatch
 from datetime import datetime
 from elasticsearch.dsl import MetaField, AsyncDocument, field as e_field

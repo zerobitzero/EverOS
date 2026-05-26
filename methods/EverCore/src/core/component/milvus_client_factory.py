@@ -7,7 +7,6 @@ Provides Milvus client connection functionality based on environment variables.
 import os
 import asyncio
 from typing import Optional, Dict
-from hashlib import md5
 
 from pymilvus import MilvusClient
 from core.di.decorators import component

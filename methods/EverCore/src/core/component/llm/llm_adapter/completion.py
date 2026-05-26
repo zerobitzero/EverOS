@@ -1,5 +1,5 @@
 from typing import Dict, Any, List, Optional
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from pydantic import BaseModel
 from core.component.llm.llm_adapter.message import ChatMessage
 

@@ -5,7 +5,6 @@ Provides serialization/deserialization between ConsumerRecord and RedisGroupQueu
 Uses BSON format to handle binary data, ensuring data integrity
 """
 
-import json
 import base64
 from typing import Optional, Sequence, Tuple, Any, Dict
 from dataclasses import dataclass

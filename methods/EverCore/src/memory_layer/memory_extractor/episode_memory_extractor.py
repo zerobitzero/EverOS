@@ -5,10 +5,10 @@ This module provides a simple base class for extracting memories
 from boundary detection results (BoundaryResult).
 """
 
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from typing import Optional, List, Dict, Any
 from datetime import datetime
-import re, json, asyncio, uuid
+import re, json
 
 
 from memory_layer.prompts import get_prompt_by
@@ -22,8 +22,6 @@ from api_specs.memory_types import (
     MemoryType,
     EpisodeMemory,
     RawDataType,
-    MemCell,
-    ParentType,
     get_text_from_content_items,
 )
 

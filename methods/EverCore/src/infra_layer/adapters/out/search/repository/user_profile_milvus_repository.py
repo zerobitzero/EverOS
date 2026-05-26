@@ -5,7 +5,6 @@ V1 simplified repository for vector semantic retrieval.
 Only maps search-essential fields. Full data retrieved from MongoDB using id.
 """
 
-from datetime import datetime
 from typing import List, Optional, Dict, Any
 from core.oxm.milvus.base_repository import BaseMilvusRepository
 from core.oxm.constants import MAGIC_ALL

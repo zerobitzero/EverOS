@@ -9,8 +9,7 @@ Test core Container functionalities such as Bean registration, resolution, and p
 """
 
 import pytest
-from abc import ABC, abstractmethod
-from typing import List
+from abc import ABC
 from core.di.container import DIContainer
 from core.di.bean_definition import BeanScope
 from core.di.exceptions import BeanNotFoundError
@@ -20,7 +19,6 @@ from core.di.tests.test_fixtures import (
     MySQLUserRepository,
     PostgreSQLUserRepository,
     MockUserRepository,
-    UserService,
     UserServiceImpl,
     # Notification service related
     NotificationService,
@@ -28,9 +26,6 @@ from core.di.tests.test_fixtures import (
     SMSNotificationService,
     PushNotificationService,
     # Email service related
-    EmailService,
-    SMTPEmailService,
-    # Database connection related
     DatabaseConnection,
     create_database_connection,
     create_readonly_connection,

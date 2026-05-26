@@ -9,7 +9,6 @@ from sqlmodel.ext.asyncio.session import AsyncSession
 from core.context.context import (
     set_current_session,
     clear_current_session,
-    get_current_session,
 )
 from core.component.database_session_provider import DatabaseSessionProvider
 from core.di.utils import get_bean_by_type

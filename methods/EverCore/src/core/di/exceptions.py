@@ -3,7 +3,7 @@
 Dependency injection system exception class definitions
 """
 
-from typing import Type, Any, List
+from typing import Type, List
 
 
 class DIException(Exception):

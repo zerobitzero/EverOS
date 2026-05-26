@@ -6,7 +6,7 @@ from fastapi import FastAPI
 from typing import Dict, Any
 
 from core.observation.logger import get_logger
-from core.di.utils import get_bean_by_type, get_beans_by_type, get_bean
+from core.di.utils import get_bean_by_type, get_beans_by_type
 from core.di.decorators import component
 from core.interface.controller.base_controller import BaseController
 from core.capability.app_capability import ApplicationCapability

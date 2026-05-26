@@ -11,7 +11,7 @@ from elasticsearch import NotFoundError, RequestError
 from elasticsearch.dsl import AsyncDocument
 from core.observation.logger import get_logger
 from core.di.utils import get_all_subclasses
-from core.oxm.es.doc_base import DocBase, get_index_ns
+from core.oxm.es.doc_base import DocBase
 from core.oxm.es.es_utils import is_abstract_doc_class
 
 logger = get_logger(__name__)

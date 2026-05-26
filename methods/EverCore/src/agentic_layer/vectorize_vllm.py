@@ -5,7 +5,6 @@ This module provides vectorization service for self-deployed embedding servers,
 such as vLLM, Ollama, or other OpenAI-compatible endpoints.
 """
 
-import os
 import logging
 from typing import Optional, Tuple
 from dataclasses import dataclass

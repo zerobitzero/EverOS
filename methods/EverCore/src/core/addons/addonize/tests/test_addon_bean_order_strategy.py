@@ -10,7 +10,6 @@ Test the extension functionality of AddonBeanOrderStrategy, especially addon_tag
 
 import os
 import pytest
-from typing import Set, Type
 from core.di.bean_definition import BeanDefinition, BeanScope
 from core.addons.addonize.addon_bean_order_strategy import AddonBeanOrderStrategy
 

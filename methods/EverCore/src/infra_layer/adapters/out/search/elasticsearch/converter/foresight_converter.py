@@ -4,7 +4,6 @@ Foresight ES Converter
 Converts MongoDB v1_foresight_records to ES v1_foresight_record.
 """
 
-from typing import List
 from core.oxm.es.base_converter import BaseEsConverter
 from core.observation.logger import get_logger
 from infra_layer.adapters.out.search.elasticsearch.memory.foresight import ForesightDoc

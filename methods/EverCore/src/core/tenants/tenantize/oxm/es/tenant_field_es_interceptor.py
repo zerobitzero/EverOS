@@ -32,10 +32,8 @@ from typing import (
     Collection,
     Dict,
     FrozenSet,
-    List,
     Mapping,
     Optional,
-    Set,
     Tuple,
     Union,
 )
@@ -45,10 +43,9 @@ from elastic_transport import (
     ApiResponseMeta,
     AsyncTransport,
     HeadApiResponse,
-    HttpHeaders,
     ObjectApiResponse,
 )
-from elastic_transport._models import DEFAULT, DefaultType, SniffOptions
+from elastic_transport._models import DEFAULT, DefaultType
 from elastic_transport._otel import OpenTelemetrySpan
 
 from core.observation.logger import get_logger

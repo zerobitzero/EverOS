@@ -9,7 +9,6 @@ This module contains the following features:
 4. Status table operation functions: Manage the lifecycle of conversation status
 """
 
-import time
 from api_specs.dtos import MemorizeRequest
 from api_specs.memory_types import MemCell, RawDataType
 from core.di import get_bean_by_type
@@ -71,7 +70,6 @@ def _convert_episode_memory_to_doc(
     from infra_layer.adapters.out.persistence.document.memory.episodic_memory import (
         EpisodicMemory,
     )
-    from agentic_layer.vectorize_service import get_vectorize_service
 
     # Parse timestamp to datetime object
     if current_time is None:
@@ -260,7 +258,6 @@ def _convert_agent_case_to_doc(
 
 
 # ==================== Database Operation Functions ====================
-from core.observation.tracing.decorators import trace_logger
 
 
 async def _save_memcell_to_database(

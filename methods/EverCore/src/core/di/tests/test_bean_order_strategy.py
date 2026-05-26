@@ -12,7 +12,6 @@ Comprehensively test various scenarios of Bean sorting strategy, including:
 """
 
 import pytest
-from typing import Set, Type
 from core.di.bean_definition import BeanDefinition, BeanScope
 from core.di.bean_order_strategy import BeanOrderStrategy
 

@@ -28,7 +28,6 @@ from fnmatch import fnmatch
 from pathlib import Path
 from dataclasses import dataclass, field
 from enum import Enum
-from typing import Optional
 
 # ==============================================================================
 # Path Configuration

@@ -9,7 +9,6 @@ from core.di.utils import get_beans_by_type, get_bean_by_type
 from core.capability.app_capability import ApplicationCapability
 from core.observation.logger import get_logger
 from core.interface.controller.base_controller import BaseController
-from core.middleware.user_context_middleware import UserContextMiddleware
 from core.middleware.app_logic_middleware import AppLogicMiddleware
 from core.middleware.prometheus_middleware import PrometheusMiddleware
 from fastapi.middleware import Middleware

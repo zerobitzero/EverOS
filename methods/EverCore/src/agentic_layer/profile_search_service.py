@@ -10,7 +10,7 @@ Profile items include:
 """
 
 import os
-from typing import List, Dict, Any, Optional
+from typing import Dict, Any, Optional
 import time
 
 from core.di import get_bean_by_type

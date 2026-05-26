@@ -33,7 +33,6 @@ from memory_layer.memory_extractor.base_memory_extractor import (
 )
 from memory_layer.prompts import get_prompt_by
 from api_specs.memory_types import (
-    MemCell,
     RawDataType,
     AgentCase,
     get_text_from_content_items,
