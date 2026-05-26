@@ -156,7 +156,7 @@ class ForesightExtractor(MemoryExtractor):
                 except Exception as e:
                     logger.warning(f"Foresight generation retry {retry+1}/5: {e}")
                     if retry == 4:
-                        logger.error(f"Foresight generation failed after 5 retries")
+                        logger.error("Foresight generation failed after 5 retries")
                         return []
                     continue
 

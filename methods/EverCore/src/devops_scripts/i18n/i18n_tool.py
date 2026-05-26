@@ -658,7 +658,7 @@ async def translate_file(
                 async with progress_lock:
                     progress["processed"].append(file_str)
                     save_translation_progress(progress)
-                return (file_path, True, f"Skipped: file too large")
+                return (file_path, True, "Skipped: file too large")
 
             with open(file_path, 'r', encoding='utf-8') as f:
                 original_content = f.read()
@@ -1474,7 +1474,7 @@ def _hook_print_error_report(
     if files_with_cjk:
         files_list = list(files_with_cjk.keys())
         cmd = _hook_format_translation_command(files_list)
-        print(f"\n1. Translate the files using:", file=sys.stderr)
+        print("\n1. Translate the files using:", file=sys.stderr)
         print(f"   {cmd}", file=sys.stderr)
         print("\n   Or for dry-run first:", file=sys.stderr)
         print(f"   {cmd} --dry-run", file=sys.stderr)

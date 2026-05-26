@@ -419,7 +419,7 @@ class KafkaConsumerFactory:
                 ) from e
 
             # Build timestamp map for each partition
-            timestamp_map = {partition: target_timestamp_ms for partition in partitions}
+            timestamp_map = dict.fromkeys(partitions, target_timestamp_ms)
 
             # Use offsets_for_times to get the offset at the corresponding timestamp
             offset_map = await consumer.offsets_for_times(timestamp_map)

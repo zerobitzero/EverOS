@@ -389,7 +389,7 @@ def print_container_info():
         info,
     )  # Convenient usage, suitable for occasional calls
 
-    info(f"\n📦 Dependency injection container information:")
+    info("\n📦 Dependency injection container information:")
     info(f"   Total Bean count: {len(formatted_beans)}")
     info(f"   Mock mode: {'enabled' if is_mock_mode() else 'disabled'}")
 

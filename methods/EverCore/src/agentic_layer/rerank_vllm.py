@@ -267,7 +267,7 @@ class VllmRerankService(RerankServiceInterface):
             # Parse results (OpenAI-compatible format)
             if "results" not in result:
                 raise RerankError(
-                    f"Invalid rerank response format: missing 'results' key"
+                    "Invalid rerank response format: missing 'results' key"
                 )
 
             # Create score mapping

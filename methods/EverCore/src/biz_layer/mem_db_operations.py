@@ -418,16 +418,16 @@ async def _update_status_for_continuing_conversation(
             "updated_at": current_time,
         }
 
-        logger.debug(f"Conversation continuing, update new_msg_start_time")
+        logger.debug("Conversation continuing, update new_msg_start_time")
         result = await status_repo.upsert_by_group_id(
             request.group_id, update_data, session_id=request.session_id
         )
 
         if result:
-            logger.info(f"Conversation continuation status updated successfully")
+            logger.info("Conversation continuation status updated successfully")
             return True
         else:
-            logger.warning(f"Conversation continuation status update failed")
+            logger.warning("Conversation continuation status update failed")
             return False
 
     except Exception as e:
@@ -521,16 +521,16 @@ async def _update_status_after_memcell_extraction(
 
         # TODO : clear queue
 
-        logger.debug(f"Update status table after MemCell extraction")
+        logger.debug("Update status table after MemCell extraction")
         result = await status_repo.upsert_by_group_id(
             request.group_id, update_data, session_id=request.session_id
         )
 
         if result:
-            logger.info(f"Status update after MemCell extraction successful")
+            logger.info("Status update after MemCell extraction successful")
             return True
         else:
-            logger.warning(f"Status update after MemCell extraction failed")
+            logger.warning("Status update after MemCell extraction failed")
             return False
 
     except Exception as e:

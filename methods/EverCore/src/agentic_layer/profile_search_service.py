@@ -44,17 +44,17 @@ def parse_embed_text(embed_text: str, item_type: str) -> Dict[str, str]:
         Dict with parsed fields
     """
     result = {}
-    
+
     if not embed_text:
         return {"category": "", "description": ""} if item_type == "explicit_info" else {"trait_name": "", "description": ""}
-    
+
     # Split by first colon
     parts = embed_text.split(":", 1)
-    
+
     if len(parts) == 2:
         key = parts[0].strip()
         value = parts[1].strip()
-        
+
         if item_type == "explicit_info":
             result["category"] = key
             result["description"] = value
@@ -71,7 +71,7 @@ def parse_embed_text(embed_text: str, item_type: str) -> Dict[str, str]:
         else:
             result["trait_name"] = ""
             result["description"] = embed_text
-    
+
     return result
 
 
@@ -83,7 +83,7 @@ class ProfileSearchService:
     Searches user profile items in Milvus using vector similarity.
     No reranking step - directly returns Milvus results with score threshold.
     """
-    
+
     def __init__(
         self,
         milvus_repo: Optional[UserProfileMilvusRepository] = None,
@@ -94,14 +94,14 @@ class ProfileSearchService:
             milvus_repo: User profile Milvus repository (auto-injected if None)
         """
         self._milvus_repo = milvus_repo
-    
+
     @property
     def milvus_repo(self) -> UserProfileMilvusRepository:
         """Lazy load Milvus repository"""
         if self._milvus_repo is None:
             self._milvus_repo = get_bean_by_type(UserProfileMilvusRepository)
         return self._milvus_repo
-    
+
     async def search_profiles(
         self,
         query: str,
@@ -126,7 +126,7 @@ class ProfileSearchService:
             - metadata: Search metadata (latency, count, etc.)
         """
         start_time = time.perf_counter()
-        
+
         result = {
             "profiles": [],
             "metadata": {
@@ -134,29 +134,29 @@ class ProfileSearchService:
                 "latency_ms": 0,
             }
         }
-        
+
         if not query:
             logger.warning("Empty query for profile search")
             return result
-        
+
         try:
             # Step 1: Generate query embedding
             vectorize_service = get_vectorize_service()
             query_vector = await vectorize_service.get_embedding(query)
-            
+
             if query_vector is None or len(query_vector) == 0:
                 logger.warning("Failed to generate query embedding")
                 return result
-            
+
             # Step 2: Search Milvus (recall with threshold)
             # Recall more candidates, then filter by threshold
             recall_limit = top_k * 2 if top_k > 0 else PROFILE_DEFAULT_TOPK * 2
-            
+
             logger.info(
                 f"🔍 Profile search params: user_id={user_id}, group_id={group_id}, "
                 f"top_k={top_k}, recall_limit={recall_limit}, score_threshold={score_threshold}"
             )
-            
+
             milvus_results = await self.milvus_repo.vector_search(
                 query_vector=query_vector,
                 user_id=user_id,
@@ -164,25 +164,25 @@ class ProfileSearchService:
                 limit=recall_limit,
                 score_threshold=score_threshold,
             )
-            
+
             logger.info(
                 f"✅ Milvus returned {len(milvus_results)} results, will take top {top_k}"
             )
-            
+
             # Step 3: Process results - parse embed_text and format output
             profiles = []
             for item in milvus_results[:top_k]:
                 item_type = item.get("item_type", "")
                 embed_text = item.get("embed_text", "")
-                
+
                 # Parse embed_text to get category/trait_name and description
                 parsed = parse_embed_text(embed_text, item_type)
-                
+
                 profile_item = {
                     "item_type": item_type,
                     "score": round(item.get("score", 0.0), 4),
                 }
-                
+
                 # Add parsed fields based on item_type
                 if item_type == "explicit_info":
                     profile_item["category"] = parsed.get("category", "")
@@ -190,23 +190,23 @@ class ProfileSearchService:
                 else:  # implicit_trait
                     profile_item["trait_name"] = parsed.get("trait_name", "")
                     profile_item["description"] = parsed.get("description", "")
-                
+
                 profiles.append(profile_item)
-            
+
             # Calculate latency
             latency_ms = int((time.perf_counter() - start_time) * 1000)
-            
+
             result["profiles"] = profiles
             result["metadata"]["profile_count"] = len(profiles)
             result["metadata"]["latency_ms"] = latency_ms
-            
+
             # Log profile scores for debugging
             if profiles:
                 scores_str = ", ".join([f"{p['score']:.4f}" for p in profiles])
                 logger.info(
                     f"📊 Profile scores: [{scores_str}]"
                 )
-            
+
             logger.info(
                 "Profile search completed: user_id=%s, group_id=%s, "
                 "query='%s', found=%d, latency=%dms",
@@ -216,9 +216,9 @@ class ProfileSearchService:
                 len(profiles),
                 latency_ms,
             )
-            
+
             return result
-            
+
         except Exception as e:
             logger.error(
                 "Profile search failed: user_id=%s, group_id=%s, error=%s",

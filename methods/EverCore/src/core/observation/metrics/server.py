@@ -54,15 +54,15 @@ def start_metrics_server(
         # Prometheus can scrape: http://your-host:9090/metrics
     """
     global _metrics_server_started
-    
+
     if _metrics_server_started:
         logger.warning("Metrics server already running")
         return False
-    
+
     # Get port from parameter, env var, or default
     if port is None:
         port = int(os.getenv("METRICS_PORT", "9090"))
-    
+
     try:
         # Start HTTP server using prometheus_client's built-in server
         # This creates a daemon thread that serves /metrics endpoint
@@ -71,11 +71,11 @@ def start_metrics_server(
             addr=addr,
             registry=get_metrics_registry(),
         )
-        
+
         _metrics_server_started = True
         logger.info(f"✅ Metrics server started on {addr}:{port}/metrics")
         return True
-        
+
     except Exception as e:
         logger.error(f"Failed to start metrics server: {e}")
         return False

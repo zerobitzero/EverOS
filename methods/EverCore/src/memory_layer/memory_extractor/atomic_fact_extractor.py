@@ -156,7 +156,7 @@ class AtomicFactExtractor:
 
         # 5. If all fail, raise exception
         logger.error(f"Unable to parse LLM response: {response[:200]}...")
-        raise ValueError(f"Unable to parse LLM response into valid JSON format")
+        raise ValueError("Unable to parse LLM response into valid JSON format")
 
     async def _extract_atomic_fact(
         self,
@@ -194,7 +194,7 @@ class AtomicFactExtractor:
 
         # 5. Validate response format
         if "atomic_facts" not in data:
-            raise ValueError(f"Missing 'atomic_facts' field in LLM response")
+            raise ValueError("Missing 'atomic_facts' field in LLM response")
 
         atomic_fact_data = data["atomic_facts"]
 
@@ -270,7 +270,7 @@ class AtomicFactExtractor:
                 except Exception as e:
                     logger.warning(f"Retrying to extract atomic fact {retry+1}/5: {e}")
                     if retry == 4:
-                        logger.error(f"Failed to extract atomic fact after 5 retries")
+                        logger.error("Failed to extract atomic fact after 5 retries")
                         return None
                     continue
 

@@ -202,7 +202,7 @@ Environment variables:
         # If relative import error occurs, try running in module mode
         if "attempted relative import with no known parent package" in str(e):
             print(
-                f"\n⚠️  Detected relative import error, trying to run in module mode..."
+                "\n⚠️  Detected relative import error, trying to run in module mode..."
             )
             try:
                 # Get src directory path
@@ -237,7 +237,7 @@ Environment variables:
             print(f"\n📋 Script exited with code: {e.code}")
             raise  # Re-raise to propagate the exit code
         else:
-            print(f"\n📋 Script execution completed successfully")
+            print("\n📋 Script execution completed successfully")
     except Exception as e:
         print(f"\n❌ Script execution error: {e}", file=sys.stderr)
         import traceback

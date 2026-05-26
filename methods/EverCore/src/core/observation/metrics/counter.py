@@ -29,7 +29,7 @@ class Counter:
         # 使用
         requests_total.labels(method='GET', path='/api', status='200').inc()
     """
-    
+
     def __init__(
         self,
         name: str,
@@ -49,7 +49,7 @@ class Counter:
             unit: Unit (optional)
         """
         registry = get_metrics_registry()
-        
+
         self._counter = PrometheusCounter(
             name=name,
             documentation=description,
@@ -61,7 +61,7 @@ class Counter:
         )
         self._name = name
         self._labelnames = labelnames
-    
+
     def labels(self, **labels) -> 'LabeledCounter':
         """
         Return a Counter with labels
@@ -71,7 +71,7 @@ class Counter:
         """
         labeled = self._counter.labels(**labels)
         return LabeledCounter(labeled)
-    
+
     def inc(self, amount: float = 1) -> None:
         """
         Increment counter (no labels version)
@@ -84,10 +84,10 @@ class Counter:
 
 class LabeledCounter:
     """Counter with labels"""
-    
+
     def __init__(self, labeled_counter):
         self._counter = labeled_counter
-    
+
     def inc(self, amount: float = 1) -> None:
         """
         Increment counter

@@ -48,7 +48,7 @@ class BaseGauge(ABC):
         # Usage 3: Manual set (without auto-refresh)
         gauge.labels(job_name='tanka').set(42)
     """
-    
+
     def __init__(
         self,
         name: str,
@@ -69,7 +69,7 @@ class BaseGauge(ABC):
         """
         from .registry import get_metrics_registry
         registry = get_metrics_registry()
-        
+
         self._gauge = PrometheusGauge(
             name=name,
             documentation=description,
@@ -79,14 +79,14 @@ class BaseGauge(ABC):
             unit=unit,
             registry=registry,
         )
-        
+
         self._name = name
         self._labelnames = labelnames
-        
+
         # Store refresh tasks for each label combination
         # key: tuple of label values, value: RefreshTask
         self._refresh_tasks: Dict[Tuple, 'RefreshTask'] = {}
-    
+
     def labels(self, **labels) -> 'LabeledGauge':
         """
         Return a Gauge with labels
@@ -96,26 +96,26 @@ class BaseGauge(ABC):
         """
         labeled_gauge = self._gauge.labels(**labels)
         label_key = self._make_label_key(**labels)
-        
+
         return LabeledGauge(
             base_gauge=self,
             labeled_gauge=labeled_gauge,
             label_key=label_key,
             label_dict=labels,
         )
-    
+
     def set(self, value: float) -> None:
         """Set value (no labels version)"""
         self._gauge.set(value)
-    
+
     def inc(self, amount: float = 1) -> None:
         """Increment value (no labels version)"""
         self._gauge.inc(amount)
-    
+
     def dec(self, amount: float = 1) -> None:
         """Decrement value (no labels version)"""
         self._gauge.dec(amount)
-    
+
     @abstractmethod
     def refresh(self, labels: dict) -> float:
         """
@@ -142,13 +142,13 @@ class BaseGauge(ABC):
                     return self.queue.qsize()
         """
         pass
-    
+
     def _make_label_key(self, **labels) -> Tuple:
         """Generate label key"""
         if self._labelnames:
             return tuple(labels.get(name, '') for name in self._labelnames)
         return ()
-    
+
     async def _stop_all_refresh_tasks(self) -> None:
         """Stop all refresh tasks"""
         for task in self._refresh_tasks.values():
@@ -162,7 +162,7 @@ class LabeledGauge:
     
     Provides the same interface as native Gauge, with auto-refresh support.
     """
-    
+
     def __init__(
         self,
         base_gauge: BaseGauge,
@@ -174,23 +174,23 @@ class LabeledGauge:
         self._labeled_gauge = labeled_gauge
         self._label_key = label_key
         self._label_dict = label_dict
-    
+
     def set(self, value: float) -> None:
         """Set value"""
         self._labeled_gauge.set(value)
-    
+
     def inc(self, amount: float = 1) -> None:
         """Increment value"""
         self._labeled_gauge.inc(amount)
-    
+
     def dec(self, amount: float = 1) -> None:
         """Decrement value"""
         self._labeled_gauge.dec(amount)
-    
+
     def set_to_current_time(self) -> None:
         """Set to current timestamp"""
         self._labeled_gauge.set_to_current_time()
-    
+
     def start_refresh(
         self,
         interval_seconds: int = 5,
@@ -228,11 +228,11 @@ class LabeledGauge:
             )
             # Schedule stop in background to avoid blocking
             asyncio.create_task(existing_task.stop())
-        
+
         # Create wrapper function that calls base_gauge.refresh()
         def refresh_wrapper():
             return self._base_gauge.refresh(self._label_dict)
-        
+
         # Create refresh task
         task = RefreshTask(
             refresh_func=refresh_wrapper,
@@ -241,15 +241,15 @@ class LabeledGauge:
             enable_async=enable_async,
             label_key=self._label_key,
         )
-        
+
         # Store task
         self._base_gauge._refresh_tasks[self._label_key] = task
-        
+
         # Start task
         task.start()
-        
+
         return self
-    
+
     async def stop_refresh(self) -> None:
         """Stop auto-refresh"""
         task = self._base_gauge._refresh_tasks.get(self._label_key)
@@ -264,7 +264,7 @@ class RefreshTask:
     
     Each label combination has an independent refresh task.
     """
-    
+
     def __init__(
         self,
         refresh_func: Callable[[], float],
@@ -278,31 +278,31 @@ class RefreshTask:
         self.interval_seconds = interval_seconds
         self.enable_async = enable_async
         self.label_key = label_key
-        
+
         self._task: Optional[asyncio.Task] = None
         self._running = False
         self._error_count = 0
-    
+
     def start(self) -> None:
         """Start refresh task"""
         if self._running:
             logger.warning(f"Refresh task already running for {self.label_key}")
             return
-        
+
         self._running = True
         self._task = asyncio.create_task(self._refresh_loop())
         logger.info(
             f"Started refresh task: label_key={self.label_key}, "
             f"interval={self.interval_seconds}s"
         )
-    
+
     async def stop(self) -> None:
         """Stop refresh task"""
         if not self._running:
             return
-        
+
         self._running = False
-        
+
         if self._task:
             self._task.cancel()
             try:
@@ -310,28 +310,28 @@ class RefreshTask:
             except asyncio.CancelledError:
                 pass
             self._task = None
-        
+
         logger.info(f"Stopped refresh task: label_key={self.label_key}")
-    
+
     async def _refresh_loop(self) -> None:
         """Refresh loop"""
         while self._running:
             try:
                 # Check if it's an async function
                 if self.enable_async and (
-                    asyncio.iscoroutinefunction(self.refresh_func) or 
+                    asyncio.iscoroutinefunction(self.refresh_func) or
                     inspect.iscoroutinefunction(self.refresh_func)
                 ):
                     value = await self.refresh_func()
                 else:
                     value = self.refresh_func()
-                
+
                 # Update Gauge
                 self.labeled_gauge.set(value)
-                
+
                 # Reset error count
                 self._error_count = 0
-                
+
             except asyncio.CancelledError:
                 break
             except Exception as e:
@@ -341,7 +341,7 @@ class RefreshTask:
                     f"(error_count={self._error_count})",
                     exc_info=True
                 )
-            
+
             # Wait for next refresh
             try:
                 await asyncio.sleep(self.interval_seconds)

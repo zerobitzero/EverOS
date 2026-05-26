@@ -41,20 +41,20 @@ class MetricsLifespanProvider(LifespanProvider):
         """
         # Get port from environment variable or default to 9090
         port = int(os.getenv("METRICS_PORT", "9090"))
-        
+
         logger.info("Starting Prometheus metrics server on port %d...", port)
-        
+
         try:
             success = start_metrics_server(port=port)
-            
+
             if success:
                 logger.info("✅ Metrics server started: %s", get_metrics_url(port=port))
                 app.state.metrics_port = port
             else:
                 logger.warning("Metrics server already running or failed to start")
-            
+
             return (port, success)
-            
+
         except Exception as e:
             logger.error("Failed to start metrics server: %s", str(e))
             # Don't raise - metrics failure shouldn't prevent app startup
@@ -68,7 +68,7 @@ class MetricsLifespanProvider(LifespanProvider):
             app (FastAPI): FastAPI application instance
         """
         logger.info("Metrics server will stop with main process (daemon thread)")
-        
+
         # Clean up app.state
         if hasattr(app.state, 'metrics_port'):
             delattr(app.state, 'metrics_port')

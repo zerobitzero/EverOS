@@ -34,9 +34,9 @@ def _create_route_decorator(http_method: str) -> Callable:
         def wrapper(func: Callable) -> Callable:
             # Use a special attribute to mark the function and store routing information
             # This avoids a global registry, making each controller self-contained
-            setattr(func, "__route_info__", (path, [http_method], kwargs))
+            func.__route_info__ = path, [http_method], kwargs
             # Store extra_models for later OpenAPI generation
-            setattr(func, "__extra_models__", extra_models or [])
+            func.__extra_models__ = extra_models or []
             return func
 
         return wrapper
@@ -125,7 +125,7 @@ class BaseController(ABC):
         """
         for _member_name, member in inspect.getmembers(self):
             if callable(member) and hasattr(member, "__route_info__"):
-                path, methods, route_kwargs = getattr(member, "__route_info__")
+                path, methods, route_kwargs = member.__route_info__
 
                 # Collect extra_models
                 extra_models = getattr(member, "__extra_models__", [])

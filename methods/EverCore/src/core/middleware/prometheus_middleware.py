@@ -136,27 +136,27 @@ class PrometheusMiddleware(BaseHTTPMiddleware):
         app = FastAPI()
         app.add_middleware(PrometheusMiddleware)
     """
-    
+
     # Paths to skip metrics collection
     SKIP_PATHS = {'/metrics', '/health', '/healthz', '/ready', '/favicon.ico'}
-    
+
     async def dispatch(self, request: Request, call_next: Callable) -> Response:
         # Skip metrics for certain paths
         if request.url.path in self.SKIP_PATHS:
             return await call_next(request)
-        
+
         method = request.method
-        
+
         # Record request size (before processing)
         request_size = 0
         if request.headers.get('content-length'):
             request_size = int(request.headers.get('content-length', 0))
-        
+
         # Time the request
         start_time = time.perf_counter()
         status = '500'  # Default to 500 in case of unhandled exception
         response = None
-        
+
         try:
             response = await call_next(request)
             status = str(response.status_code)
@@ -165,29 +165,29 @@ class PrometheusMiddleware(BaseHTTPMiddleware):
         finally:
             # Get path AFTER call_next - route info is now available
             path = _normalize_path(request)
-            
+
             # Record metrics
             duration = time.perf_counter() - start_time
-            
+
             _http_requests_total.labels(
                 method=method,
                 path=path,
                 status=status,
             ).inc()
-            
+
             _http_request_duration_seconds.labels(
                 method=method,
                 path=path,
             ).observe(duration)
-            
+
             # Record request size
             if request_size > 0:
                 _http_request_size_bytes.labels(method=method, path=path).observe(request_size)
-        
+
         # Record response size
         if response and hasattr(response, 'headers') and response.headers.get('content-length'):
             response_size = int(response.headers.get('content-length', 0))
             _http_response_size_bytes.labels(method=method, path=path).observe(response_size)
-        
+
         return response
 

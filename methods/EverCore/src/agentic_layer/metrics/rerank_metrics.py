@@ -157,12 +157,12 @@ def record_rerank_request(
         provider=provider,
         status=status
     ).inc()
-    
+
     # Duration histogram
     RERANK_DURATION_SECONDS.labels(
         provider=provider
     ).observe(duration_seconds)
-    
+
     # Documents count histogram
     RERANK_DOCUMENTS_TOTAL.labels(
         provider=provider

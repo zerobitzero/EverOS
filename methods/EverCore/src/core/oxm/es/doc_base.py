@@ -78,7 +78,7 @@ class AliasSupportDoc(DocBase):
 
         # Dynamically set to CustomMeta
         if custom_meta is not None:
-            setattr(custom_meta, 'date_fields', date_fields)
+            custom_meta.date_fields = date_fields
 
         return date_fields
 

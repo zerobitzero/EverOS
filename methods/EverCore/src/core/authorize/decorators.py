@@ -38,7 +38,7 @@ def authorize(
         )
 
         # Store authorization info on the function
-        setattr(func, '__authorization_context__', auth_context)
+        func.__authorization_context__ = auth_context
 
         @functools.wraps(func)
         async def async_wrapper(*args, **kwargs):

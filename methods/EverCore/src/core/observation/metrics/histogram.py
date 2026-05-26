@@ -11,27 +11,27 @@ from .registry import get_metrics_registry
 # Predefined bucket configurations
 class HistogramBuckets:
     """Predefined Histogram bucket configurations"""
-    
+
     # Default buckets (covering 5ms - 10s)
     DEFAULT = (
         0.005, 0.01, 0.025, 0.05, 0.075, 0.1, 0.25, 0.5,
         0.75, 1.0, 2.5, 5.0, 7.5, 10.0
     )
-    
+
     # Fast operations (5ms - 500ms, for cache queries, simple calculations, etc.)
     FAST = (0.001, 0.005, 0.01, 0.025, 0.05, 0.1, 0.25, 0.5)
-    
+
     # API calls (10ms - 30s, for external API calls)
     # Denser buckets in 0.1-5s range for better P95/P99 accuracy
     API_CALL = (0.01, 0.05, 0.1, 0.2, 0.3, 0.5, 0.75, 1.0, 1.5, 2.0, 3.0, 5.0, 10.0, 30.0)
-    
+
     # Batch operations (100ms - 60s, for batch processing)
     BATCH = (0.1, 0.25, 0.5, 1.0, 2.5, 5.0, 10.0, 30.0, 60.0)
-    
+
     # Embedding/Rerank (10ms - 10s, for ML inference)
     # Denser buckets in 0.1-3s range where most requests fall
     ML_INFERENCE = (0.01, 0.025, 0.05, 0.1, 0.2, 0.3, 0.5, 0.75, 1.0, 1.5, 2.0, 3.0, 5.0, 10.0)
-    
+
     # Database queries (1ms - 5s)
     DATABASE = (0.001, 0.005, 0.01, 0.025, 0.05, 0.1, 0.25, 0.5, 1.0, 2.5, 5.0)
 
@@ -62,7 +62,7 @@ class Histogram:
         with request_duration.labels(method='GET', path='/api').time():
             do_something()
     """
-    
+
     def __init__(
         self,
         name: str,
@@ -84,7 +84,7 @@ class Histogram:
             buckets: Histogram bucket boundaries
         """
         registry = get_metrics_registry()
-        
+
         self._histogram = PrometheusHistogram(
             name=name,
             documentation=description,
@@ -97,7 +97,7 @@ class Histogram:
         )
         self._name = name
         self._labelnames = labelnames
-    
+
     def labels(self, **labels) -> 'LabeledHistogram':
         """
         Return a Histogram with labels
@@ -107,7 +107,7 @@ class Histogram:
         """
         labeled = self._histogram.labels(**labels)
         return LabeledHistogram(labeled)
-    
+
     def observe(self, amount: float) -> None:
         """
         Record an observed value (no labels version)
@@ -116,7 +116,7 @@ class Histogram:
             amount: Observed value
         """
         self._histogram.observe(amount)
-    
+
     def time(self):
         """
         Return a timing context manager (no labels version)
@@ -130,10 +130,10 @@ class Histogram:
 
 class LabeledHistogram:
     """Histogram with labels"""
-    
+
     def __init__(self, labeled_histogram):
         self._histogram = labeled_histogram
-    
+
     def observe(self, amount: float) -> None:
         """
         Record an observed value
@@ -142,7 +142,7 @@ class LabeledHistogram:
             amount: Observed value
         """
         self._histogram.observe(amount)
-    
+
     def time(self):
         """
         Return a timing context manager

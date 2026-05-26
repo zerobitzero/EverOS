@@ -124,7 +124,7 @@ def create_business_app(
     fastapi_app.user_middleware.append(Middleware(AppLogicMiddleware))
     # Not directly interfacing with users
     # fastapi_app.user_middleware.append(Middleware(UserContextMiddleware))
-    
+
     # Add Prometheus HTTP metrics middleware
     fastapi_app.user_middleware.append(Middleware(PrometheusMiddleware))
 

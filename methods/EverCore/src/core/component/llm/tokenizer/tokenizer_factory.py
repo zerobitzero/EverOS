@@ -50,12 +50,12 @@ class TokenizerFactory:
             >>> tokens = tokenizer.encode("Hello, world!")
         """
         cache_key = f"tiktoken:{encoding_name}"
-        
+
         if cache_key not in self._tokenizers:
             logger.debug("Loading tiktoken encoding: %s", encoding_name)
             self._tokenizers[cache_key] = tiktoken.get_encoding(encoding_name)
             logger.debug("Tiktoken encoding '%s' loaded and cached", encoding_name)
-        
+
         return self._tokenizers[cache_key]
 
     def load_default_encodings(self) -> None:
@@ -68,14 +68,14 @@ class TokenizerFactory:
         The encodings loaded are defined in DEFAULT_TIKTOKEN_ENCODINGS.
         """
         logger.info("Preloading %d tiktoken encodings...", len(DEFAULT_TIKTOKEN_ENCODINGS))
-        
+
         for encoding_name in DEFAULT_TIKTOKEN_ENCODINGS:
             try:
                 self.get_tokenizer_from_tiktoken(encoding_name)
                 logger.info("Successfully preloaded tiktoken encoding: %s", encoding_name)
             except (ValueError, KeyError, RuntimeError) as e:
                 logger.error("Failed to preload tiktoken encoding '%s': %s", encoding_name, e)
-        
+
         logger.info("Tiktoken encodings preload completed")
 
     def get_cached_tokenizer_count(self) -> int:

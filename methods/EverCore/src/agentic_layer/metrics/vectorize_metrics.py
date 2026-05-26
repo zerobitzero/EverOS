@@ -159,20 +159,20 @@ def record_vectorize_request(
         operation=operation,
         status=status
     ).inc()
-    
+
     # Duration histogram
     VECTORIZE_DURATION_SECONDS.labels(
         provider=provider,
         operation=operation
     ).observe(duration_seconds)
-    
+
     # Batch size histogram (only for batch operations)
     if batch_size > 1:
         VECTORIZE_BATCH_SIZE.labels(
             provider=provider,
             operation=operation
         ).observe(batch_size)
-    
+
     # Token counter (if available)
     if tokens > 0:
         VECTORIZE_TOKENS_TOTAL.labels(provider=provider).inc(tokens)

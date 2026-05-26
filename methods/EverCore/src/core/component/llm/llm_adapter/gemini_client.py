@@ -207,8 +207,8 @@ class GeminiClient:
             try:
                 # Check if it has role and content attributes
                 if hasattr(msg, 'role') and hasattr(msg, 'content'):
-                    role = getattr(msg, 'role')
-                    content = getattr(msg, 'content')
+                    role = msg.role
+                    content = msg.content
                     gemini_role = self._map_role_to_gemini(role)
                     contents.append(
                         ContentDict(role=gemini_role, parts=[{"text": str(content)}])

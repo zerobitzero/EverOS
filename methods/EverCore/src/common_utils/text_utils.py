@@ -366,8 +366,8 @@ class SmartTextParser:
         tokens = self.parse_tokens(text)
 
         # Count tokens by type
-        type_counts = {token_type: 0 for token_type in TokenType}
-        type_scores = {token_type: 0.0 for token_type in TokenType}
+        type_counts = dict.fromkeys(TokenType, 0)
+        type_scores = dict.fromkeys(TokenType, 0.0)
 
         for token in tokens:
             type_counts[token.type] += 1

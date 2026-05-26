@@ -652,7 +652,7 @@ def convert_agent_add_to_memorize_request(
         elif role == "assistant":
             if sender_id and sender_id == user_id:
                 raise ValueError(
-                    f"sender_id conflict: role=assistant cannot use user_id as sender_id"
+                    "sender_id conflict: role=assistant cannot use user_id as sender_id"
                 )
             if not sender_id:
                 hash_val = hashlib.md5(f"{user_id}_assistant".encode()).hexdigest()[:12]
