@@ -1,4 +1,4 @@
-.PHONY: dev-setup setup-hooks lint ruff ruff-fix typecheck typecheck-pyright test test-unit test-integration test-e2e test-cov clean help
+.PHONY: dev-setup setup-hooks lint ruff ruff-fix typecheck typecheck-pyright test test-unit test-integration test-e2e test-cov benchmark clean help
 
 # Default target
 help:
@@ -15,6 +15,7 @@ help:
 	@echo "  test-integration   - Run integration tests (needs docker-compose up)"
 	@echo "  test-e2e           - Run end-to-end tests"
 	@echo "  test-cov           - Run unit tests with coverage report (xml + term)"
+	@echo "  benchmark          - Run perf benchmarks (needs bench group + docker)"
 	@echo "  clean              - Clean up generated files"
 	@echo "  help               - Show this help message"
 
@@ -92,6 +93,13 @@ test-e2e:
 test-cov:
 	PYTHONPATH=src uv run pytest tests/ -m unit \
 		--cov=src --cov-report=xml --cov-report=term
+
+# Performance benchmarks. Requires the optional `bench` group
+# (`uv sync --group bench`) and RUN_BENCHMARKS=1 plus a running
+# docker-compose stack. See tests/benchmarks/README.md.
+benchmark:
+	PYTHONPATH=src RUN_BENCHMARKS=1 uv run pytest tests/benchmarks/ \
+		--benchmark-only --benchmark-columns=min,mean,median,p95,max
 
 # Clean up
 clean:

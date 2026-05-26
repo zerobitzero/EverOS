@@ -232,6 +232,13 @@ otel = [
     "opentelemetry-instrumentation-pymongo>=0.48b0",
 ]
 
+# Performance benchmarks. Opt-in; not pulled in by `uv sync` without `--group bench`.
+# Install when running tests/benchmarks/. CI does not run benchmarks per
+# roadmap §3.2 T2.6 (establish baseline first, add thresholds later).
+bench = [
+    "pytest-benchmark>=4.0.0",
+]
+
 # Full development environment - includes dev tools
 dev-full = [
     {include-group = "dev"},
