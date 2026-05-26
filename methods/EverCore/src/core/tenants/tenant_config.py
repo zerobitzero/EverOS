@@ -29,9 +29,7 @@ class TenantConfig:
     def __init__(self):
         """Initialize tenant configuration"""
         self._single_tenant_id: Optional[str] = None
-        self._app_ready: bool = (
-            False  # Application startup completion status, used for strict tenant checks
-        )
+        self._app_ready: bool = False  # Application startup completion status, used for strict tenant checks
 
     @property
     def single_tenant_id(self) -> Optional[str]:

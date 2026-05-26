@@ -142,7 +142,7 @@ class MongoFilterParser:
 
 
 def parse_mongo_filters(
-    filters: Dict[str, Any]
+    filters: Dict[str, Any],
 ) -> Tuple[Dict[str, Any], Optional[str], Optional[List[str]]]:
     """Convenience function wrapping MongoFilterParser.parse()."""
     return MongoFilterParser.parse(filters)

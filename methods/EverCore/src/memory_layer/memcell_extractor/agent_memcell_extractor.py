@@ -126,22 +126,21 @@ class AgentMemCellExtractor(ConvMemCellExtractor):
             if request.new_raw_data_list:
                 # Skip when new messages are all user messages (no assistant response yet)
                 all_user_only = all(
-                    isinstance(rd.content, dict)
-                    and rd.content.get("role") == "user"
+                    isinstance(rd.content, dict) and rd.content.get("role") == "user"
                     for rd in request.new_raw_data_list
                 )
                 if all_user_only:
                     logger.debug(
                         "[AgentMemCellExtractor] Skipping: new messages contain "
-                        "only user messages, waiting for assistant response",
+                        "only user messages, waiting for assistant response"
                     )
                     return ([], StatusResult(should_wait=True))
 
                 # Skip when the agent turn is still in progress
                 last_content = request.new_raw_data_list[-1].content
-                if isinstance(
-                    last_content, dict
-                ) and is_intermediate_agent_step(last_content):
+                if isinstance(last_content, dict) and is_intermediate_agent_step(
+                    last_content
+                ):
                     logger.debug(
                         "[AgentMemCellExtractor] Skipping: last new message is "
                         "intermediate (role=%s)",
@@ -167,10 +166,7 @@ class AgentMemCellExtractor(ConvMemCellExtractor):
         if split_at < 1 or split_at > len(messages) - 1:
             return False
         last_msg = messages[split_at - 1]
-        return (
-            last_msg.get("role") == "assistant"
-            and not last_msg.get("tool_calls")
-        )
+        return last_msg.get("role") == "assistant" and not last_msg.get("tool_calls")
 
     def _find_force_split_point(self, messages: List[Dict[str, Any]]) -> int:
         """Find force-split point that does not break a tool-call sequence.

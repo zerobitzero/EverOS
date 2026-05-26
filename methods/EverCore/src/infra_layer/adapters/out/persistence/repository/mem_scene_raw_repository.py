@@ -90,10 +90,7 @@ class MemSceneRawRepository(BaseRepository[MemScene]):
                 return {}
             # Derive eventid_to_cluster from memcell_info
             memcell_info = mem_scene.memcell_info or {}
-            return {
-                eid: info.get("memscene", "")
-                for eid, info in memcell_info.items()
-            }
+            return {eid: info.get("memscene", "") for eid, info in memcell_info.items()}
         except Exception as e:
             logger.error(
                 f"Failed to retrieve cluster assignments: group_id={group_id}, error={e}"

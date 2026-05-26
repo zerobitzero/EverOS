@@ -99,7 +99,9 @@ lower_normalizer = normalizer(
 # For example: "running", "runs", "ran" -> "run"
 #      "better", "good" -> "good", "better" (irregular forms require special handling)
 snow_en_filter = token_filter(
-    "snow_filter", type="snowball", language="English"  # English stemming
+    "snow_filter",
+    type="snowball",
+    language="English",  # English stemming
 )
 
 # English stemming analyzer - used for semantic search on English text

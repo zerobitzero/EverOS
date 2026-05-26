@@ -268,7 +268,9 @@ class AtomicFactExtractor:
                         input_text, timestamp, user_id=user_id, group_id=group_id
                     )
                 except Exception as e:
-                    logger.warning(f"Retrying to extract atomic fact {retry+1}/5: {e}")
+                    logger.warning(
+                        f"Retrying to extract atomic fact {retry + 1}/5: {e}"
+                    )
                     if retry == 4:
                         logger.error("Failed to extract atomic fact after 5 retries")
                         return None

@@ -555,8 +555,7 @@ def install_tenant_interceptor(
         )
 
     logger.info(
-        "Tenant command interceptor installed on client %s "
-        "(excluded_collections=%s)",
+        "Tenant command interceptor installed on client %s (excluded_collections=%s)",
         type(client).__name__,
         excluded_collections or "none",
     )

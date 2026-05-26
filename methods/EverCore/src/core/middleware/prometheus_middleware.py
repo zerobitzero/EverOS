@@ -11,6 +11,7 @@ Usage:
     app = FastAPI()
     app.add_middleware(PrometheusMiddleware)
 """
+
 from core.observation.logger import get_logger
 import time
 from typing import Callable
@@ -116,7 +117,6 @@ def _normalize_path(request: Request) -> str:
     return '{unmatched}'
 
 
-
 class PrometheusMiddleware(BaseHTTPMiddleware):
     """
     Prometheus HTTP Metrics Middleware
@@ -169,25 +169,27 @@ class PrometheusMiddleware(BaseHTTPMiddleware):
             # Record metrics
             duration = time.perf_counter() - start_time
 
-            _http_requests_total.labels(
-                method=method,
-                path=path,
-                status=status,
-            ).inc()
+            _http_requests_total.labels(method=method, path=path, status=status).inc()
 
-            _http_request_duration_seconds.labels(
-                method=method,
-                path=path,
-            ).observe(duration)
+            _http_request_duration_seconds.labels(method=method, path=path).observe(
+                duration
+            )
 
             # Record request size
             if request_size > 0:
-                _http_request_size_bytes.labels(method=method, path=path).observe(request_size)
+                _http_request_size_bytes.labels(method=method, path=path).observe(
+                    request_size
+                )
 
         # Record response size
-        if response and hasattr(response, 'headers') and response.headers.get('content-length'):
+        if (
+            response
+            and hasattr(response, 'headers')
+            and response.headers.get('content-length')
+        ):
             response_size = int(response.headers.get('content-length', 0))
-            _http_response_size_bytes.labels(method=method, path=path).observe(response_size)
+            _http_response_size_bytes.labels(method=method, path=path).observe(
+                response_size
+            )
 
         return response
-

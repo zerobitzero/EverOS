@@ -24,7 +24,14 @@ from memory_layer.memory_extractor.base_memory_extractor import (
     MemoryExtractRequest,
 )
 from memory_layer.prompts import get_prompt_by
-from api_specs.memory_types import MemCell, MemoryType, ProfileMemory, ScenarioType, get_text_from_content_items, is_intermediate_agent_step
+from api_specs.memory_types import (
+    MemCell,
+    MemoryType,
+    ProfileMemory,
+    ScenarioType,
+    get_text_from_content_items,
+    is_intermediate_agent_step,
+)
 
 logger = get_logger(__name__)
 
@@ -33,8 +40,9 @@ logger = get_logger(__name__)
 # ID Mapper — Long ID <-> Short ID conversion to save tokens
 # ============================================================================
 
+
 def _create_id_mapping(long_ids: List[str]) -> Dict[str, str]:
-    return {lid: f"ep{i+1}" for i, lid in enumerate(long_ids) if lid}
+    return {lid: f"ep{i + 1}" for i, lid in enumerate(long_ids) if lid}
 
 
 def _replace_sources(
@@ -67,6 +75,7 @@ def _get_short_id(long_id: str, id_map: Dict[str, str]) -> str:
 # ============================================================================
 # Extract Request
 # ============================================================================
+
 
 class ProfileAction(str, Enum):
     NONE = "none"
@@ -116,6 +125,7 @@ class ProfileExtractRequest(MemoryExtractRequest):
 # Profile Extractor
 # ============================================================================
 
+
 class ProfileExtractor(MemoryExtractor):
     """Extracts user profiles using incremental operations (add/update/delete)."""
 
@@ -147,7 +157,9 @@ class ProfileExtractor(MemoryExtractor):
 
         # Initialize profile
         if old_profile is None:
-            logger.info(f"[ProfileExtractor] No old_profile for user={request.user_id}, creating new")
+            logger.info(
+                f"[ProfileExtractor] No old_profile for user={request.user_id}, creating new"
+            )
             current_profile = ProfileMemory(
                 memory_type=MemoryType.PROFILE,
                 user_id=request.user_id or "",
@@ -196,11 +208,13 @@ class ProfileExtractor(MemoryExtractor):
 
         if updated_dict:
             current_profile.explicit_info = [
-                d for d in updated_dict.get(ProfileItemType.EXPLICIT_INFO, [])
+                d
+                for d in updated_dict.get(ProfileItemType.EXPLICIT_INFO, [])
                 if d.get("description", "").strip()
             ]
             current_profile.implicit_traits = [
-                d for d in updated_dict.get(ProfileItemType.IMPLICIT_TRAITS, [])
+                d
+                for d in updated_dict.get(ProfileItemType.IMPLICIT_TRAITS, [])
                 if d.get("description", "").strip()
             ]
             current_profile.last_updated = get_now_with_timezone()
@@ -291,25 +305,35 @@ class ProfileExtractor(MemoryExtractor):
                     ]
                     if op_type == ProfileItemType.EXPLICIT_INFO:
                         explicit_list.append(data)
-                        logger.info(f"[Profile] Added explicit_info: {data.get('description', '')[:30]}...")
+                        logger.info(
+                            f"[Profile] Added explicit_info: {data.get('description', '')[:30]}..."
+                        )
                     elif op_type == ProfileItemType.IMPLICIT_TRAITS:
                         implicit_list.append(data)
-                        logger.info(f"[Profile] Added implicit_trait: {data.get('trait', '')}...")
+                        logger.info(
+                            f"[Profile] Added implicit_trait: {data.get('trait', '')}..."
+                        )
 
                 elif action == ProfileAction.UPDATE:
                     op_type = op.get("type")
                     index = op.get("index", -1)
                     data = op.get("data", {})
                     target_list = (
-                        explicit_list if op_type == ProfileItemType.EXPLICIT_INFO else implicit_list
+                        explicit_list
+                        if op_type == ProfileItemType.EXPLICIT_INFO
+                        else implicit_list
                     )
                     if 0 <= index < len(target_list):
                         for key, val in data.items():
                             if val:
                                 if key == "sources":
                                     old_sources = target_list[index].get("sources", [])
-                                    new_sources = [self._attach_ts(s, id_to_ts) for s in val]
-                                    target_list[index]["sources"] = list(set(old_sources + new_sources))
+                                    new_sources = [
+                                        self._attach_ts(s, id_to_ts) for s in val
+                                    ]
+                                    target_list[index]["sources"] = list(
+                                        set(old_sources + new_sources)
+                                    )
                                 else:
                                     target_list[index][key] = val
                         logger.info(f"[Profile] Updated {op_type}[{index}]")
@@ -319,11 +343,15 @@ class ProfileExtractor(MemoryExtractor):
                     index = op.get("index", -1)
                     reason = op.get("reason", "")
                     target_list = (
-                        explicit_list if op_type == ProfileItemType.EXPLICIT_INFO else implicit_list
+                        explicit_list
+                        if op_type == ProfileItemType.EXPLICIT_INFO
+                        else implicit_list
                     )
                     if 0 <= index < len(target_list) and reason:
                         target_list.pop(index)
-                        logger.warning(f"[Profile] Deleted {op_type}[{index}]: {reason}")
+                        logger.warning(
+                            f"[Profile] Deleted {op_type}[{index}]: {reason}"
+                        )
 
             result_dict = {
                 ProfileItemType.EXPLICIT_INFO: explicit_list,
@@ -377,14 +405,18 @@ class ProfileExtractor(MemoryExtractor):
         if explicit:
             lines.append("【Explicit Info】")
             for i, item in enumerate(explicit):
-                lines.append(f"  [{i}] [{item.get('category', '')}] {item.get('description', '')}")
+                lines.append(
+                    f"  [{i}] [{item.get('category', '')}] {item.get('description', '')}"
+                )
                 if item.get("evidence"):
                     lines.append(f"      evidence: {item['evidence']}")
 
         if implicit:
             lines.append("\n【Implicit Traits】")
             for i, item in enumerate(implicit):
-                lines.append(f"  [{i}] {item.get('trait', '')}: {item.get('description', '')}")
+                lines.append(
+                    f"  [{i}] {item.get('trait', '')}: {item.get('description', '')}"
+                )
                 if item.get("evidence"):
                     lines.append(f"      evidence: {item['evidence']}")
 
@@ -410,11 +442,13 @@ class ProfileExtractor(MemoryExtractor):
             if result:
                 result_long = _replace_sources(result, id_map, reverse=True)
                 profile.explicit_info = [
-                    d for d in result_long.get(ProfileItemType.EXPLICIT_INFO, [])
+                    d
+                    for d in result_long.get(ProfileItemType.EXPLICIT_INFO, [])
                     if d.get("description", "").strip()
                 ]
                 profile.implicit_traits = [
-                    d for d in result_long.get(ProfileItemType.IMPLICIT_TRAITS, [])
+                    d
+                    for d in result_long.get(ProfileItemType.IMPLICIT_TRAITS, [])
                     if d.get("description", "").strip()
                 ]
                 profile.last_updated = get_now_with_timezone()
@@ -436,7 +470,9 @@ class ProfileExtractor(MemoryExtractor):
         if explicit:
             lines.append("【Explicit Info】")
             for i, item in enumerate(explicit, 1):
-                lines.append(f"  {i}. [{item.get('category', '')}] {item.get('description', '')}")
+                lines.append(
+                    f"  {i}. [{item.get('category', '')}] {item.get('description', '')}"
+                )
                 if item.get("evidence"):
                     lines.append(f"     evidence: {item['evidence']}")
                 lines.append(f"     sources: {', '.join(item.get('sources', []))}")
@@ -444,7 +480,9 @@ class ProfileExtractor(MemoryExtractor):
         if implicit:
             lines.append("\n【Implicit Traits】")
             for i, item in enumerate(implicit, 1):
-                lines.append(f"  {i}. {item.get('trait', '')}: {item.get('description', '')}")
+                lines.append(
+                    f"  {i}. {item.get('trait', '')}: {item.get('description', '')}"
+                )
                 if item.get("basis"):
                     lines.append(f"     basis: {item['basis']}")
                 if item.get("evidence"):
@@ -506,7 +544,9 @@ class ProfileExtractor(MemoryExtractor):
                     if name:
                         return name
         # Fallback to user_id itself
-        logger.warning(f"Could not resolve sender_name for user_id={user_id}, using user_id as fallback")
+        logger.warning(
+            f"Could not resolve sender_name for user_id={user_id}, using user_id as fallback"
+        )
         return user_id
 
     def _parse_profile_response(self, response: str) -> Optional[Dict[str, Any]]:

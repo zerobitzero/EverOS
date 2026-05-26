@@ -32,11 +32,7 @@ from memory_layer.memory_extractor.base_memory_extractor import (
     MemoryExtractRequest,
 )
 from memory_layer.prompts import get_prompt_by
-from api_specs.memory_types import (
-    RawDataType,
-    AgentCase,
-    get_text_from_content_items,
-)
+from api_specs.memory_types import RawDataType, AgentCase, get_text_from_content_items
 from api_specs.memory_models import MemoryType
 from agentic_layer.vectorize_service import get_vectorize_service
 from core.di.utils import get_bean_by_type
@@ -281,7 +277,7 @@ class AgentCaseExtractor(MemoryExtractor):
         groups_by_size = sorted(groups_with_size, key=lambda x: x[2], reverse=True)
         compress_indices: set = set()
         estimated_total = total_size
-        for idx, group, size in groups_by_size:
+        for idx, _group, size in groups_by_size:
             if estimated_total <= self.pre_compress_chunk_size:
                 break
             compress_indices.add(idx)
@@ -384,12 +380,12 @@ class AgentCaseExtractor(MemoryExtractor):
                 ):
                     return data["compressed_messages"]
                 logger.warning(
-                    f"[AgentCaseExtractor] Tool pre-compress attempt {attempt+1}/2: "
+                    f"[AgentCaseExtractor] Tool pre-compress attempt {attempt + 1}/2: "
                     f"invalid response format"
                 )
             except Exception as e:
                 logger.warning(
-                    f"[AgentCaseExtractor] Tool pre-compress attempt {attempt+1}/2: {e}"
+                    f"[AgentCaseExtractor] Tool pre-compress attempt {attempt + 1}/2: {e}"
                 )
 
         return None
@@ -434,12 +430,12 @@ class AgentCaseExtractor(MemoryExtractor):
                         return None
                     return data
                 logger.warning(
-                    f"[AgentCaseExtractor] Compress attempt {attempt+1}/2: "
+                    f"[AgentCaseExtractor] Compress attempt {attempt + 1}/2: "
                     f"missing or invalid 'task_intent' field"
                 )
             except Exception as e:
                 logger.warning(
-                    f"[AgentCaseExtractor] Compress attempt {attempt+1}/2: {e}"
+                    f"[AgentCaseExtractor] Compress attempt {attempt + 1}/2: {e}"
                 )
 
         logger.error(
@@ -499,7 +495,7 @@ class AgentCaseExtractor(MemoryExtractor):
 
     @staticmethod
     def _strip_before_first_user(
-        messages: List[Dict[str, Any]]
+        messages: List[Dict[str, Any]],
     ) -> List[Dict[str, Any]]:
         """Drop messages before the first user message (e.g. system prompts)."""
         for i, msg in enumerate(messages):
@@ -612,7 +608,9 @@ class AgentCaseExtractor(MemoryExtractor):
             # with limits inversely proportional to how far over the threshold we are.
             # After trim, skip entirely if still over 2x PRE_COMPRESS_CHUNK_SIZE.
             total_tokens = self._count_tokens(
-                json.dumps(original_data, ensure_ascii=False, default=self._json_default)
+                json.dumps(
+                    original_data, ensure_ascii=False, default=self._json_default
+                )
             )
             logger.info(
                 f"[AgentCaseExtractor] event_id={memcell.event_id}, "
@@ -633,7 +631,9 @@ class AgentCaseExtractor(MemoryExtractor):
                 scale = scale_trigger / total_tokens
                 trim_tool_output = max(200, int(self.max_tool_output_tokens * scale))
                 trim_tool_args = max(200, int(self.max_tool_args_tokens * scale))
-                trim_assistant = max(500, int(self.max_assistant_response_tokens * scale))
+                trim_assistant = max(
+                    500, int(self.max_assistant_response_tokens * scale)
+                )
                 logger.info(
                     f"[AgentCaseExtractor] Total tokens {total_tokens} > "
                     f"scale_trigger ({scale_trigger}), "
@@ -646,17 +646,16 @@ class AgentCaseExtractor(MemoryExtractor):
                 trim_tool_args = self.max_tool_args_tokens
                 trim_assistant = self.max_assistant_response_tokens
             original_data = self._heuristic_trim_tool_outputs(
-                original_data,
-                trim_tool_output,
-                trim_tool_args,
-                trim_assistant,
+                original_data, trim_tool_output, trim_tool_args, trim_assistant
             )
 
             # Only re-count after trim when scaling was applied — if total_tokens was
             # already <= scale_trigger, trimmed_tokens can't possibly exceed 2x chunk_size.
             if needs_scale:
                 trimmed_tokens = self._count_tokens(
-                    json.dumps(original_data, ensure_ascii=False, default=self._json_default)
+                    json.dumps(
+                        original_data, ensure_ascii=False, default=self._json_default
+                    )
                 )
                 if trimmed_tokens > self.pre_compress_chunk_size * 2:
                     logger.info(

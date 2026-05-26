@@ -654,7 +654,7 @@ async def translate_file(
             file_size = file_path.stat().st_size
             if file_size > MAX_FILE_SIZE:
                 print(
-                    f"{progress_prefix} [SKIP-LARGE] {file_path} - File too large ({file_size/1024:.1f}KB)"
+                    f"{progress_prefix} [SKIP-LARGE] {file_path} - File too large ({file_size / 1024:.1f}KB)"
                 )
                 async with progress_lock:
                     progress["processed"].append(file_str)
@@ -672,7 +672,7 @@ async def translate_file(
                 return (file_path, True, None)
 
             print(
-                f"{progress_prefix} [TRANSLATING] {file_path} ({file_size/1024:.1f}KB)"
+                f"{progress_prefix} [TRANSLATING] {file_path} ({file_size / 1024:.1f}KB)"
             )
 
             prompt = TRANSLATION_PROMPT.format(code=original_content)
@@ -748,7 +748,7 @@ async def review_file_diff(
                 result = FileReviewResult(
                     file_path=file_path,
                     result=ReviewResult.NEEDS_REVIEW,
-                    reason=f"Diff too large for automated analysis ({len(diff)/1024:.1f}KB > {MAX_DIFF_SIZE/1024:.0f}KB limit)",
+                    reason=f"Diff too large for automated analysis ({len(diff) / 1024:.1f}KB > {MAX_DIFF_SIZE / 1024:.0f}KB limit)",
                     diff_summary=f"Diff size: {len(diff) / 1024:.1f}KB",
                 )
                 async with progress_lock:
@@ -757,7 +757,7 @@ async def review_file_diff(
                     )
                     save_review_progress(progress)
                 print(
-                    f"{progress_prefix} [NEEDS-REVIEW] {file_path} - Diff too large ({len(diff)/1024:.1f}KB)"
+                    f"{progress_prefix} [NEEDS-REVIEW] {file_path} - Diff too large ({len(diff) / 1024:.1f}KB)"
                 )
                 return result
 
@@ -876,7 +876,7 @@ async def cmd_translate(
     total_files = len(python_files)
     print(f"Found {total_files} Python files in total")
     print(f"Max concurrency: {max_concurrency}")
-    print(f"Max file size: {MAX_FILE_SIZE/1024:.1f}KB")
+    print(f"Max file size: {MAX_FILE_SIZE / 1024:.1f}KB")
     print(f"Dry run: {dry_run}")
     print()
 
@@ -1137,11 +1137,11 @@ async def cmd_review(
             # If diff is too large, try with minimal context (0 lines)
             if success and len(diff) > MAX_DIFF_SIZE:
                 print(
-                    f"  [INFO] {file_path}: diff too large ({len(diff)/1024:.1f}KB), retrying with minimal context..."
+                    f"  [INFO] {file_path}: diff too large ({len(diff) / 1024:.1f}KB), retrying with minimal context..."
                 )
                 success, diff = get_file_diff(commit_ref, file_path, context_lines=0)
                 if success:
-                    print(f"  [INFO] {file_path}: reduced to {len(diff)/1024:.1f}KB")
+                    print(f"  [INFO] {file_path}: reduced to {len(diff) / 1024:.1f}KB")
 
             if not success:
 

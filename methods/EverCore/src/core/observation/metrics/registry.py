@@ -3,6 +3,7 @@ Metrics Registry
 
 Centralized management of Prometheus metrics registry with singleton access.
 """
+
 from prometheus_client import CollectorRegistry, REGISTRY, generate_latest
 from typing import Optional
 import logging
@@ -61,4 +62,3 @@ def reset_metrics_registry() -> None:
     global _metrics_registry
     _metrics_registry = None
     logger.warning("Metrics registry has been reset")
-

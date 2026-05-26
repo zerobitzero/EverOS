@@ -97,10 +97,12 @@ class RedisDataProcessor:
                 # Try decoding as string for JSON deserialization
                 try:
                     data_str = data.decode('utf-8')
-                    return json.loads(data_str)
                 except UnicodeDecodeError:
                     logger.warning("Binary data cannot be decoded as UTF-8")
                     return data
+
+                try:
+                    return json.loads(data_str)
                 except json.JSONDecodeError:
                     # JSON parsing failed, but UTF-8 decoding succeeded, return decoded string
                     logger.debug(
@@ -181,7 +183,7 @@ class RedisDataProcessor:
 
     @staticmethod
     def process_data_for_storage(
-        data: Union[str, Dict, List, Any]
+        data: Union[str, Dict, List, Any],
     ) -> Union[str, bytes]:
         """
         Process data for storage

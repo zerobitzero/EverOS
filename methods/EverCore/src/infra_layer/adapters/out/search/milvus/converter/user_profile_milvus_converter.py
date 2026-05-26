@@ -91,7 +91,9 @@ class UserProfileMilvusConverter(BaseMilvusConverter[UserProfileCollection]):
 
             for field_name, label in _EXPLICIT_FIELDS:
                 for item in profile_data.get(field_name, []) or []:
-                    value = item.get("value", "") if isinstance(item, dict) else str(item)
+                    value = (
+                        item.get("value", "") if isinstance(item, dict) else str(item)
+                    )
                     if not value:
                         continue
                     level = item.get("level", "") if isinstance(item, dict) else ""
@@ -100,7 +102,9 @@ class UserProfileMilvusConverter(BaseMilvusConverter[UserProfileCollection]):
 
             for field_name, label in _IMPLICIT_FIELDS:
                 for item in profile_data.get(field_name, []) or []:
-                    value = item.get("value", "") if isinstance(item, dict) else str(item)
+                    value = (
+                        item.get("value", "") if isinstance(item, dict) else str(item)
+                    )
                     if not value:
                         continue
                     embed_text = f"{label}: {value}"
@@ -133,7 +137,9 @@ class UserProfileMilvusConverter(BaseMilvusConverter[UserProfileCollection]):
             # user_goal (single string)
             user_goal = profile_data.get("user_goal")
             if user_goal and isinstance(user_goal, str) and user_goal.strip():
-                entities.append(_make_entity(f"Goal: {user_goal.strip()}", "explicit_info"))
+                entities.append(
+                    _make_entity(f"Goal: {user_goal.strip()}", "explicit_info")
+                )
 
             return entities
 

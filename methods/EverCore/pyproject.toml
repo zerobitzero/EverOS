@@ -135,8 +135,15 @@ select = [
 ]
 ignore = [
     "E501",  # line too long — formatter's job
+    "E402",  # module-level imports after setup/cycle guards need manual review
+    "E741",  # single-letter glyph fields exist in current CLI box styling
     "B008",  # function calls in argument defaults (FastAPI uses Depends())
+    "B019",  # cached methods require lifetime review before changing behavior
+    "B024",  # ABC marker classes exist in the current DI/controller baseline
+    "B026",  # logger wrappers intentionally pass exc_info before *args
     "B904",  # raise from inside except (large existing baseline)
+    "ASYNC109",  # timeout parameters are part of several public wrapper APIs
+    "ASYNC240",  # pathlib calls in async code need targeted async-IO migration
     # F841 (unused-variable) intentionally not enforced: `--unsafe-fixes`
     # would auto-delete assignments. Some "unused" locals are kept on purpose
     # — e.g. names that aid debugging, vestigial metric labels paired with
@@ -166,8 +173,9 @@ root = ["src"]
 include = ["src"]
 
 [tool.ty.rules]
-# Catches "variable assigned inside try, referenced inside except" patterns
-# (e.g., the milvus_start / user_id_list bugs surfaced in the audit).
+# Catches "variable assigned inside try, referenced inside except" patterns.
+# `make typecheck` passes `--ignore all --error possibly-unresolved-reference`
+# so this first ty rollout stays focused instead of failing on the full baseline.
 possibly-unresolved-reference = "error"
 
 [tool.pytest.ini_options]
@@ -190,6 +198,7 @@ dev = [
     "pytest>=8.4.2",
     "pytest-asyncio>=1.1.0",
     "pytest-cov>=6.0.0",
+    "psutil>=7.0.0",
     "nest-asyncio",
     "typer",
     "pyinstrument",

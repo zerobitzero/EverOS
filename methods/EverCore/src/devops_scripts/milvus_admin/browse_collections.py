@@ -76,9 +76,9 @@ def show_collection_details(client: MilvusClient, names: List[str]) -> None:
         print("\nNo collections found.")
         return
 
-    print(f"\n{'='*80}")
+    print(f"\n{'=' * 80}")
     print(f"  Found {len(names)} collection(s)")
-    print(f"{'='*80}\n")
+    print(f"{'=' * 80}\n")
 
     header = f"{'#':<4} {'Collection Name':<50} {'Rows':>10} {'Aliases'}"
     print(header)

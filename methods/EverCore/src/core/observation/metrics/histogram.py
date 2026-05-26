@@ -3,6 +3,7 @@ Histogram Wrapper
 
 Provides a unified Histogram interface, isolating prometheus_client from business code.
 """
+
 from prometheus_client import Histogram as PrometheusHistogram
 from typing import Sequence
 from .registry import get_metrics_registry
@@ -14,8 +15,20 @@ class HistogramBuckets:
 
     # Default buckets (covering 5ms - 10s)
     DEFAULT = (
-        0.005, 0.01, 0.025, 0.05, 0.075, 0.1, 0.25, 0.5,
-        0.75, 1.0, 2.5, 5.0, 7.5, 10.0
+        0.005,
+        0.01,
+        0.025,
+        0.05,
+        0.075,
+        0.1,
+        0.25,
+        0.5,
+        0.75,
+        1.0,
+        2.5,
+        5.0,
+        7.5,
+        10.0,
     )
 
     # Fast operations (5ms - 500ms, for cache queries, simple calculations, etc.)
@@ -23,14 +36,44 @@ class HistogramBuckets:
 
     # API calls (10ms - 30s, for external API calls)
     # Denser buckets in 0.1-5s range for better P95/P99 accuracy
-    API_CALL = (0.01, 0.05, 0.1, 0.2, 0.3, 0.5, 0.75, 1.0, 1.5, 2.0, 3.0, 5.0, 10.0, 30.0)
+    API_CALL = (
+        0.01,
+        0.05,
+        0.1,
+        0.2,
+        0.3,
+        0.5,
+        0.75,
+        1.0,
+        1.5,
+        2.0,
+        3.0,
+        5.0,
+        10.0,
+        30.0,
+    )
 
     # Batch operations (100ms - 60s, for batch processing)
     BATCH = (0.1, 0.25, 0.5, 1.0, 2.5, 5.0, 10.0, 30.0, 60.0)
 
     # Embedding/Rerank (10ms - 10s, for ML inference)
     # Denser buckets in 0.1-3s range where most requests fall
-    ML_INFERENCE = (0.01, 0.025, 0.05, 0.1, 0.2, 0.3, 0.5, 0.75, 1.0, 1.5, 2.0, 3.0, 5.0, 10.0)
+    ML_INFERENCE = (
+        0.01,
+        0.025,
+        0.05,
+        0.1,
+        0.2,
+        0.3,
+        0.5,
+        0.75,
+        1.0,
+        1.5,
+        2.0,
+        3.0,
+        5.0,
+        10.0,
+    )
 
     # Database queries (1ms - 5s)
     DATABASE = (0.001, 0.005, 0.01, 0.025, 0.05, 0.1, 0.25, 0.5, 1.0, 2.5, 5.0)
@@ -152,4 +195,3 @@ class LabeledHistogram:
                 do_something()
         """
         return self._histogram.time()
-

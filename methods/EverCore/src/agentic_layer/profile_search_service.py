@@ -46,7 +46,11 @@ def parse_embed_text(embed_text: str, item_type: str) -> Dict[str, str]:
     result = {}
 
     if not embed_text:
-        return {"category": "", "description": ""} if item_type == "explicit_info" else {"trait_name": "", "description": ""}
+        return (
+            {"category": "", "description": ""}
+            if item_type == "explicit_info"
+            else {"trait_name": "", "description": ""}
+        )
 
     # Split by first colon
     parts = embed_text.split(":", 1)
@@ -84,10 +88,7 @@ class ProfileSearchService:
     No reranking step - directly returns Milvus results with score threshold.
     """
 
-    def __init__(
-        self,
-        milvus_repo: Optional[UserProfileMilvusRepository] = None,
-    ):
+    def __init__(self, milvus_repo: Optional[UserProfileMilvusRepository] = None):
         """Initialize service
 
         Args:
@@ -127,13 +128,7 @@ class ProfileSearchService:
         """
         start_time = time.perf_counter()
 
-        result = {
-            "profiles": [],
-            "metadata": {
-                "profile_count": 0,
-                "latency_ms": 0,
-            }
-        }
+        result = {"profiles": [], "metadata": {"profile_count": 0, "latency_ms": 0}}
 
         if not query:
             logger.warning("Empty query for profile search")
@@ -203,9 +198,7 @@ class ProfileSearchService:
             # Log profile scores for debugging
             if profiles:
                 scores_str = ", ".join([f"{p['score']:.4f}" for p in profiles])
-                logger.info(
-                    f"📊 Profile scores: [{scores_str}]"
-                )
+                logger.info(f"📊 Profile scores: [{scores_str}]")
 
             logger.info(
                 "Profile search completed: user_id=%s, group_id=%s, "
@@ -227,11 +220,12 @@ class ProfileSearchService:
                 e,
                 exc_info=True,
             )
-            result["metadata"]["latency_ms"] = int((time.perf_counter() - start_time) * 1000)
+            result["metadata"]["latency_ms"] = int(
+                (time.perf_counter() - start_time) * 1000
+            )
             return result
 
 
 def get_profile_search_service() -> ProfileSearchService:
     """Get ProfileSearchService from DI container"""
     return get_bean_by_type(ProfileSearchService)
-

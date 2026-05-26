@@ -129,11 +129,9 @@ Buckets: 1, 5, 10, 20, 50, 100, 200, 500, 1000 documents
 # Helper Functions
 # ============================================================
 
+
 def record_rerank_request(
-    provider: str,
-    status: str,
-    duration_seconds: float,
-    documents_count: int,
+    provider: str, status: str, duration_seconds: float, documents_count: int
 ) -> None:
     """
     Helper function to record all rerank metrics in one call
@@ -153,26 +151,17 @@ def record_rerank_request(
         )
     """
     # Counter
-    RERANK_REQUESTS_TOTAL.labels(
-        provider=provider,
-        status=status
-    ).inc()
+    RERANK_REQUESTS_TOTAL.labels(provider=provider, status=status).inc()
 
     # Duration histogram
-    RERANK_DURATION_SECONDS.labels(
-        provider=provider
-    ).observe(duration_seconds)
+    RERANK_DURATION_SECONDS.labels(provider=provider).observe(duration_seconds)
 
     # Documents count histogram
-    RERANK_DOCUMENTS_TOTAL.labels(
-        provider=provider
-    ).observe(documents_count)
+    RERANK_DOCUMENTS_TOTAL.labels(provider=provider).observe(documents_count)
 
 
 def record_rerank_fallback(
-    primary_provider: str,
-    fallback_provider: str,
-    reason: str,
+    primary_provider: str, fallback_provider: str, reason: str
 ) -> None:
     """
     Helper function to record rerank fallback event
@@ -192,14 +181,11 @@ def record_rerank_fallback(
     RERANK_FALLBACK_TOTAL.labels(
         primary_provider=primary_provider,
         fallback_provider=fallback_provider,
-        reason=reason
+        reason=reason,
     ).inc()
 
 
-def record_rerank_error(
-    provider: str,
-    error_type: str,
-) -> None:
+def record_rerank_error(provider: str, error_type: str) -> None:
     """
     Helper function to record rerank error
 
@@ -213,7 +199,4 @@ def record_rerank_error(
             error_type='timeout'
         )
     """
-    RERANK_ERRORS_TOTAL.labels(
-        provider=provider,
-        error_type=error_type
-    ).inc()
+    RERANK_ERRORS_TOTAL.labels(provider=provider, error_type=error_type).inc()

@@ -16,7 +16,7 @@ logger = get_logger(__name__)
 
 # Default tiktoken encodings to preload during application startup
 DEFAULT_TIKTOKEN_ENCODINGS = [
-    "o200k_base",   # GPT-4o, GPT-4o-mini
+    "o200k_base",  # GPT-4o, GPT-4o-mini
     "cl100k_base",  # GPT-4, GPT-3.5-turbo, text-embedding-ada-002
 ]
 
@@ -67,14 +67,20 @@ class TokenizerFactory:
 
         The encodings loaded are defined in DEFAULT_TIKTOKEN_ENCODINGS.
         """
-        logger.info("Preloading %d tiktoken encodings...", len(DEFAULT_TIKTOKEN_ENCODINGS))
+        logger.info(
+            "Preloading %d tiktoken encodings...", len(DEFAULT_TIKTOKEN_ENCODINGS)
+        )
 
         for encoding_name in DEFAULT_TIKTOKEN_ENCODINGS:
             try:
                 self.get_tokenizer_from_tiktoken(encoding_name)
-                logger.info("Successfully preloaded tiktoken encoding: %s", encoding_name)
+                logger.info(
+                    "Successfully preloaded tiktoken encoding: %s", encoding_name
+                )
             except (ValueError, KeyError, RuntimeError) as e:
-                logger.error("Failed to preload tiktoken encoding '%s': %s", encoding_name, e)
+                logger.error(
+                    "Failed to preload tiktoken encoding '%s': %s", encoding_name, e
+                )
 
         logger.info("Tiktoken encodings preload completed")
 

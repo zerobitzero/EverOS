@@ -18,6 +18,7 @@ Benefits:
     - Availability: Metrics available even if main app is overloaded
     - Operations: Can expose to internal network only
 """
+
 import os
 import logging
 from typing import Optional
@@ -30,10 +31,7 @@ logger = logging.getLogger(__name__)
 _metrics_server_started: bool = False
 
 
-def start_metrics_server(
-    port: Optional[int] = None,
-    addr: str = "0.0.0.0",
-) -> bool:
+def start_metrics_server(port: Optional[int] = None, addr: str = "0.0.0.0") -> bool:
     """
     Start standalone Prometheus metrics HTTP server
 
@@ -66,11 +64,7 @@ def start_metrics_server(
     try:
         # Start HTTP server using prometheus_client's built-in server
         # This creates a daemon thread that serves /metrics endpoint
-        start_http_server(
-            port=port,
-            addr=addr,
-            registry=get_metrics_registry(),
-        )
+        start_http_server(port=port, addr=addr, registry=get_metrics_registry())
 
         _metrics_server_started = True
         logger.info(f"✅ Metrics server started on {addr}:{port}/metrics")
@@ -100,4 +94,3 @@ def get_metrics_url(host: str = "localhost", port: Optional[int] = None) -> str:
     if port is None:
         port = int(os.getenv("METRICS_PORT", "9090"))
     return f"http://{host}:{port}/metrics"
-

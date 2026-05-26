@@ -31,7 +31,7 @@ def yield_sse_data(data: Any) -> str:
 
 
 def sse_exception_handler(
-    func: Callable[..., AsyncGenerator[str, None]]
+    func: Callable[..., AsyncGenerator[str, None]],
 ) -> Callable[..., AsyncGenerator[str, None]]:
     """
     SSE stream exception handling decorator

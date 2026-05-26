@@ -155,7 +155,9 @@ class ProfileIndexer:
                 if not source_doc or not source_doc.id:
                     logger.error(
                         "[ProfileIndexer] Cannot find MongoDB profile doc: user_id=%s, group_id=%s, doc_id=%s",
-                        user_id, group_id, doc_id,
+                        user_id,
+                        group_id,
+                        doc_id,
                     )
                     return stats
 

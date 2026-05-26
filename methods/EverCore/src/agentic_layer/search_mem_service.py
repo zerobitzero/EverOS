@@ -554,7 +554,6 @@ class SearchMemoryService:
                 original_data = await self._fetch_original_data(episodes, profiles)
 
         with timed("assemble_results"):
-
             # Apply top_k limit
             if top_k > 0:
                 episodes = episodes[:top_k]
@@ -1522,7 +1521,7 @@ class SearchMemoryService:
                     query=query,
                     hits=merged_hits,
                     top_k=rerank_top_k,
-                    instruction="Determine whether the skill's methodology and domain are applicable to the query, preferring same-domain skills with directly relevant steps."
+                    instruction="Determine whether the skill's methodology and domain are applicable to the query, preferring same-domain skills with directly relevant steps.",
                 )
                 rerank_ms = (time.perf_counter() - stage_start) * 1000
                 record_retrieve_stage(

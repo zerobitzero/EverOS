@@ -114,7 +114,7 @@ def timeout_to_background(
     """
 
     def decorator(
-        func: Callable[P, Coroutine[Any, Any, T]]
+        func: Callable[P, Coroutine[Any, Any, T]],
     ) -> Callable[P, Coroutine[Any, Any, Union[T, JSONResponse]]]:
 
         @wraps(func)

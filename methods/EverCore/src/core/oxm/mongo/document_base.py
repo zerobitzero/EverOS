@@ -153,7 +153,6 @@ class DocumentBase(Document):
         for field_name, value in self:
             new_value = self._recursive_datetime_check(value, field_name, depth=0)
             if new_value is not value:  # Only update if value has changed
-
                 # Directly update value using __dict__ to avoid triggering validators
                 self.__dict__[field_name] = new_value
         return self

@@ -58,7 +58,7 @@ ruff-fix:
 # wording may shift between minor releases.
 typecheck:
 	@echo "Running ty..."
-	uv run ty check
+	uv run ty check --ignore all --error possibly-unresolved-reference
 
 # Run pyright type checker (fallback).
 # pyrightconfig.json controls scope and strictness; current mode is "off"
@@ -69,7 +69,7 @@ typecheck-pyright:
 
 # Run tests
 test:
-	PYTHONPATH=src pytest tests/
+	PYTHONPATH=src uv run pytest tests/
 
 # Clean up
 clean:

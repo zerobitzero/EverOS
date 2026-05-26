@@ -27,16 +27,7 @@ Three-category whitelist strategy (consistent with MongoDB TenantCommandIntercep
       → raise TenantIsolationViolation
 """
 
-from typing import (
-    Any,
-    Collection,
-    Dict,
-    FrozenSet,
-    Mapping,
-    Optional,
-    Tuple,
-    Union,
-)
+from typing import Any, Collection, Dict, FrozenSet, Mapping, Optional, Tuple, Union
 
 from elasticsearch import AsyncElasticsearch
 from elastic_transport import (

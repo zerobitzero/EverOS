@@ -112,9 +112,9 @@ class BaseController(ABC):
         self.router = APIRouter(prefix=prefix, tags=tags, **kwargs)
         self._app: Optional[FastAPI] = None
         self._extra_models: List[Any] = []
-        self._auth_routes: List[str] = (
-            []
-        )  # Store paths of routes requiring authentication
+        self._auth_routes: List[
+            str
+        ] = []  # Store paths of routes requiring authentication
         self._default_auth = default_auth  # Store default authorization strategy
         self._collect_routes()
 
@@ -539,9 +539,9 @@ class BaseController(ABC):
                                 )
                                 del arg_schema['$defs']
                             # Add main model schema
-                            openapi_schema["components"]["schemas"][
-                                arg_name
-                            ] = arg_schema
+                            openapi_schema["components"]["schemas"][arg_name] = (
+                                arg_schema
+                            )
             else:
                 # Process regular model
                 model_name = self._get_model_name(model)
@@ -557,9 +557,9 @@ class BaseController(ABC):
                             )
                             del model_schema['$defs']
                         # Add main model schema
-                        openapi_schema["components"]["schemas"][
-                            model_name
-                        ] = model_schema
+                        openapi_schema["components"]["schemas"][model_name] = (
+                            model_schema
+                        )
 
     def register_to_app(self, app: FastAPI):
         """

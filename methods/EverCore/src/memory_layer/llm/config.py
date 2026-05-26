@@ -31,7 +31,9 @@ def create_provider(
     Returns:
         Configured OpenAIProvider instance
     """
-    api_key, base_url = resolve_provider_env("openai", api_key=api_key, base_url=base_url)
+    api_key, base_url = resolve_provider_env(
+        "openai", api_key=api_key, base_url=base_url
+    )
     return OpenAIProvider(
         model=model,
         api_key=api_key,

@@ -54,9 +54,7 @@ from infra_layer.adapters.out.search.repository.agent_skill_es_repository import
 from core.observation.tracing.decorators import trace_logger
 from core.observation.stage_timer import timed, timed_parallel
 from core.nlp.stopwords_utils import filter_stopwords
-from common_utils.datetime_utils import (
-    from_iso_format,
-)
+from common_utils.datetime_utils import from_iso_format
 from infra_layer.adapters.out.persistence.repository.memcell_raw_repository import (
     MemCellRawRepository,
 )
@@ -1355,7 +1353,7 @@ class MemoryManager:
                         task_intent=fields.get('task_intent', ''),
                         approach=fields.get('approach', ''),
                         quality_score=fields.get('quality_score'),
-                        key_insight=fields.get('key_insight', '')
+                        key_insight=fields.get('key_insight', ''),
                     )
                 case MemoryType.AGENT_SKILL.value:
                     # AgentSkill doesn't have parent_type/parent_id fields

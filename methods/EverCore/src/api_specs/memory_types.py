@@ -546,7 +546,9 @@ class ProfileMemory(BaseMemory):
                 lines.append("")
             lines.append("[Implicit Traits]")
             for trait in self.implicit_traits:
-                lines.append(f"  - {trait.get('trait', '')}: {trait.get('description', '')}")
+                lines.append(
+                    f"  - {trait.get('trait', '')}: {trait.get('description', '')}"
+                )
 
         return "\n".join(lines) if lines else "No profile data yet."
 

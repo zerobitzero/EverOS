@@ -124,6 +124,7 @@ Buckets: 1, 2, 5, 10, 20, 50, 100, 200, 500 texts
 # Helper Functions
 # ============================================================
 
+
 def record_vectorize_request(
     provider: str,
     operation: str,
@@ -155,23 +156,19 @@ def record_vectorize_request(
     """
     # Counter
     VECTORIZE_REQUESTS_TOTAL.labels(
-        provider=provider,
-        operation=operation,
-        status=status
+        provider=provider, operation=operation, status=status
     ).inc()
 
     # Duration histogram
-    VECTORIZE_DURATION_SECONDS.labels(
-        provider=provider,
-        operation=operation
-    ).observe(duration_seconds)
+    VECTORIZE_DURATION_SECONDS.labels(provider=provider, operation=operation).observe(
+        duration_seconds
+    )
 
     # Batch size histogram (only for batch operations)
     if batch_size > 1:
-        VECTORIZE_BATCH_SIZE.labels(
-            provider=provider,
-            operation=operation
-        ).observe(batch_size)
+        VECTORIZE_BATCH_SIZE.labels(provider=provider, operation=operation).observe(
+            batch_size
+        )
 
     # Token counter (if available)
     if tokens > 0:
@@ -179,9 +176,7 @@ def record_vectorize_request(
 
 
 def record_vectorize_fallback(
-    primary_provider: str,
-    fallback_provider: str,
-    reason: str,
+    primary_provider: str, fallback_provider: str, reason: str
 ) -> None:
     """
     Helper function to record vectorize fallback event
@@ -201,15 +196,11 @@ def record_vectorize_fallback(
     VECTORIZE_FALLBACK_TOTAL.labels(
         primary_provider=primary_provider,
         fallback_provider=fallback_provider,
-        reason=reason
+        reason=reason,
     ).inc()
 
 
-def record_vectorize_error(
-    provider: str,
-    operation: str,
-    error_type: str,
-) -> None:
+def record_vectorize_error(provider: str, operation: str, error_type: str) -> None:
     """
     Helper function to record vectorize error
 
@@ -226,8 +217,5 @@ def record_vectorize_error(
         )
     """
     VECTORIZE_ERRORS_TOTAL.labels(
-        provider=provider,
-        operation=operation,
-        error_type=error_type
+        provider=provider, operation=operation, error_type=error_type
     ).inc()
-

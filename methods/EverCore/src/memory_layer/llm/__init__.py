@@ -31,10 +31,7 @@ def create_provider(provider_type: str, **kwargs) -> LLMProvider:
     )
 
     return OpenAIProvider(
-        provider_type=provider_type,
-        api_key=api_key,
-        base_url=base_url,
-        **kwargs,
+        provider_type=provider_type, api_key=api_key, base_url=base_url, **kwargs
     )
 
 
@@ -58,8 +55,5 @@ def create_provider_from_env(provider_type: str, **kwargs) -> LLMProvider:
     )
 
     return OpenAIProvider(
-        provider_type=provider_type,
-        api_key=api_key,
-        base_url=base_url,
-        **kwargs,
+        provider_type=provider_type, api_key=api_key, base_url=base_url, **kwargs
     )

@@ -213,10 +213,14 @@ class ForesightEsRepository(BaseRepository[ForesightDoc]):
                 else:
                     # user_id must not exist: match docs where field is missing or ""
                     filter_queries.append(
-                        Q("bool", should=[
-                            Q("bool", must_not=[Q("exists", field="user_id")]),
-                            Q("term", user_id=""),
-                        ], minimum_should_match=1)
+                        Q(
+                            "bool",
+                            should=[
+                                Q("bool", must_not=[Q("exists", field="user_id")]),
+                                Q("term", user_id=""),
+                            ],
+                            minimum_should_match=1,
+                        )
                     )
 
             # Handle group_ids filter

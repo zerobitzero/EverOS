@@ -63,7 +63,7 @@ class LoggerProvider:
             level=getattr(logging, log_level),
             format='%(asctime)s - %(name)s - %(levelname)s - %(filename)s:%(lineno)d - [%(request_id)s] - %(message)s',
             handlers=[
-                logging.StreamHandler(sys.stdout),
+                logging.StreamHandler(sys.stdout)
                 # Can add file handler
                 # logging.FileHandler('app.log', encoding='utf-8')
             ],

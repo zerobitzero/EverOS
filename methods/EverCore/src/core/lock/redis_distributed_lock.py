@@ -78,9 +78,7 @@ class RedisDistributedLock:
             if acquired:
                 try:
                     # Call the lock manager's internal method to release the lock
-                    await self.lock_manager._release_lock(
-                        self.resource
-                    )  # pylint: disable=protected-access
+                    await self.lock_manager._release_lock(self.resource)  # pylint: disable=protected-access
                     self._acquired = False
                 except (ConnectionError, TimeoutError, OSError) as e:
                     logger.error(

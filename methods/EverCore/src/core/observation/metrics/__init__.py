@@ -42,35 +42,26 @@ from .registry import (
     generate_metrics_response,
     reset_metrics_registry,
 )
-from .server import (
-    start_metrics_server,
-    is_metrics_server_running,
-    get_metrics_url,
-)
+from .server import start_metrics_server, is_metrics_server_running, get_metrics_url
 
 __all__ = [
     # Counter
     'Counter',
     'LabeledCounter',
-
     # Histogram
     'Histogram',
     'LabeledHistogram',
     'HistogramBuckets',
-
     # Gauge
     'BaseGauge',
     'LabeledGauge',
-
     # Registry
     'get_metrics_registry',
     'set_metrics_registry',
     'generate_metrics_response',
     'reset_metrics_registry',
-
     # Server
     'start_metrics_server',
     'is_metrics_server_running',
     'get_metrics_url',
 ]
-

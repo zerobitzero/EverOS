@@ -89,7 +89,9 @@ class AgenticConfig:
     round1_emb_top_n: int = 50  # Number of embedding candidates
     round1_bm25_top_n: int = 50  # Number of BM25 candidates
     round1_top_n: int = 20  # Number returned after RRF fusion
-    round1_rerank_top_n: int = int(os.getenv("AGENTIC_ROUND1_RERANK_TOP_N", "10"))  # Number after reranking used for LLM judgment
+    round1_rerank_top_n: int = int(
+        os.getenv("AGENTIC_ROUND1_RERANK_TOP_N", "10")
+    )  # Number after reranking used for LLM judgment
 
     # LLM configuration
     llm_temperature: float = 0.0  # Low temperature for judgment

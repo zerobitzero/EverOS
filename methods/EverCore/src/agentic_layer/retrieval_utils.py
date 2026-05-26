@@ -106,7 +106,9 @@ async def search_with_bm25(
     scores = bm25.get_scores(tokenized_query)
 
     # Sort and return Top-K
-    results = sorted(zip(candidates, scores, strict=False), key=lambda x: x[1], reverse=True)[:top_k]
+    results = sorted(
+        zip(candidates, scores, strict=False), key=lambda x: x[1], reverse=True
+    )[:top_k]
 
     return results
 
@@ -612,9 +614,9 @@ async def agentic_retrieval(
         "total_latency_ms": 0.0,
     }
 
-    logger.info(f"{'='*60}")
+    logger.info(f"{'=' * 60}")
     logger.info(f"Agentic Retrieval: {query[:60]}...")
-    logger.info(f"{'='*60}")
+    logger.info(f"{'=' * 60}")
 
     # ========== Round 1: Hybrid search Top 20 ==========
     logger.info("Round 1: Hybrid search for Top 20...")
@@ -822,6 +824,6 @@ async def agentic_retrieval(
     logger.info(
         f"Complete: Final {len(final_results)} docs | Latency {metadata['total_latency_ms']:.0f}ms"
     )
-    logger.info(f"{'='*60}\n")
+    logger.info(f"{'=' * 60}\n")
 
     return final_results, metadata

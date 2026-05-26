@@ -297,7 +297,7 @@ class MsgGroupQueueManager:
         """
         if queue_id < 0 or queue_id >= self.num_queues:
             raise ValueError(
-                f"Queue ID out of range: {queue_id}, valid range: 0-{self.num_queues-1}"
+                f"Queue ID out of range: {queue_id}, valid range: 0-{self.num_queues - 1}"
             )
 
         target_queue = self._queues[queue_id]
@@ -387,7 +387,7 @@ class MsgGroupQueueManager:
             if queue_id is not None:
                 if queue_id < 0 or queue_id >= self.num_queues:
                     raise ValueError(
-                        f"Queue ID out of range: {queue_id}, valid range: 0-{self.num_queues-1}"
+                        f"Queue ID out of range: {queue_id}, valid range: 0-{self.num_queues - 1}"
                     )
                 return self._queue_stats[queue_id].to_dict()
             else:
@@ -467,17 +467,25 @@ class MsgGroupQueueManager:
         # Update time window stats for each queue
         for i in range(self.num_queues):
             # Clean old events and count
-            self._queue_stats[i].time_window_stats.delivered_1min = (
-                self._count_events_in_window(self._delivery_events[i], 60.0)
+            self._queue_stats[
+                i
+            ].time_window_stats.delivered_1min = self._count_events_in_window(
+                self._delivery_events[i], 60.0
             )
-            self._queue_stats[i].time_window_stats.consumed_1min = (
-                self._count_events_in_window(self._consume_events[i], 60.0)
+            self._queue_stats[
+                i
+            ].time_window_stats.consumed_1min = self._count_events_in_window(
+                self._consume_events[i], 60.0
             )
-            self._queue_stats[i].time_window_stats.delivered_1hour = (
-                self._count_events_in_window(self._delivery_events[i], 3600.0)
+            self._queue_stats[
+                i
+            ].time_window_stats.delivered_1hour = self._count_events_in_window(
+                self._delivery_events[i], 3600.0
             )
-            self._queue_stats[i].time_window_stats.consumed_1hour = (
-                self._count_events_in_window(self._consume_events[i], 3600.0)
+            self._queue_stats[
+                i
+            ].time_window_stats.consumed_1hour = self._count_events_in_window(
+                self._consume_events[i], 3600.0
             )
 
         # Update manager time window statistics

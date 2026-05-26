@@ -232,7 +232,7 @@ def _unix_ms_to_datetime(unix_ms: int) -> datetime:
 
 
 def convert_personal_add_to_memorize_request(
-    request_data: Dict[str, Any]
+    request_data: Dict[str, Any],
 ) -> MemorizeRequest:
     """
     Convert POST /api/v1/memories (personal add) request to MemorizeRequest.
@@ -344,7 +344,7 @@ def convert_personal_add_to_memorize_request(
 
 
 def convert_group_add_to_memorize_request(
-    request_data: Dict[str, Any]
+    request_data: Dict[str, Any],
 ) -> MemorizeRequest:
     """
     Convert POST /api/v1/memories/group (group add) request to MemorizeRequest.
@@ -436,7 +436,7 @@ def convert_group_add_to_memorize_request(
 
 
 def convert_personal_flush_to_memorize_request(
-    request_data: Dict[str, Any]
+    request_data: Dict[str, Any],
 ) -> MemorizeRequest:
     """
     Convert POST /api/v1/memories/flush (personal flush) to MemorizeRequest.
@@ -476,7 +476,7 @@ def convert_personal_flush_to_memorize_request(
 
 
 def convert_agent_flush_to_memorize_request(
-    request_data: Dict[str, Any]
+    request_data: Dict[str, Any],
 ) -> MemorizeRequest:
     """
     Convert POST /api/v1/memories/agent/flush (agent flush) to MemorizeRequest.
@@ -517,7 +517,7 @@ def convert_agent_flush_to_memorize_request(
 
 
 def convert_group_flush_to_memorize_request(
-    request_data: Dict[str, Any]
+    request_data: Dict[str, Any],
 ) -> MemorizeRequest:
     """
     Convert POST /api/v1/memories/group/flush (group flush) to MemorizeRequest.
@@ -552,7 +552,7 @@ def convert_group_flush_to_memorize_request(
 
 
 def convert_agent_add_to_memorize_request(
-    request_data: Dict[str, Any]
+    request_data: Dict[str, Any],
 ) -> MemorizeRequest:
     """
     Convert POST /api/v1/memories/agent (agent add) request to MemorizeRequest.

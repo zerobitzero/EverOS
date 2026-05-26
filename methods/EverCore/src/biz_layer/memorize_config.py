@@ -91,9 +91,12 @@ if _AGENT_MEMORIZE_MODE == "fast_skill":
         skip_profile_extraction=True,
         clustering_lock_blocking_timeout=4800,
         skill_extraction_lock_blocking_timeout=4800,
-        enable_skill_llm_verify=True
+        enable_skill_llm_verify=True,
     )
 else:
     if _AGENT_MEMORIZE_MODE != "online":
-        logger.warning("Unknown AGENT_MEMORIZE_MODE=%r, falling back to 'online'", _AGENT_MEMORIZE_MODE)
+        logger.warning(
+            "Unknown AGENT_MEMORIZE_MODE=%r, falling back to 'online'",
+            _AGENT_MEMORIZE_MODE,
+        )
     DEFAULT_MEMORIZE_CONFIG = MemorizeConfig()

@@ -3,6 +3,7 @@ Metrics lifecycle provider implementation
 
 Starts standalone Prometheus metrics server on a separate port (default: 9090).
 """
+
 import os
 from fastapi import FastAPI
 from typing import Any, Tuple
@@ -72,4 +73,3 @@ class MetricsLifespanProvider(LifespanProvider):
         # Clean up app.state
         if hasattr(app.state, 'metrics_port'):
             delattr(app.state, 'metrics_port')
-

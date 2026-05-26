@@ -432,8 +432,8 @@ class DIContainer:
                 for base in registered_type.__mro__[1:]:  # Skip self
                     # Exclude abc.ABC base class and object base class, they are too generic
                     if (
-                        base != abc.ABC
-                        and base != object
+                        base is not abc.ABC
+                        and base is not object
                         and hasattr(base, '__abstractmethods__')
                     ):  # ABC type
                         all_parent_types.add(base)

@@ -92,7 +92,6 @@ def _is_agent_case_quality_sufficient(
     return True
 
 
-
 async def _trigger_clustering(
     group_id: str,
     memcell: MemCell,
@@ -162,12 +161,11 @@ async def _trigger_clustering(
 
         # Clustering text: task_intent for agent case, episode for normal
         clustering_text = (
-            agent_case.task_intent if has_case and agent_case.task_intent
+            agent_case.task_intent
+            if has_case and agent_case.task_intent
             else episode_text
         )
-        logger.info(
-            f"[Clustering] ClusterManager created (has_case={has_case})"
-        )
+        logger.info(f"[Clustering] ClusterManager created (has_case={has_case})")
 
         # Convert MemCell to dictionary format required for clustering
         memcell_dict = {
@@ -334,7 +332,11 @@ async def _trigger_clustering(
         #   If you add logic that reads cluster memcells from DB here, you must
         #   consider that new memcells may have been added between Lock 1 release
         #   and Lock 2 acquisition.
-        if cluster_id and agent_case and _is_agent_case_quality_sufficient(agent_case, config):
+        if (
+            cluster_id
+            and agent_case
+            and _is_agent_case_quality_sufficient(agent_case, config)
+        ):
             skill_lock_resource = f"trigger_agent_skill:{group_id}:{cluster_id}"
             async with distributed_lock(
                 resource=skill_lock_resource,
@@ -898,7 +900,11 @@ async def process_memory_extraction(
         )
         # Fire-and-forget: extract and save foresight/atomic_fact in background.
         # Solo scenes only; episode_saved confirms parent_doc is available for linking.
-        if state.is_solo_scene and state.episode_saved and not DEFAULT_MEMORIZE_CONFIG.skip_foresight_and_eventlog:
+        if (
+            state.is_solo_scene
+            and state.episode_saved
+            and not DEFAULT_MEMORIZE_CONFIG.skip_foresight_and_eventlog
+        ):
             asyncio.create_task(
                 _foresight_and_atomic_facts_with_metrics(state, memory_manager)
             )

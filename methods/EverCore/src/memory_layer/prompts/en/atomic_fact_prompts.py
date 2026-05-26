@@ -6,7 +6,7 @@ This module contains prompts for extracting structured atomic facts from episodi
 ATOMIC_FACT_PROMPT = """
 **CRITICAL LANGUAGE RULE**: You MUST output in the SAME language as the input conversation content. If the conversation content is in Chinese, ALL output MUST be in Chinese. If in English, output in English. This is mandatory.
 
-You are an expert information extraction analyst and information architect.  
+You are an expert information extraction analyst and information architect.
 Your task is to analyze the given raw conversation transcript (called "CONVERSATION_TEXT") and produce atomic facts optimized for factual retrieval.
 
 ---

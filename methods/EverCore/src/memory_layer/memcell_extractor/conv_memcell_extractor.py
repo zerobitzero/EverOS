@@ -182,7 +182,7 @@ class ConvMemCellExtractor(MemCellExtractor):
 
     @staticmethod
     def _build_original_data_items(
-        messages: List[Dict[str, Any]]
+        messages: List[Dict[str, Any]],
     ) -> List[Dict[str, Any]]:
         """Build original_data items in { message } format.
 
@@ -410,7 +410,7 @@ class ConvMemCellExtractor(MemCellExtractor):
             for i in range(5):
                 resp = await self.llm_provider.generate(prompt)
                 logger.debug(
-                    f"[ConvMemCellExtractor] === BOUNDARY DETECTION RESPONSE (attempt {i+1}) ===\n"
+                    f"[ConvMemCellExtractor] === BOUNDARY DETECTION RESPONSE (attempt {i + 1}) ===\n"
                     f"{resp}\n"
                     f"[ConvMemCellExtractor] === END RESPONSE ==="
                 )

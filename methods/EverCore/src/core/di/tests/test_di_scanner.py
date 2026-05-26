@@ -13,10 +13,7 @@ from core.di.container import DIContainer, get_container
 from core.di.scanner import ComponentScanner
 from core.di.decorators import component, service, repository, mock_impl, factory
 from core.di.bean_definition import BeanScope
-from core.di.tests.test_fixtures import (
-    UserRepository,
-    MySQLUserRepository,
-)
+from core.di.tests.test_fixtures import UserRepository, MySQLUserRepository
 
 
 class TestScannerBasicFunctionality:

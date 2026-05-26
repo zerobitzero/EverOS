@@ -54,4 +54,3 @@ class VllmVectorizeService(BaseVectorizeService):
     def _should_truncate_client_side(self) -> bool:
         """vLLM services need client-side truncation"""
         return True
-

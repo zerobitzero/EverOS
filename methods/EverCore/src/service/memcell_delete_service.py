@@ -156,8 +156,7 @@ class MemCellDeleteService:
         MemCell itself is not deleted (only child records).
         """
         logger.info(
-            "Deleting by filters: user_id=%s, group_id=%s, "
-            "session_id=%s, sender_id=%s",
+            "Deleting by filters: user_id=%s, group_id=%s, session_id=%s, sender_id=%s",
             user_id,
             group_id,
             session_id,

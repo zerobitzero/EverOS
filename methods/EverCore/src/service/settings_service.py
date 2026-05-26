@@ -119,7 +119,6 @@ class SettingsService:
             logger.info("Settings initialized")
             return self._to_response(doc)
         else:
-
             update_data = self._build_update_data(request, raw_data=raw_data)
             if not update_data:
                 # No fields to update, return current state
@@ -237,7 +236,7 @@ class SettingsService:
         """Build data dict from request for initialization"""
         data = {}
         fields = [
-            "llm_custom_setting",
+            "llm_custom_setting"
             # Hidden fields: not yet implemented, uncomment when ready
             # "timezone",
             # "boundary_detection_timeout",
@@ -265,7 +264,7 @@ class SettingsService:
         """
         data = {}
         fields = [
-            "llm_custom_setting",
+            "llm_custom_setting"
             # Hidden fields: not yet implemented, uncomment when ready
             # "timezone",
             # "boundary_detection_timeout",

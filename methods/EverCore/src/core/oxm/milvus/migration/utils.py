@@ -67,14 +67,10 @@ def find_collection_manager_by_alias(alias: str) -> Type[MilvusCollectionBase]:
             # Temporarily instantiate to get alias (requires parsing suffix)
             try:
                 # Try to parse suffix from alias
-                base_name = (
-                    doc_class._COLLECTION_NAME
-                )  # pylint: disable=protected-access
+                base_name = doc_class._COLLECTION_NAME  # pylint: disable=protected-access
                 if alias.startswith(base_name):
                     return doc_class
-            except (
-                Exception
-            ):  # pylint: disable=broad-except  # Ignore instantiation failure, continue to next class
+            except Exception:  # pylint: disable=broad-except  # Ignore instantiation failure, continue to next class
                 continue
         else:
             # For MilvusCollectionBase, directly compare _COLLECTION_NAME
@@ -120,9 +116,7 @@ def rebuild_collection(
     # 2. Instantiate manager (parse suffix from alias)
     if issubclass(collection_class, MilvusCollectionWithSuffix):
         # Parse suffix from alias
-        base_name = (
-            collection_class._COLLECTION_NAME
-        )  # pylint: disable=protected-access
+        base_name = collection_class._COLLECTION_NAME  # pylint: disable=protected-access
         suffix = None
         if alias != base_name and alias.startswith(base_name + "_"):
             suffix = alias[len(base_name) + 1 :]

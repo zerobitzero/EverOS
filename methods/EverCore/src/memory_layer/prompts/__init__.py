@@ -6,7 +6,7 @@ Default language is controlled by MEMORY_LANGUAGE env var (default: 'en').
 
 Example:
     from memory_layer.prompts import get_prompt_by
-    
+
     prompt = get_prompt_by("EPISODE_GENERATION_PROMPT")  # default language
     prompt = get_prompt_by("EPISODE_GENERATION_PROMPT", language="zh")  # specific language
 """
@@ -110,11 +110,6 @@ _PROMPT_REGISTRY = {
     },
     # Clustering
     "AGENT_CLUSTER_LLM_ASSIGN_PROMPT": {
-        "en": ("memory_layer.prompts.en.agent_prompts", False),
-        "zh": ("memory_layer.prompts.zh.agent_prompts", False),
-    },
-    # Skill relevance verification
-    "AGENT_SKILL_RELEVANCE_VERIFY_PROMPT": {
         "en": ("memory_layer.prompts.en.agent_prompts", False),
         "zh": ("memory_layer.prompts.zh.agent_prompts", False),
     },

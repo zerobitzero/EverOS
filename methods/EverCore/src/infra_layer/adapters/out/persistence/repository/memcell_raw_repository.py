@@ -16,9 +16,7 @@ from core.di.decorators import repository
 from core.oxm.mongo.base_repository import BaseRepository
 from core.oxm.constants import MAGIC_ALL
 
-from infra_layer.adapters.out.persistence.document.memory.memcell import (
-    MemCell,
-)
+from infra_layer.adapters.out.persistence.document.memory.memcell import MemCell
 
 logger = get_logger(__name__)
 

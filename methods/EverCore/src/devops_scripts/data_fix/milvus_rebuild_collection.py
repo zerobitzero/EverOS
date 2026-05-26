@@ -238,6 +238,7 @@ def run(
     try:
         # Determine whether to pass the callback function based on whether data migration is needed
         if migrate_data:
+
             def populate_fn(old_col, new_col):
                 return migrate_data_callback(
                     old_col, new_col, batch_size, progress=progress, alias=alias

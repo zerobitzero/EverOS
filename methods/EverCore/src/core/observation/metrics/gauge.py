@@ -3,6 +3,7 @@ Gauge Wrapper
 
 Provides a unified Gauge interface with built-in auto-refresh capability.
 """
+
 from prometheus_client import Gauge as PrometheusGauge
 from typing import Sequence, Optional, Callable, Any, Dict, Tuple
 import asyncio
@@ -68,6 +69,7 @@ class BaseGauge(ABC):
             unit: Unit (optional)
         """
         from .registry import get_metrics_registry
+
         registry = get_metrics_registry()
 
         self._gauge = PrometheusGauge(
@@ -192,9 +194,7 @@ class LabeledGauge:
         self._labeled_gauge.set_to_current_time()
 
     def start_refresh(
-        self,
-        interval_seconds: int = 5,
-        enable_async: bool = True,
+        self, interval_seconds: int = 5, enable_async: bool = True
     ) -> 'LabeledGauge':
         """
         Start auto-refresh
@@ -223,9 +223,7 @@ class LabeledGauge:
         # Stop existing task if any (prevent task leak)
         existing_task = self._base_gauge._refresh_tasks.get(self._label_key)
         if existing_task and existing_task._running:
-            logger.warning(
-                f"Replacing existing refresh task for {self._label_key}"
-            )
+            logger.warning(f"Replacing existing refresh task for {self._label_key}")
             # Schedule stop in background to avoid blocking
             asyncio.create_task(existing_task.stop())
 
@@ -319,8 +317,8 @@ class RefreshTask:
             try:
                 # Check if it's an async function
                 if self.enable_async and (
-                    asyncio.iscoroutinefunction(self.refresh_func) or
-                    inspect.iscoroutinefunction(self.refresh_func)
+                    asyncio.iscoroutinefunction(self.refresh_func)
+                    or inspect.iscoroutinefunction(self.refresh_func)
                 ):
                     value = await self.refresh_func()
                 else:
@@ -339,7 +337,7 @@ class RefreshTask:
                 logger.error(
                     f"Refresh failed for {self.label_key}: {e} "
                     f"(error_count={self._error_count})",
-                    exc_info=True
+                    exc_info=True,
                 )
 
             # Wait for next refresh

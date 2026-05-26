@@ -4,10 +4,7 @@ import logging
 from typing import Dict, Any, List, Union, AsyncGenerator
 import os
 from google.genai.client import Client
-from google.genai.types import (
-    GenerateContentConfig,
-    ContentDict,
-)
+from google.genai.types import GenerateContentConfig, ContentDict
 from google.genai.types import ThinkingConfig
 from core.component.llm.llm_adapter.completion import (
     ChatCompletionRequest,
@@ -93,13 +90,13 @@ class GeminiAdapter(LLMBackendAdapter):
         """Convert message list to Gemini format"""
         contents = []
         for msg in messages:
-            if type(msg) == HumanMessage:
+            if isinstance(msg, HumanMessage):
                 contents.append(ContentDict(role="user", parts=[{"text": msg.content}]))
-            elif type(msg) == AIMessage:
+            elif isinstance(msg, AIMessage):
                 contents.append(
                     ContentDict(role="model", parts=[{"text": msg.content}])
                 )
-            elif type(msg) == SystemMessage:
+            elif isinstance(msg, SystemMessage):
                 contents.append(
                     ContentDict(role="model", parts=[{"text": msg.content}])
                 )

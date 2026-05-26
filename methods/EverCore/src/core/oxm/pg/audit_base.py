@@ -77,9 +77,7 @@ def get_auditable_model() -> SQLModel:
 
     # Register event listeners
     @event.listens_for(AuditableModel, 'before_insert', propagate=True)
-    def before_insert_listener(
-        mapper, connection, target
-    ):  # pylint: disable=unused-argument
+    def before_insert_listener(mapper, connection, target):  # pylint: disable=unused-argument
         """Event listener before INSERT operation"""
         # Ignore unused parameters (required signature for SQLAlchemy event listeners)
         _ = mapper, connection
@@ -102,9 +100,7 @@ def get_auditable_model() -> SQLModel:
             target.updated_by = current_user_id or "system"
 
     @event.listens_for(AuditableModel, 'before_update', propagate=True)
-    def before_update_listener(
-        mapper, connection, target
-    ):  # pylint: disable=unused-argument
+    def before_update_listener(mapper, connection, target):  # pylint: disable=unused-argument
         """Event listener before UPDATE operation"""
         # Ignore unused parameters (required signature for SQLAlchemy event listeners)
         _ = mapper, connection

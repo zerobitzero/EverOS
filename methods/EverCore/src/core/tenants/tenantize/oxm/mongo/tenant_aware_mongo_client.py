@@ -477,7 +477,9 @@ class TenantAwareDatabase(AsyncDatabase):
         return get_or_compute_tenant_cache(
             patch_key=TenantPatchKey.ACTUAL_DATABASE_NAME,
             compute_func=compute_database_name,
-            fallback=lambda: generate_tenant_database_name(),  # Lazy: returns b0001_memsys when no tenant context
+            fallback=lambda: (
+                generate_tenant_database_name()
+            ),  # Lazy: returns b0001_memsys when no tenant context
             cache_description="database name",
         )
 

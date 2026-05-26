@@ -19,22 +19,11 @@ import re
 
 from api_specs.memory_types import ScenarioType
 from bson import ObjectId
-from pydantic import (
-    BaseModel,
-    Field,
-    field_validator,
-    model_validator,
-    SkipValidation,
-)
+from pydantic import BaseModel, Field, field_validator, model_validator, SkipValidation
 
 from api_specs.dtos.base import BaseApiResponse
 from api_specs.memory_types import RetrieveMemoryModel, RawDataType
-from api_specs.memory_models import (
-    MemoryType,
-    Metadata,
-    QueryMetadata,
-    RetrieveMethod,
-)
+from api_specs.memory_models import MemoryType, Metadata, QueryMetadata, RetrieveMethod
 from core.oxm.constants import MAGIC_ALL, MAX_RETRIEVE_LIMIT
 from biz_layer.retrieve_constants import MAX_GROUP_IDS_COUNT
 

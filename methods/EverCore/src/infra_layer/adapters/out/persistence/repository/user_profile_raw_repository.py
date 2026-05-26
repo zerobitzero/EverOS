@@ -326,7 +326,9 @@ class UserProfileRawRepository(BaseRepository[UserProfile]):
 
             # Trigger Milvus indexing (runs in clustering background task, not on hot path)
             if trigger_index:
-                await self._trigger_milvus_indexing(user_id, group_id, profile_data, doc_id=str(saved_profile.id))
+                await self._trigger_milvus_indexing(
+                    user_id, group_id, profile_data, doc_id=str(saved_profile.id)
+                )
 
             return saved_profile
 
@@ -337,7 +339,11 @@ class UserProfileRawRepository(BaseRepository[UserProfile]):
             return None
 
     async def _trigger_milvus_indexing(
-        self, user_id: str, group_id: str, profile_data: Dict[str, Any], doc_id: str = ""
+        self,
+        user_id: str,
+        group_id: str,
+        profile_data: Dict[str, Any],
+        doc_id: str = "",
     ) -> None:
         """
         Trigger Milvus indexing for profile (delete-then-insert strategy)

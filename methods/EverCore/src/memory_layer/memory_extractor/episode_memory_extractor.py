@@ -297,7 +297,7 @@ class EpisodeMemoryExtractor(MemoryExtractor):
                     # Validation passed, exit retry loop
                     break
                 except Exception as e:
-                    logger.warning(f"Episode extraction retry {i+1}/5: {e}")
+                    logger.warning(f"Episode extraction retry {i + 1}/5: {e}")
                     if i == 4:
                         raise Exception(
                             "Episode memory extraction failed after 5 retries"

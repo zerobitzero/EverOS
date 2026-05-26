@@ -202,7 +202,7 @@ def list_commands(
     typer.echo("Available commands:")
     for cmd in commands:
         help_text = cmd.help if cmd.help else "No description"
-        typer.echo(f"  {cmd.name:<20} {help_text}"),
+        (typer.echo(f"  {cmd.name:<20} {help_text}"),)
 
     typer.echo(f"\nUsing environment file: {env_file}")
 
@@ -211,7 +211,7 @@ def list_commands(
 def tenant_init(
     env_file: str = typer.Option(
         ".env", "--env-file", help="Specify the environment variable file to load"
-    )
+    ),
 ):
     """
     Initialize MongoDB and Milvus databases for a specific tenant

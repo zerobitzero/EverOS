@@ -41,14 +41,20 @@ class VectorizeServiceInterface(ABC):
 
     @abstractmethod
     async def get_embeddings(
-        self, texts: List[str], instruction: Optional[str] = None, is_query: bool = False
+        self,
+        texts: List[str],
+        instruction: Optional[str] = None,
+        is_query: bool = False,
     ) -> List[np.ndarray]:
         """Get embeddings for multiple texts"""
         pass
 
     @abstractmethod
     async def get_embeddings_batch(
-        self, text_batches: List[List[str]], instruction: Optional[str] = None, is_query: bool = False
+        self,
+        text_batches: List[List[str]],
+        instruction: Optional[str] = None,
+        is_query: bool = False,
     ) -> List[List[np.ndarray]]:
         """Get embeddings for multiple batches"""
         pass
@@ -66,5 +72,5 @@ class VectorizeServiceInterface(ABC):
 
 class VectorizeError(Exception):
     """Vectorize API error exception class"""
-    pass
 
+    pass

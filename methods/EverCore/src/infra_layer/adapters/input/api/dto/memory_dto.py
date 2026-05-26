@@ -32,6 +32,7 @@ from api_specs.dtos import (
 
 # Backward compatibility aliases
 SearchMemoriesRequest = RetrieveMemRequest
+DeleteMemoriesRequest = DeleteMemoriesRequestDTO
 
 __all__ = [
     # Base Response

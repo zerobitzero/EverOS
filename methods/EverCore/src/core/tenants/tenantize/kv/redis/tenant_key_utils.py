@@ -5,8 +5,6 @@ Provides tenant isolation for Redis key names by prepending the tenant ID to ach
 """
 
 
-
-
 def build_tenant_redis_key(prefix: str, tenant_id: str, key: str) -> str:
     """
     Build a tenant-scoped Redis key with an explicit tenant_id.

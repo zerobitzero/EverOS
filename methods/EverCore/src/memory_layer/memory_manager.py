@@ -199,6 +199,7 @@ class MemoryManager:
             from memory_layer.memcell_extractor.agent_memcell_extractor import (
                 AgentMemCellExtractor,
             )
+
             extractor = AgentMemCellExtractor(self._get_provider_for_scene("boundary"))
         else:
             extractor = ConvMemCellExtractor(self._get_provider_for_scene("boundary"))
@@ -376,10 +377,8 @@ class MemoryManager:
         if uid is None:
             display_name = ",".join(
                 {
-
-                        item.get("message", item).get("sender_name")
-                        for item in memcell.original_data or []
-
+                    item.get("message", item).get("sender_name")
+                    for item in memcell.original_data or []
                 }
             )
         else:
@@ -463,8 +462,6 @@ class MemoryManager:
             llm_provider=self._get_provider_for_scene("extraction")
         )
         request = AgentCaseExtractRequest(
-            memcell=memcell,
-            user_id=user_id,
-            group_id=group_id,
+            memcell=memcell, user_id=user_id, group_id=group_id
         )
         return await extractor.extract_memory(request)

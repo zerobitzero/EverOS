@@ -45,9 +45,10 @@ class DatabaseLifespanProvider(LifespanProvider):
             self._db_provider = get_bean_by_type(DatabaseConnectionProvider)
 
             # Get connection pool and checkpointer
-            pool, checkpointer = (
-                await self._db_provider.get_connection_and_checkpointer()
-            )
+            (
+                pool,
+                checkpointer,
+            ) = await self._db_provider.get_connection_and_checkpointer()
 
             # Store connection pool and checkpointer in app.state for business logic usage
             app.state.connection_pool = pool

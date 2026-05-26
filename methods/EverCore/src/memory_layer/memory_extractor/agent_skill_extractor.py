@@ -122,10 +122,7 @@ class AgentSkillExtractor:
 
     @classmethod
     def _truncate_text(
-        cls,
-        text: str,
-        max_tokens: int = 200,
-        suffix: str = "... [omitted]",
+        cls, text: str, max_tokens: int = 200, suffix: str = "... [omitted]"
     ) -> str:
         """Truncate text to max_tokens using tokenizer, appending suffix if truncated."""
         if not text or not isinstance(text, str):
@@ -151,7 +148,9 @@ class AgentSkillExtractor:
             entry["key_insight"] = key_insight
         approach = getattr(case_record, "approach", None)
         if approach:
-            entry["approach"] = self._truncate_text(approach, max_tokens=max_approach_tokens)
+            entry["approach"] = self._truncate_text(
+                approach, max_tokens=max_approach_tokens
+            )
         return entry
 
     def _format_existing_skills(
@@ -171,7 +170,7 @@ class AgentSkillExtractor:
 
         # Build lookup: case_id -> case_record
         case_map: Dict[str, Any] = {}
-        for rec in (case_history or []):
+        for rec in case_history or []:
             cid = str(getattr(rec, "id", "") or "")
             if cid:
                 case_map[cid] = rec
@@ -181,8 +180,12 @@ class AgentSkillExtractor:
             item: Dict[str, Any] = {
                 "index": idx,
                 "name": rec.name,
-                "description": self._truncate_text(rec.description, max_tokens=self.MAX_DESCRIPTION_TOKENS),
-                "content": self._truncate_text(rec.content, max_tokens=self.MAX_CONTENT_TOKENS),
+                "description": self._truncate_text(
+                    rec.description, max_tokens=self.MAX_DESCRIPTION_TOKENS
+                ),
+                "content": self._truncate_text(
+                    rec.content, max_tokens=self.MAX_CONTENT_TOKENS
+                ),
                 "confidence": rec.confidence,
             }
 
@@ -200,7 +203,9 @@ class AgentSkillExtractor:
                         for sid in recent_ids
                     ]
 
-            lines.append(json.dumps(item, ensure_ascii=False, default=self._json_default))
+            lines.append(
+                json.dumps(item, ensure_ascii=False, default=self._json_default)
+            )
         return "[\n" + ",\n".join(lines) + "\n]"
 
     @staticmethod
@@ -339,7 +344,9 @@ class AgentSkillExtractor:
         then normalizes to 0.0-1.0.
         """
         if self.skip_maturity_scoring:
-            logger.info("[AgentSkillExtractor] Maturity scoring skipped by config, returning 1.0")
+            logger.info(
+                "[AgentSkillExtractor] Maturity scoring skipped by config, returning 1.0"
+            )
             return 1.0
         try:
             prompt = self.maturity_prompt.format(
@@ -418,7 +425,7 @@ class AgentSkillExtractor:
         stripped = content.strip()
         if len(stripped) < min_length:
             return False
-        non_empty_lines = [l for l in stripped.splitlines() if l.strip()]
+        non_empty_lines = [line for line in stripped.splitlines() if line.strip()]
         return len(non_empty_lines) >= min_lines
 
     async def _apply_add(
@@ -454,7 +461,9 @@ class AgentSkillExtractor:
                 "[AgentSkillExtractor] add operation has no name and no description, skipping"
             )
             return None
-        description = self._truncate_text(description, max_tokens=self.MAX_DESCRIPTION_TOKENS, suffix="...")
+        description = self._truncate_text(
+            description, max_tokens=self.MAX_DESCRIPTION_TOKENS, suffix="..."
+        )
 
         try:
             confidence = max(0.0, min(1.0, float(data.get("confidence", 0.5))))
@@ -545,7 +554,9 @@ class AgentSkillExtractor:
 
         new_name = data.get("name", "")
         new_description = data.get("description", "")
-        new_description = self._truncate_text(new_description, max_tokens=self.MAX_DESCRIPTION_TOKENS, suffix="...")
+        new_description = self._truncate_text(
+            new_description, max_tokens=self.MAX_DESCRIPTION_TOKENS, suffix="..."
+        )
         new_content = data.get("content", "")
         new_confidence = data.get("confidence")
 
@@ -604,9 +615,7 @@ class AgentSkillExtractor:
             retire_updates: Dict[str, Any] = {"confidence": final_confidence}
             if "source_case_ids" in updates:
                 retire_updates["source_case_ids"] = updates["source_case_ids"]
-            success = await skill_repo.update_skill_by_id(
-                record_id, retire_updates
-            )
+            success = await skill_repo.update_skill_by_id(record_id, retire_updates)
             if success:
                 # Signal search-engine removal (ES / Milvus) — data stays in MongoDB
                 result.deleted_ids.append(str(record_id))
@@ -736,9 +745,7 @@ class AgentSkillExtractor:
         return success
 
     async def _load_case_history(
-        self,
-        existing_skill_records: List[Any],
-        max_cases: int = 9,
+        self, existing_skill_records: List[Any], max_cases: int = 9
     ) -> List[Any]:
         """Load historical AgentCaseRecords referenced by existing skills.
 
@@ -747,7 +754,7 @@ class AgentSkillExtractor:
         """
         all_case_ids: set = set()
         for rec in existing_skill_records:
-            for cid in (getattr(rec, "source_case_ids", None) or []):
+            for cid in getattr(rec, "source_case_ids", None) or []:
                 if cid is None:
                     continue
                 cid_str = str(cid).strip()
@@ -771,7 +778,9 @@ class AgentSkillExtractor:
             )
             logger.info(
                 "[AgentSkillExtractor] Loaded case_history: %d/%d cases (max=%d)",
-                min(len(records), max_cases), len(records), max_cases,
+                min(len(records), max_cases),
+                len(records),
+                max_cases,
             )
             return records[:max_cases]
         except Exception as e:
@@ -856,8 +865,7 @@ class AgentSkillExtractor:
 
         # Collect all case IDs from new records for traceability
         source_case_ids = [
-            str(getattr(rec, "id", "") or "")
-            for rec in new_case_records
+            str(getattr(rec, "id", "") or "") for rec in new_case_records
         ]
         source_case_ids = [cid for cid in source_case_ids if cid]
 

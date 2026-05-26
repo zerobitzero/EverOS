@@ -158,7 +158,8 @@ class ProfileManager:
                 user_baseline = new_context.get("created_at")
 
             user_cluster_episodes = [
-                ep for ep in cluster_contexts
+                ep
+                for ep in cluster_contexts
                 if ep.get("created_at") is None or ep.get("created_at") > user_baseline
             ]
 

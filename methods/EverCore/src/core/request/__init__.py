@@ -36,4 +36,3 @@ __all__ = [
     'log_request_default',
     'RequestHistoryEvent',
 ]
-

@@ -30,7 +30,6 @@ except ImportError:
     logger.warning("Vectorize service not available, clustering will be limited")
 
 
-
 class MemSceneState:
     """Internal state for a single group's clustering."""
 
@@ -260,10 +259,7 @@ class ClusterManager:
         self._callbacks.append(callback)
 
     async def cluster_memcell(
-        self,
-        memcell: Dict[str, Any],
-        state: MemSceneState,
-        has_case: bool = False,
+        self, memcell: Dict[str, Any], state: MemSceneState, has_case: bool = False
     ) -> Tuple[Optional[str], MemSceneState]:
         """Cluster a memcell and return updated state.
 
@@ -382,9 +378,7 @@ class ClusterManager:
             )
             if timestamp is not None:
                 prev_ts = state.cluster_last_ts.get(cluster_id)
-                state.cluster_last_ts[cluster_id] = max(
-                    prev_ts or timestamp, timestamp
-                )
+                state.cluster_last_ts[cluster_id] = max(prev_ts or timestamp, timestamp)
 
     def _append_event(
         self,
@@ -401,9 +395,7 @@ class ClusterManager:
         )
 
     async def _cluster_memcell_llm(
-        self,
-        memcell: Dict[str, Any],
-        state: MemSceneState,
+        self, memcell: Dict[str, Any], state: MemSceneState
     ) -> Tuple[Optional[str], MemSceneState]:
         """LLM-based clustering with embedding pre-filtering.
 
@@ -428,13 +420,11 @@ class ClusterManager:
             )
             vector = await self._get_embedding(text)
             best_cid = self._find_top_k_clusters(
-                state, vector, k=1, only_cids=state.case_cluster_ids,
+                state, vector, k=1, only_cids=state.case_cluster_ids
             )
             if best_cid and best_cid[0][1] >= self.config.similarity_threshold:
                 cluster_id = best_cid[0][0]
-                self._assign_to_cluster(
-                    state, event_id, cluster_id, vector, timestamp
-                )
+                self._assign_to_cluster(state, event_id, cluster_id, vector, timestamp)
             else:
                 cluster_id = self._create_new_cluster(
                     state, event_id, vector, timestamp, is_case=True
@@ -459,7 +449,8 @@ class ClusterManager:
         # Stage 1: Embedding recall — find top-K candidate clusters (case only)
         vector = await self._get_embedding(text)
         scored_candidates = self._find_top_k_clusters(
-            state, vector,
+            state,
+            vector,
             k=self.config.llm_top_k_clusters,
             only_cids=state.case_cluster_ids,
         )
@@ -487,17 +478,13 @@ class ClusterManager:
         cluster_context = await self._fetch_cluster_context(state, candidate_ids)
 
         # Stage 3: LLM decision
-        clusters_json = self._build_clusters_json(
-            state, candidate_ids, cluster_context
-        )
+        clusters_json = self._build_clusters_json(state, candidate_ids, cluster_context)
         next_new_id = f"{state.next_cluster_idx:03d}"
         from memory_layer.prompts import get_prompt_by
 
         prompt_template = get_prompt_by("AGENT_CLUSTER_LLM_ASSIGN_PROMPT")
         prompt = prompt_template.format(
-            memcell_text=text,
-            clusters_json=clusters_json,
-            next_new_id=next_new_id,
+            memcell_text=text, clusters_json=clusters_json, next_new_id=next_new_id
         )
         llm_result = await self._call_llm_for_clustering(prompt)
 
@@ -507,22 +494,24 @@ class ClusterManager:
                 f"falling back to embedding top-1"
             )
             # Fall back to embedding: use top-1 candidate if available, else new cluster
-            if scored_candidates and scored_candidates[0][1] >= self.config.similarity_threshold:
+            if (
+                scored_candidates
+                and scored_candidates[0][1] >= self.config.similarity_threshold
+            ):
                 cluster_id = scored_candidates[0][0]
-                self._assign_to_cluster(
-                    state, event_id, cluster_id, vector, timestamp
-                )
+                self._assign_to_cluster(state, event_id, cluster_id, vector, timestamp)
             else:
                 cluster_id = self._create_new_cluster(
                     state, event_id, vector, timestamp, is_case=True
                 )
         else:
             chosen_id = llm_result.get("cluster_id", "")
-            if chosen_id in state.cluster_counts and chosen_id in state.case_cluster_ids:
+            if (
+                chosen_id in state.cluster_counts
+                and chosen_id in state.case_cluster_ids
+            ):
                 cluster_id = chosen_id
-                self._assign_to_cluster(
-                    state, event_id, cluster_id, vector, timestamp
-                )
+                self._assign_to_cluster(state, event_id, cluster_id, vector, timestamp)
             else:
                 cluster_id = self._create_new_cluster(
                     state, event_id, vector, timestamp, is_case=True
@@ -579,9 +568,7 @@ class ClusterManager:
         return scored[:k]
 
     async def _fetch_cluster_context(
-        self,
-        state: MemSceneState,
-        candidate_ids: List[str],
+        self, state: MemSceneState, candidate_ids: List[str]
     ) -> Dict[str, List[str]]:
         """Fetch recent context texts for candidate clusters via context_fetcher.
 
@@ -640,17 +627,11 @@ class ClusterManager:
             count = state.cluster_counts.get(cid, 0)
             recent = cluster_context.get(cid, [])
             clusters.append(
-                {
-                    "cluster_id": cid,
-                    "item_count": count,
-                    "recent_task_intents": recent,
-                }
+                {"cluster_id": cid, "item_count": count, "recent_task_intents": recent}
             )
         return json.dumps(clusters, ensure_ascii=False, indent=2)
 
-    async def _call_llm_for_clustering(
-        self, prompt: str
-    ) -> Optional[Dict[str, Any]]:
+    async def _call_llm_for_clustering(self, prompt: str) -> Optional[Dict[str, Any]]:
         """Call LLM and parse clustering decision."""
         for attempt in range(3):
             try:
@@ -664,9 +645,7 @@ class ClusterManager:
                     f"[LLM Clustering] Retry {attempt + 1}/3: invalid response format"
                 )
             except Exception as e:
-                logger.warning(
-                    f"[LLM Clustering] Retry {attempt + 1}/3: {e}"
-                )
+                logger.warning(f"[LLM Clustering] Retry {attempt + 1}/3: {e}")
         return None
 
     def _find_best_cluster(

@@ -3,6 +3,7 @@ Counter Wrapper
 
 Provides a unified Counter interface, isolating prometheus_client from business code.
 """
+
 from prometheus_client import Counter as PrometheusCounter
 from typing import Sequence
 from .registry import get_metrics_registry
@@ -96,4 +97,3 @@ class LabeledCounter:
             amount: Increment amount, defaults to 1
         """
         self._counter.inc(amount)
-
