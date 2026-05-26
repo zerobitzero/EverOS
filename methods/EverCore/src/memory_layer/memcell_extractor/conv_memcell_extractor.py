@@ -8,7 +8,9 @@ boundaries in various types of content (conversations, emails, notes, etc.).
 from typing import Dict, Any, Optional, List
 from datetime import datetime
 from dataclasses import dataclass, field
-import json, re, os
+import json
+import re
+import os
 from core.di.utils import get_bean_by_type
 from core.component.llm.tokenizer.tokenizer_factory import TokenizerFactory
 from common_utils.datetime_utils import from_iso_format as dt_from_iso_format

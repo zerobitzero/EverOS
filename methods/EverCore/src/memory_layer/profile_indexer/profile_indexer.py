@@ -184,7 +184,7 @@ class ProfileIndexer:
 
                 # Step 4: Add vectors to entities
                 valid_entities = []
-                for entity, vector in zip(entities, vectors):
+                for entity, vector in zip(entities, vectors, strict=False):
                     if vector is not None and len(vector) > 0:
                         entity["vector"] = vector
                         valid_entities.append(entity)

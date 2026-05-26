@@ -15,7 +15,7 @@ Usage:
         record_extraction_stage,
         get_space_id_for_metrics,
     )
-    
+
     # Record successful memorize request
     record_memorize_request(
         space_id=get_space_id_for_metrics(),
@@ -23,7 +23,7 @@ Usage:
         status='success',
         duration_seconds=0.5,
     )
-    
+
     # Record extraction stage duration
     record_extraction_stage(
         space_id=get_space_id_for_metrics(),
@@ -217,7 +217,7 @@ Memory extraction stage duration histogram
 Labels:
 - space_id: Tenant space identifier
 - raw_data_type: Type of raw data (conversation, etc.)
-- stage: init_state, extract_episodes, extract_foresights, extract_atomic_facts, 
+- stage: init_state, extract_episodes, extract_foresights, extract_atomic_facts,
          update_memcell_cluster, process_memories
 
 Buckets: 10ms - 10s for ML inference

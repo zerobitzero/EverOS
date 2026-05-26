@@ -265,7 +265,7 @@ class RecycleConsumerBase(LongJobInterface, ABC):
                     exc_info=True,
                 )
 
-        except Exception as e:
+        except Exception:
             # Other exceptions will be caught and handled in the outer loop
             raise
 

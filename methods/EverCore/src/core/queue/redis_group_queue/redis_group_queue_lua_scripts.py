@@ -11,34 +11,34 @@ local function rebalance_partitions(owner_zset_key, queue_list_prefix, total_par
     -- Get all active owners
     local active_owners = redis.call('ZRANGE', owner_zset_key, 0, -1)
     local owner_count = #active_owners
-    
+
     if owner_count == 0 then
         return {0, {}}
     end
-    
+
     -- Clean up queue_list for all owners
     for _, owner_id in ipairs(active_owners) do
         local queue_list_key = queue_list_prefix .. owner_id
         redis.call('DEL', queue_list_key)
     end
-    
+
     -- Evenly distribute partitions
     local partitions_per_owner = math.floor(total_partitions / owner_count)
     local extra_partitions = total_partitions % owner_count
-    
+
     -- Return assignment results in flat array format for proper conversion by Redis clients
     local assigned_partitions_flat = {}
     local partition_index = 1
-    
+
     for i, owner_id in ipairs(active_owners) do
         local queue_list_key = queue_list_prefix .. owner_id
         local partitions_for_this_owner = partitions_per_owner
-        
+
         -- First 'extra_partitions' owners get one additional partition
         if i <= extra_partitions then
             partitions_for_this_owner = partitions_for_this_owner + 1
         end
-        
+
         local owner_partitions = {}
         for j = 1, partitions_for_this_owner do
             local partition_name = string.format("%03d", partition_index)
@@ -46,15 +46,15 @@ local function rebalance_partitions(owner_zset_key, queue_list_prefix, total_par
             table.insert(owner_partitions, partition_name)
             partition_index = partition_index + 1
         end
-        
+
         -- Set expiration time
         redis.call('EXPIRE', queue_list_key, owner_expire)
-        
+
         -- Add owner_id and partition list to flat array
         table.insert(assigned_partitions_flat, owner_id)
         table.insert(assigned_partitions_flat, owner_partitions)
     end
-    
+
     return {owner_count, assigned_partitions_flat}
 end
 """
@@ -89,11 +89,11 @@ local added = redis.call('ZADD', queue_key, score, message)
 if added == 1 then
     -- Update queue expiration time
     redis.call('EXPIRE', queue_key, queue_expire)
-    
+
     -- Increment total counter
     local new_count = redis.call('INCR', counter_key)
     redis.call('EXPIRE', counter_key, activity_expire)
-    
+
     return {1, new_count, "Added successfully"}
 else
     return {0, current_count, "Message already exists"}
@@ -241,11 +241,11 @@ local cleaned_count = 0
 for _, owner_id in ipairs(inactive_owners) do
     -- Remove from zset
     redis.call('ZREM', owner_zset_key, owner_id)
-    
+
     -- Delete corresponding queue_list
     local queue_list_key = queue_list_prefix .. owner_id
     redis.call('DEL', queue_list_key)
-    
+
     cleaned_count = cleaned_count + 1
 end
 
@@ -378,13 +378,13 @@ local messages_consumed = 0
 -- Traverse all partitions, attempt to get 1 message from each
 for _, partition in ipairs(owner_queues) do
     local queue_key = queue_prefix .. partition
-    
+
     -- Check if queue has messages
     local queue_size = redis.call('ZCARD', queue_key)
     if queue_size > 0 then
         -- Get score of earliest message
         local min_result = redis.call('ZRANGE', queue_key, 0, 0, 'WITHSCORES')
-        
+
         -- Directly compare difference between earliest message and current score
         if #min_result >= 2 then
             local earliest_message_score = tonumber(min_result[2])
@@ -476,26 +476,26 @@ local global_max_score = nil
 for i = 1, total_partitions do
     local partition_name = string.format("%03d", i)
     local queue_key = queue_prefix .. partition_name
-    
+
     -- Get queue size
     local queue_size = redis.call('ZCARD', queue_key)
     total_messages_in_queues = total_messages_in_queues + queue_size
-    
+
     local min_score = 0
     local max_score = 0
-    
+
     if queue_size > 0 then
         -- Get minimum and maximum score
         local min_result = redis.call('ZRANGE', queue_key, 0, 0, 'WITHSCORES')
         local max_result = redis.call('ZRANGE', queue_key, -1, -1, 'WITHSCORES')
-        
+
         if #min_result >= 2 then
             min_score = tonumber(min_result[2])
             if global_min_score == nil or min_score < global_min_score then
                 global_min_score = min_score
             end
         end
-        
+
         if #max_result >= 2 then
             max_score = tonumber(max_result[2])
             if global_max_score == nil or max_score > global_max_score then
@@ -503,7 +503,7 @@ for i = 1, total_partitions do
             end
         end
     end
-    
+
     -- Store partition statistics (flat array format)
     table.insert(partition_stats, partition_name)
     table.insert(partition_stats, queue_size)

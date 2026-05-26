@@ -203,7 +203,7 @@ class MemCellDeleteService:
 
         reraise_critical_errors(results)
         counts: dict[str, int] = {}
-        for name, result in zip(names, results):
+        for name, result in zip(names, results, strict=False):
             if isinstance(result, Exception):
                 logger.error("Failed to cascade delete %s: %s", name, result)
             else:
@@ -232,13 +232,13 @@ class MemCellDeleteService:
         if user_id == MAGIC_ALL and group_id == MAGIC_ALL:
             return {"episodes": 0, "atomic_facts": 0, "foresights": 0}
 
-        mongo_kwargs = dict(
-            user_id=user_id,
-            group_id=group_id,
-            session_id=session_id,
-            sender_id=sender_id,
-        )
-        scope_kwargs = dict(user_id=user_id, group_id=group_id)
+        mongo_kwargs = {
+            "user_id": user_id,
+            "group_id": group_id,
+            "session_id": session_id,
+            "sender_id": sender_id,
+        }
+        scope_kwargs = {"user_id": user_id, "group_id": group_id}
 
         # RawMessage and MemCell are source data — not deleted by filters.
         # Milvus/ES only support user_id/group_id (no session_id/sender_id).

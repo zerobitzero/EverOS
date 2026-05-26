@@ -447,7 +447,7 @@ class MemoryManager:
         """Keyword-based memory retrieval"""
         top_k = retrieve_mem_request.top_k
         is_unlimited_mode = top_k == -1
-        memory_type = (
+        (
             retrieve_mem_request.memory_types[0].value
             if retrieve_mem_request.memory_types
             else 'unknown'
@@ -577,7 +577,7 @@ class MemoryManager:
         """Vector-based memory retrieval"""
         top_k = retrieve_mem_request.top_k
         is_unlimited_mode = top_k == -1
-        memory_type = (
+        (
             retrieve_mem_request.memory_types[0].value
             if retrieve_mem_request.memory_types
             else 'unknown'
@@ -791,7 +791,7 @@ class MemoryManager:
         self, retrieve_mem_request: 'RetrieveMemRequest'
     ) -> RetrieveMemResponse:
         """Hybrid memory retrieval: keyword + vector + rerank"""
-        memory_type = (
+        (
             retrieve_mem_request.memory_types[0].value
             if retrieve_mem_request.memory_types
             else 'unknown'
@@ -1305,7 +1305,7 @@ class MemoryManager:
             atomic_fact = fields['atomic_fact']
             foresight = fields['foresight']
             evidence = fields['evidence']
-            extend_data = fields['extend_data']
+            fields['extend_data']
             search_source = fields['search_source']
             # Process timestamp
             timestamp = from_iso_format(timestamp_raw)
@@ -1321,21 +1321,21 @@ class MemoryManager:
                     logger.debug(f"Memcell not found: event_id={parent_id}")
 
             # Create object based on memory type
-            base_kwargs = dict(
-                id=hit_id,
-                memory_type=memory_type_value,
-                user_id=user_id,
-                timestamp=timestamp,
-                group_id=group_id,
-                participants=participants,
-                sender_ids=sender_ids,
-                parent_type=parent_type,
-                parent_id=parent_id,
-                type=RawDataType.from_string(event_type),
-                score=score,
-                original_data=original_data,
-                extend={'_search_source': search_source},
-            )
+            base_kwargs = {
+                "id": hit_id,
+                "memory_type": memory_type_value,
+                "user_id": user_id,
+                "timestamp": timestamp,
+                "group_id": group_id,
+                "participants": participants,
+                "sender_ids": sender_ids,
+                "parent_type": parent_type,
+                "parent_id": parent_id,
+                "type": RawDataType.from_string(event_type),
+                "score": score,
+                "original_data": original_data,
+                "extend": {'_search_source': search_source},
+            }
 
             match memory_type_value:
                 case MemoryType.ATOMIC_FACT.value:

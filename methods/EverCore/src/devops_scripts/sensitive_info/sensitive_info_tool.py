@@ -1,10 +1,10 @@
 """
 Sensitive Information Detection Tool - AI-Powered Pre-commit Hook
 
-This tool uses LLM to intelligently scan files for sensitive information 
+This tool uses LLM to intelligently scan files for sensitive information
 before committing to GitHub:
 1. Credentials: API keys, passwords, secrets, tokens
-2. Internal network config: Private IPs, internal domains  
+2. Internal network config: Private IPs, internal domains
 3. Personal data: Real names, phone numbers, emails, ID numbers
 4. Test data that may point to real users
 
@@ -182,7 +182,7 @@ Your goal is to find REAL sensitive data that could cause harm if leaked, NOT pl
 ## CRITICAL: Check Configuration Names Carefully
 
 For EVERY line that sets a default value for a configuration (e.g., os.getenv("X", "default"), get_env("X", "default")):
-- Split the default value by "_" or "-"  
+- Split the default value by "_" or "-"
 - Check: Is each word a COMMON English word or standard tech term?
 - If ANY word is NOT recognizable as a dictionary word, flag it as MEDIUM
 - This applies to: Kafka topics, queue names, bucket names, service names, group IDs, etc.
@@ -197,7 +197,7 @@ For EVERY line that sets a default value for a configuration (e.g., os.getenv("X
 
 ### MEDIUM severity (should review)
 - Internal IPs/domains that appear to be REAL infrastructure configuration
-  
+
   Principle: Ask "Does this look like a placeholder/example, or a real server address?"
   - Placeholder IPs have predictable patterns: x.x.0.1, x.x.1.1, x.x.0.0, x.x.255.255
   - Real IPs have arbitrary middle/end segments that look like actual assignments
@@ -205,19 +205,19 @@ For EVERY line that sets a default value for a configuration (e.g., os.getenv("X
   - Example: 192.168.47.83 looks like a real assigned IP (arbitrary numbers)
 
 - Internal configuration names that reveal real infrastructure
-  
+
   PRINCIPLE: Configuration names should only contain DICTIONARY WORDS or INDUSTRY-STANDARD terms.
-  
+
   Flag as MEDIUM if a configuration name contains:
   - Abbreviations that are NOT industry-standard (API, HTTP, DB, SQL, JSON are standard)
   - Words that are NOT in an English dictionary
   - Words that look like they could be project names, product names, or company abbreviations
-  
+
   The test: Can you find this word in a standard English dictionary or official technical documentation?
   If not, it's likely internal terminology that reveals infrastructure details.
-  
+
   NOTE: Even in os.getenv("VAR", "fallback") - if the fallback looks specific, flag it!
-  
+
 - Internal domains that look real (specific hostnames, not generic like "example.internal")
 - Data that MIGHT be real but you're not sure
 - Potential real user references that aren't obviously test data
@@ -241,7 +241,7 @@ Ask yourself: Would a real person use this as their actual password/key?
 Apply this principle: "Does it look intentionally fake/placeholder, or accidentally real?"
 
 - Placeholder patterns: strings with "xxxx", "your-", "${VAR}", "{{...}}", "<placeholder>"
-- IPs that are OBVIOUSLY examples: 
+- IPs that are OBVIOUSLY examples:
   Pattern: ends with .0.1, .1.1, .0.0, .255.255, or is localhost/127.0.0.1
   These are universally recognized defaults, not real infrastructure
 - Generic/example domains: contains "example", "test", "demo", "sample", "foo", "bar", or is localhost

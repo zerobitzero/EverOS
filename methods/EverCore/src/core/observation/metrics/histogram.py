@@ -39,25 +39,25 @@ class HistogramBuckets:
 class Histogram:
     """
     Histogram metric wrapper
-    
+
     Features:
     - Distribution statistics of observed values
     - Suitable for latency, size, and other distribution data
     - Automatically calculates percentiles, mean, and sum
-    
+
     Usage:
         from core.observation.metrics import Histogram, HistogramBuckets
-        
+
         request_duration = Histogram(
             name='http_request_duration_seconds',
             description='HTTP request duration',
             labelnames=['method', 'path'],
             buckets=HistogramBuckets.API_CALL
         )
-        
+
         # Usage
         request_duration.labels(method='GET', path='/api').observe(0.123)
-        
+
         # Using context manager
         with request_duration.labels(method='GET', path='/api').time():
             do_something()
@@ -101,7 +101,7 @@ class Histogram:
     def labels(self, **labels) -> 'LabeledHistogram':
         """
         Return a Histogram with labels
-        
+
         Returns:
             LabeledHistogram instance
         """
@@ -111,7 +111,7 @@ class Histogram:
     def observe(self, amount: float) -> None:
         """
         Record an observed value (no labels version)
-        
+
         Args:
             amount: Observed value
         """
@@ -120,7 +120,7 @@ class Histogram:
     def time(self):
         """
         Return a timing context manager (no labels version)
-        
+
         Usage:
             with histogram.time():
                 do_something()
@@ -137,7 +137,7 @@ class LabeledHistogram:
     def observe(self, amount: float) -> None:
         """
         Record an observed value
-        
+
         Args:
             amount: Observed value
         """
@@ -146,7 +146,7 @@ class LabeledHistogram:
     def time(self):
         """
         Return a timing context manager
-        
+
         Usage:
             with histogram.labels(method='GET').time():
                 do_something()

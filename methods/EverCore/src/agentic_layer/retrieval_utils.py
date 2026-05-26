@@ -28,7 +28,7 @@ def build_bm25_index(candidates):
         from nltk.stem import PorterStemmer
         from nltk.tokenize import word_tokenize
         from rank_bm25 import BM25Okapi
-    except ImportError as e:
+    except ImportError:
         return None, None, None, None
 
     # Ensure NLTK data is downloaded
@@ -106,7 +106,7 @@ async def search_with_bm25(
     scores = bm25.get_scores(tokenized_query)
 
     # Sort and return Top-K
-    results = sorted(zip(candidates, scores), key=lambda x: x[1], reverse=True)[:top_k]
+    results = sorted(zip(candidates, scores, strict=False), key=lambda x: x[1], reverse=True)[:top_k]
 
     return results
 
@@ -119,14 +119,14 @@ def reciprocal_rank_fusion(
     doc_map = {}
 
     # Process first result set
-    for rank, (doc, score) in enumerate(results1, start=1):
+    for rank, (doc, _score) in enumerate(results1, start=1):
         doc_id = doc.get('id')
         if doc_id not in doc_map:
             doc_map[doc_id] = doc
         doc_rrf_scores[doc_id] = doc_rrf_scores.get(doc_id, 0.0) + 1.0 / (k + rank)
 
     # Process second result set
-    for rank, (doc, score) in enumerate(results2, start=1):
+    for rank, (doc, _score) in enumerate(results2, start=1):
         doc_id = doc.get('id')
         if doc_id not in doc_map:
             doc_map[doc_id] = doc
@@ -170,7 +170,7 @@ def vector_anchored_fusion(
     Returns:
         Fused results [(doc_id, score), ...] sorted by score descending.
     """
-    vec_score_map: Dict[str, float] = {doc_id: s for doc_id, s in vector_results}
+    vec_score_map: Dict[str, float] = dict(vector_results)
 
     # Saturate BM25 scores into [0, 1)
     kw_sat_map: Dict[str, float] = {}
@@ -241,7 +241,7 @@ async def lightweight_retrieval(
                     continue
 
             emb_results = sorted(scores, key=lambda x: x[1], reverse=True)[:emb_top_n]
-    except Exception as e:
+    except Exception:
         pass
 
     metadata["emb_count"] = len(emb_results)
@@ -322,7 +322,7 @@ def multi_rrf_fusion(results_list: List[List[Tuple]], k: int = 60) -> List[Tuple
 
     # Iterate through each query's retrieval results
     for query_results in results_list:
-        for rank, (doc, score) in enumerate(query_results, start=1):
+        for rank, (doc, _score) in enumerate(query_results, start=1):
             doc_id = id(doc)
             if doc_id not in doc_map:
                 doc_map[doc_id] = doc

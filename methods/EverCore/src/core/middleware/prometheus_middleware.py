@@ -7,7 +7,7 @@ Inspired by Kratos, Hertz, and other microservice frameworks.
 Usage:
     from fastapi import FastAPI
     from core.middleware.prometheus_middleware import PrometheusMiddleware
-    
+
     app = FastAPI()
     app.add_middleware(PrometheusMiddleware)
 """
@@ -120,18 +120,18 @@ def _normalize_path(request: Request) -> str:
 class PrometheusMiddleware(BaseHTTPMiddleware):
     """
     Prometheus HTTP Metrics Middleware
-    
+
     Automatically records:
     - http_requests_total (Counter): Total requests by method, path, status
     - http_request_duration_seconds (Histogram): Request latency
     - http_request_size_bytes (Histogram): Request body size
     - http_response_size_bytes (Histogram): Response body size
-    
+
     Design inspired by:
     - Kratos (Bilibili): middleware.Middleware pattern
     - Hertz (ByteDance): promhttp.InstrumentHandler pattern
     - Go kit: endpoint.Middleware pattern
-    
+
     Usage:
         app = FastAPI()
         app.add_middleware(PrometheusMiddleware)

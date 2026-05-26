@@ -116,13 +116,13 @@ class RedisDistributedLockManager:
         local lock_key = KEYS[1]
         local owner_id = ARGV[1]
         local timeout_ms = tonumber(ARGV[2])
-        
+
         -- Get current lock information
         -- Note: When lock_key does not exist, HMGET returns {false, false}
         local lock_info = redis.call('HMGET', lock_key, 'owner', 'count')
         local current_owner = lock_info[1]  -- false when not exists
         local current_count = tonumber(lock_info[2]) or 0  -- tonumber(false) is nil, use 0 as default
-        
+
         if current_owner == false or current_owner == owner_id then
             -- Lock is not occupied (current_owner == false) or held by current coroutine, can acquire/reenter
             local new_count = current_count + 1
@@ -141,18 +141,18 @@ class RedisDistributedLockManager:
     LUA_RELEASE_SCRIPT = """
         local lock_key = KEYS[1]
         local owner_id = ARGV[1]
-        
+
         -- Get current lock information
         -- Note: When lock_key does not exist, HMGET returns {false, false}
         local lock_info = redis.call('HMGET', lock_key, 'owner', 'count')
         local current_owner = lock_info[1]  -- false when not exists
         local current_count = tonumber(lock_info[2]) or 0  -- tonumber(false) is nil, use 0 as default
-        
+
         if current_owner ~= owner_id then
             -- Not the lock holder, cannot release or lock does not exist
             return 0
         end
-        
+
         local new_count = current_count - 1
         if new_count <= 0 then
             -- Reentry count reaches zero, completely release the lock
@@ -169,13 +169,13 @@ class RedisDistributedLockManager:
     LUA_STATUS_SCRIPT = """
         local lock_key = KEYS[1]
         local owner_id = ARGV[1]
-        
+
         -- Get current lock information
         -- Note: When lock_key does not exist, HMGET returns {false, false}
         local lock_info = redis.call('HMGET', lock_key, 'owner', 'count')
         local current_owner = lock_info[1]  -- false when not exists
         local current_count = tonumber(lock_info[2]) or 0  -- tonumber(false) is nil, use 0 as default
-        
+
         if current_owner == false then
             return {0, 0}  -- Not locked
         elseif current_owner == owner_id then

@@ -331,7 +331,7 @@ class TaskManager:
             defer_until = get_now_with_timezone() + timedelta(seconds=delay)
 
         # Enqueue task
-        job = await pool.enqueue_job(
+        await pool.enqueue_job(
             task_name,
             task_context,
             *args,

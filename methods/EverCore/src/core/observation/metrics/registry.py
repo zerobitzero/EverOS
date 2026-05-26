@@ -16,10 +16,10 @@ _metrics_registry: Optional[CollectorRegistry] = None
 def get_metrics_registry() -> CollectorRegistry:
     """
     Get the global metrics registry
-    
+
     Returns:
         CollectorRegistry: Prometheus registry instance
-    
+
     Notes:
         - Uses prometheus_client's global REGISTRY by default
         - All metrics are automatically registered to this registry
@@ -34,7 +34,7 @@ def get_metrics_registry() -> CollectorRegistry:
 def set_metrics_registry(registry: CollectorRegistry) -> None:
     """
     Set custom registry (mainly for testing)
-    
+
     Args:
         registry: Custom CollectorRegistry instance
     """
@@ -45,7 +45,7 @@ def set_metrics_registry(registry: CollectorRegistry) -> None:
 def generate_metrics_response() -> bytes:
     """
     Generate metrics response content (for testing/debugging)
-    
+
     Returns:
         bytes: Prometheus format metrics data
     """
@@ -55,7 +55,7 @@ def generate_metrics_response() -> bytes:
 def reset_metrics_registry() -> None:
     """
     Reset metrics registry (mainly for testing)
-    
+
     Warning: Do not call this method in production
     """
     global _metrics_registry

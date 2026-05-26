@@ -978,7 +978,7 @@ def _process_episode_results(state: ExtractionState, results: List[Any]):
 
     # Personal Episodes
     if not state.is_solo_scene:
-        for user_id, result in zip(state.participants, results[1:]):
+        for user_id, result in zip(state.participants, results[1:], strict=False):
             if isinstance(result, Exception):
                 logger.error(
                     f"[MemCell Processing] ❌ Personal Episode exception: user_id={user_id}"
@@ -1190,7 +1190,7 @@ async def _save_episodes(
     saved_map = await save_memory_docs(payloads)
     saved_docs = saved_map.get(MemoryType.EPISODIC_MEMORY, [])
 
-    for ep, saved_doc in zip(episodic_source, saved_docs):
+    for ep, saved_doc in zip(episodic_source, saved_docs, strict=False):
         ep.id = str(saved_doc.id)
         state.parent_docs_map[str(saved_doc.id)] = saved_doc
 

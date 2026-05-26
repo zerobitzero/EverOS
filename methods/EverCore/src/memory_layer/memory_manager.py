@@ -296,7 +296,7 @@ class MemoryManager:
 
             return result
 
-        except Exception as e:
+        except Exception:
             status = 'error'
             raise
         finally:
@@ -375,12 +375,12 @@ class MemoryManager:
 
         if uid is None:
             display_name = ",".join(
-                set(
-                    [
+                {
+
                         item.get("message", item).get("sender_name")
                         for item in memcell.original_data or []
-                    ]
-                )
+
+                }
             )
         else:
             for item in memcell.original_data or []:

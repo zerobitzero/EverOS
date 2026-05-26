@@ -39,39 +39,39 @@ from pymongo import IndexModel, ASCENDING, DESCENDING, TEXT
 
 class Forward:
     """Forward migration"""
-    
+
     # Example: Iterative migration (recommended)
     # @iterative_migration()
     # async def update_field(self, input_document: OldModel, output_document: NewModel):
     #     output_document.new_field = input_document.old_field
-    
+
     # Example: Free fall migration (flexible)
     # @free_fall_migration(document_models=[YourModel])
     # async def create_indexes(self, session):
     #     # Get collection
     #     collection = YourModel.get_pymongo_collection()
-    #     
+    #
     #     # Create indexes
     #     indexes = [
     #         IndexModel([("field_name", ASCENDING)], name="idx_field_name")
     #     ]
     #     await collection.create_indexes(indexes)
-    
+
     pass
 
 
 class Backward:
     """Backward migration"""
-    
+
     # @iterative_migration()
     # async def revert_field(self, input_document: NewModel, output_document: OldModel):
     #     output_document.old_field = input_document.new_field
-    
+
     # @free_fall_migration(document_models=[YourModel])
     # async def drop_indexes(self, session):
     #     collection = YourModel.get_pymongo_collection()
     #     await collection.drop_index("idx_field_name")
-    
+
     pass
 '''
 
@@ -340,8 +340,8 @@ class Backward:
         if before_names is None:
             return
 
-        added = sorted(list(after_names - before_names))
-        removed = sorted(list(before_names - after_names))
+        added = sorted(after_names - before_names)
+        removed = sorted(before_names - after_names)
 
         if added:
             logger.info("✅ Newly executed scripts: %s", ", ".join(added))

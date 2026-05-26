@@ -25,7 +25,7 @@ DEFAULT_TIKTOKEN_ENCODINGS = [
 class TokenizerFactory:
     """
     Tokenizer Factory
-    
+
     Provides tokenizer caching and management functionality.
     Cache key format: "{provider}:{encoding_name}" (e.g., "tiktoken:o200k_base")
     """
@@ -38,13 +38,13 @@ class TokenizerFactory:
     def get_tokenizer_from_tiktoken(self, encoding_name: str) -> tiktoken.Encoding:
         """
         Get a tiktoken tokenizer by encoding name, with caching.
-        
+
         Args:
             encoding_name: The name of the tiktoken encoding (e.g., "o200k_base", "cl100k_base")
-            
+
         Returns:
             tiktoken.Encoding: The tokenizer instance
-            
+
         Example:
             >>> tokenizer = factory.get_tokenizer_from_tiktoken("o200k_base")
             >>> tokens = tokenizer.encode("Hello, world!")
@@ -61,10 +61,10 @@ class TokenizerFactory:
     def load_default_encodings(self) -> None:
         """
         Preload default tiktoken encodings during application startup.
-        
+
         This method should be called during application lifespan startup
         to ensure tokenizers are ready before handling requests.
-        
+
         The encodings loaded are defined in DEFAULT_TIKTOKEN_ENCODINGS.
         """
         logger.info("Preloading %d tiktoken encodings...", len(DEFAULT_TIKTOKEN_ENCODINGS))
@@ -81,7 +81,7 @@ class TokenizerFactory:
     def get_cached_tokenizer_count(self) -> int:
         """
         Get the number of cached tokenizers.
-        
+
         Returns:
             int: Number of tokenizers currently in cache
         """
@@ -90,7 +90,7 @@ class TokenizerFactory:
     def clear_cache(self) -> None:
         """
         Clear the tokenizer cache.
-        
+
         This is mainly useful for testing purposes.
         """
         self._tokenizers.clear()

@@ -138,7 +138,7 @@ Example usage:
   python src/bootstrap.py tests/algorithms/debug_my_model.py
   python src/bootstrap.py unit_test/memory_manager_single_test.py --verbose
   python src/bootstrap.py evaluation/dynamic_memory_evaluation/locomo_eval.py --dataset small
-  
+
 Environment variables:
   MOCK_MODE=true    Enable Mock mode (for testing)
         """,

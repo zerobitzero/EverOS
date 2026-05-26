@@ -134,7 +134,7 @@ def record_vectorize_request(
 ) -> None:
     """
     Helper function to record all vectorize metrics in one call
-    
+
     Args:
         provider: Service provider (vllm, deepinfra)
         operation: Operation type (get_embedding, get_embeddings, get_embeddings_batch)
@@ -142,7 +142,7 @@ def record_vectorize_request(
         duration_seconds: Operation duration in seconds
         batch_size: Number of texts processed
         tokens: Number of tokens processed (optional, for cost tracking)
-    
+
     Example:
         record_vectorize_request(
             provider='vllm',
@@ -185,12 +185,12 @@ def record_vectorize_fallback(
 ) -> None:
     """
     Helper function to record vectorize fallback event
-    
+
     Args:
         primary_provider: Primary provider that failed
         fallback_provider: Fallback provider used
         reason: Fallback reason (error, timeout, max_failures_exceeded)
-    
+
     Example:
         record_vectorize_fallback(
             primary_provider='vllm',
@@ -212,12 +212,12 @@ def record_vectorize_error(
 ) -> None:
     """
     Helper function to record vectorize error
-    
+
     Args:
         provider: Service provider
         operation: Operation type
         error_type: Error type (api_error, timeout, rate_limit, validation_error, unknown)
-    
+
     Example:
         record_vectorize_error(
             provider='vllm',

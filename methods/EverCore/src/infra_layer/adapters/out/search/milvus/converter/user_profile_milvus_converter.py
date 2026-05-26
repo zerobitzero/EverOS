@@ -49,7 +49,6 @@ class UserProfileMilvusConverter(BaseMilvusConverter[UserProfileCollection]):
 
         try:
             profile_data: Dict[str, Any] = source_doc.profile_data or {}
-            doc_id = str(source_doc.id) if source_doc.id else ""
             user_id = source_doc.user_id or ""
             group_id = source_doc.group_id or ""
             scenario = source_doc.scenario or ScenarioType.SOLO.value

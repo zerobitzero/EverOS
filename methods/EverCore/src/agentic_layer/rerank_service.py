@@ -6,7 +6,7 @@ Implements a hybrid strategy with flexible provider selection and automatic fall
 
 Usage:
     from agentic_layer.rerank_service import get_rerank_service
-    
+
     service = get_rerank_service()
     result = await service.rerank_memories(query, hits, top_k)
 """

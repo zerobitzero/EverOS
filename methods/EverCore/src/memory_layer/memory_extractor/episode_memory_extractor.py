@@ -8,7 +8,8 @@ from boundary detection results (BoundaryResult).
 from dataclasses import dataclass
 from typing import Optional, List, Dict, Any
 from datetime import datetime
-import re, json
+import re
+import json
 
 
 from memory_layer.prompts import get_prompt_by
@@ -224,7 +225,6 @@ class EpisodeMemoryExtractor(MemoryExtractor):
                 prompt_template = self.episode_generation_prompt
                 content_key = "conversation"
                 time_key = "conversation_start_time"
-            default_title = "Conversation Episode"
         else:
             return None
 

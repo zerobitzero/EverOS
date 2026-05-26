@@ -11,18 +11,18 @@ Usage:
         RERANK_FALLBACK_TOTAL,
         RERANK_ERRORS_TOTAL,
     )
-    
+
     # Record successful rerank request
     RERANK_REQUESTS_TOTAL.labels(
         provider='vllm',
         status='success'
     ).inc()
-    
+
     # Record duration
     RERANK_DURATION_SECONDS.labels(
         provider='vllm'
     ).observe(0.234)
-    
+
     # Record documents count
     RERANK_DOCUMENTS_TOTAL.labels(
         provider='vllm'
@@ -137,13 +137,13 @@ def record_rerank_request(
 ) -> None:
     """
     Helper function to record all rerank metrics in one call
-    
+
     Args:
         provider: Service provider (vllm, deepinfra)
         status: Request status (success, error, timeout, fallback)
         duration_seconds: Operation duration in seconds
         documents_count: Number of documents reranked
-    
+
     Example:
         record_rerank_request(
             provider='vllm',
@@ -176,12 +176,12 @@ def record_rerank_fallback(
 ) -> None:
     """
     Helper function to record rerank fallback event
-    
+
     Args:
         primary_provider: Primary provider that failed
         fallback_provider: Fallback provider used
         reason: Fallback reason (error, timeout, max_failures_exceeded)
-    
+
     Example:
         record_rerank_fallback(
             primary_provider='vllm',
@@ -202,11 +202,11 @@ def record_rerank_error(
 ) -> None:
     """
     Helper function to record rerank error
-    
+
     Args:
         provider: Service provider
         error_type: Error type (api_error, timeout, rate_limit, validation_error, unknown)
-    
+
     Example:
         record_rerank_error(
             provider='vllm',

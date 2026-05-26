@@ -5,29 +5,29 @@ Business code imports metric classes from here, no need to depend on prometheus_
 
 Usage:
     from core.observation.metrics import Counter, Histogram, BaseGauge
-    
+
     # Counter - monotonically increasing counter
     requests_total = Counter('http_requests_total', 'Total requests', ['method'])
     requests_total.labels(method='GET').inc()
-    
+
     # Histogram - distribution statistics of observed values
     request_duration = Histogram(
-        'http_request_duration_seconds', 
-        'Request duration', 
+        'http_request_duration_seconds',
+        'Request duration',
         ['method'],
         buckets=HistogramBuckets.API_CALL
     )
     request_duration.labels(method='GET').observe(0.123)
-    
+
     # BaseGauge - instantaneous value with auto-refresh (inheritance)
     class QueueSizeGauge(BaseGauge):
         def __init__(self, queue):
             super().__init__('queue_size', 'Queue size', ['queue_name'])
             self.queue = queue
-        
+
         def refresh(self, labels: dict) -> float:
             return self.queue.qsize()
-    
+
     # Using Gauge
     gauge = QueueSizeGauge(queue)
     gauge.labels(queue_name='main').start_refresh()  # default 5 second refresh

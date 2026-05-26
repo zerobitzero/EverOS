@@ -31,15 +31,15 @@ PROFILE_DEFAULT_TOPK = int(os.getenv("PROFILE_DEFAULT_TOPK", "30"))
 def parse_embed_text(embed_text: str, item_type: str) -> Dict[str, str]:
     """
     Parse embed_text to extract category/trait_name and description.
-    
+
     Format:
     - explicit_info: "category: description"
     - implicit_trait: "trait_name: description. basis" or "trait_name: description"
-    
+
     Args:
         embed_text: The embedded text string
         item_type: "explicit_info" or "implicit_trait"
-    
+
     Returns:
         Dict with parsed fields
     """
@@ -79,7 +79,7 @@ def parse_embed_text(embed_text: str, item_type: str) -> Dict[str, str]:
 class ProfileSearchService:
     """
     Profile Search Service
-    
+
     Searches user profile items in Milvus using vector similarity.
     No reranking step - directly returns Milvus results with score threshold.
     """
@@ -89,7 +89,7 @@ class ProfileSearchService:
         milvus_repo: Optional[UserProfileMilvusRepository] = None,
     ):
         """Initialize service
-        
+
         Args:
             milvus_repo: User profile Milvus repository (auto-injected if None)
         """
@@ -112,14 +112,14 @@ class ProfileSearchService:
     ) -> Dict[str, Any]:
         """
         Search profile items by query text
-        
+
         Args:
             query: Search query text
             user_id: User ID filter
             group_id: Group ID filter
             top_k: Maximum number of results
             score_threshold: Minimum similarity score (0.0-1.0)
-        
+
         Returns:
             Dict with:
             - profiles: List of profile items

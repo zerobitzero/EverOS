@@ -160,13 +160,13 @@ def shell(
     banner = """
     ========================================
     Memsys Backend Shell
-    
+
     Available variables:
     - app: FastAPI application instance
     - app_state: Application state (if available)
     - graphs: LangGraph instances (if available)
     - logger: Logger instance
-    
+
     Example usage:
     >>> logger.info("Hello from shell!")
     >>> app.routes  # View all routes

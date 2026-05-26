@@ -14,20 +14,20 @@ Usage:
         RETRIEVE_STAGE_DURATION_SECONDS,
         RETRIEVE_ERRORS_TOTAL,
     )
-    
+
     # Record successful retrieval
     RETRIEVE_REQUESTS_TOTAL.labels(
         memory_type='episodic_memory',
         retrieve_method='vector',
         status='success'
     ).inc()
-    
+
     # Record duration
     RETRIEVE_DURATION_SECONDS.labels(
         memory_type='episodic_memory',
         retrieve_method='vector_search'
     ).observe(0.567)
-    
+
     # Record stage-specific duration
     RETRIEVE_STAGE_DURATION_SECONDS.labels(
         stage='milvus_search',

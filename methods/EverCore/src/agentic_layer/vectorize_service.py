@@ -6,7 +6,7 @@ Implements a hybrid strategy with flexible provider selection and automatic fall
 
 Usage:
     from agentic_layer.vectorize_service import get_vectorize_service
-    
+
     service = get_vectorize_service()
     embedding = await service.get_embedding("Hello world")  # Auto-fallback
 """

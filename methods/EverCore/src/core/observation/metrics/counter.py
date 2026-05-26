@@ -11,21 +11,21 @@ from .registry import get_metrics_registry
 class Counter:
     """
     Counter metric wrapper
-    
+
     Features:
     - Monotonically increasing counter (can only increment)
     - Suitable for total requests, total errors, etc.
     - Business code does not need to import prometheus_client directly
-    
+
     Usage:
         from core.observation.metrics import Counter
-        
+
         requests_total = Counter(
             name='http_requests_total',
             description='Total HTTP requests',
             labelnames=['method', 'path', 'status']
         )
-        
+
         # 使用
         requests_total.labels(method='GET', path='/api', status='200').inc()
     """
@@ -65,7 +65,7 @@ class Counter:
     def labels(self, **labels) -> 'LabeledCounter':
         """
         Return a Counter with labels
-        
+
         Returns:
             LabeledCounter instance
         """
@@ -75,7 +75,7 @@ class Counter:
     def inc(self, amount: float = 1) -> None:
         """
         Increment counter (no labels version)
-        
+
         Args:
             amount: Increment amount, defaults to 1
         """
@@ -91,7 +91,7 @@ class LabeledCounter:
     def inc(self, amount: float = 1) -> None:
         """
         Increment counter
-        
+
         Args:
             amount: Increment amount, defaults to 1
         """

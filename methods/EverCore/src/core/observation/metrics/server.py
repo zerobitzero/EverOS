@@ -6,10 +6,10 @@ This isolates metrics from business API for security and operational benefits.
 
 Usage:
     from core.observation.metrics.server import start_metrics_server
-    
+
     # Start metrics server on port 9090
     start_metrics_server(port=9090)
-    
+
     # Or use environment variable METRICS_PORT
     start_metrics_server()  # reads from METRICS_PORT or defaults to 9090
 
@@ -36,21 +36,21 @@ def start_metrics_server(
 ) -> bool:
     """
     Start standalone Prometheus metrics HTTP server
-    
+
     Args:
         port: Port to listen on (default: from METRICS_PORT env or 9090)
         addr: Address to bind to (default: 0.0.0.0)
-    
+
     Returns:
         bool: True if server started successfully, False if already running
-    
+
     Example:
         # Start on default port 9090
         start_metrics_server()
-        
+
         # Start on custom port
         start_metrics_server(port=9091)
-        
+
         # Prometheus can scrape: http://your-host:9090/metrics
     """
     global _metrics_server_started
@@ -89,11 +89,11 @@ def is_metrics_server_running() -> bool:
 def get_metrics_url(host: str = "localhost", port: Optional[int] = None) -> str:
     """
     Get the metrics endpoint URL
-    
+
     Args:
         host: Hostname (default: localhost)
         port: Port (default: from METRICS_PORT env or 9090)
-    
+
     Returns:
         str: Full URL to metrics endpoint
     """

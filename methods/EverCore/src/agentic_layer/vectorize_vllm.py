@@ -32,7 +32,7 @@ class VllmVectorizeConfig:
 class VllmVectorizeService(BaseVectorizeService):
     """
     vLLM self-deployed embedding service implementation
-    
+
     Supports:
     - vLLM (https://github.com/vllm-project/vllm)
     - Any OpenAI-compatible embedding endpoint

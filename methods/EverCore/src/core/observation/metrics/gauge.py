@@ -16,14 +16,14 @@ logger = logging.getLogger(__name__)
 class BaseGauge(ABC):
     """
     Gauge base class
-    
+
     Features:
     - Can increase or decrease (instantaneous value)
     - Built-in auto-refresh capability (default 5 seconds)
     - Must inherit and override refresh() method
     - Each instance manages its own refresh tasks independently
     - Supports manual set() method
-    
+
     Usage - inherit and override refresh method:
         class KafkaPendingMessagesGauge(BaseGauge):
             def __init__(self, kafka_consumer):
@@ -33,18 +33,18 @@ class BaseGauge(ABC):
                     labelnames=['job_name']
                 )
                 self.kafka_consumer = kafka_consumer
-            
+
             def refresh(self, labels: dict) -> float:
                 '''Return current value'''
                 return len(self.kafka_consumer.pending_messages)
-        
+
         # Usage 1: Auto-refresh (default 5 seconds)
         gauge = KafkaPendingMessagesGauge(kafka_consumer)
         gauge.labels(job_name='tanka').start_refresh()
-        
+
         # Usage 2: Custom refresh interval
         gauge.labels(job_name='tanka').start_refresh(interval_seconds=10)
-        
+
         # Usage 3: Manual set (without auto-refresh)
         gauge.labels(job_name='tanka').set(42)
     """
@@ -90,7 +90,7 @@ class BaseGauge(ABC):
     def labels(self, **labels) -> 'LabeledGauge':
         """
         Return a Gauge with labels
-        
+
         Returns:
             LabeledGauge instance
         """
@@ -120,24 +120,24 @@ class BaseGauge(ABC):
     def refresh(self, labels: dict) -> float:
         """
         Refresh method (subclass must override)
-        
+
         Args:
             labels: Label dictionary
-        
+
         Returns:
             Current Gauge value
-        
+
         Notes:
             - Subclass must override this method to implement custom refresh logic
             - This method is called periodically by auto-refresh task (default 5 seconds)
             - Can return any float value, will be automatically updated to Gauge
-        
+
         Example:
             class QueueSizeGauge(BaseGauge):
                 def __init__(self, queue):
                     super().__init__('queue_size', 'Queue size')
                     self.queue = queue
-                
+
                 def refresh(self, labels: dict) -> float:
                     return self.queue.qsize()
         """
@@ -159,7 +159,7 @@ class BaseGauge(ABC):
 class LabeledGauge:
     """
     Gauge with labels
-    
+
     Provides the same interface as native Gauge, with auto-refresh support.
     """
 
@@ -198,26 +198,26 @@ class LabeledGauge:
     ) -> 'LabeledGauge':
         """
         Start auto-refresh
-        
+
         Args:
             interval_seconds: Refresh interval (seconds), default 5 seconds
             enable_async: Whether to support async refresh method, default True
-        
+
         Returns:
             self (supports chaining)
-        
+
         Example:
             # Default 5 second refresh
             gauge.labels(job='tanka').start_refresh()
-            
+
             # Custom refresh interval
             gauge.labels(job='tanka').start_refresh(interval_seconds=10)
-            
+
             # Async refresh method
             class AsyncGauge(BaseGauge):
                 async def refresh(self, labels: dict) -> float:
                     return await self.get_value_async()
-            
+
             gauge.labels(type='A').start_refresh(enable_async=True)
         """
         # Stop existing task if any (prevent task leak)
@@ -261,7 +261,7 @@ class LabeledGauge:
 class RefreshTask:
     """
     Refresh task
-    
+
     Each label combination has an independent refresh task.
     """
 
